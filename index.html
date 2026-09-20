@@ -509,7 +509,7 @@ function initEditor(){
 }
 function showDashboard(){draftAbort?.abort();document.getElementById('module').classList.remove('active');document.getElementById('dashboard').classList.add('active');renderMapPreview();updateSavedCount();window.scrollTo({top:0,behavior:'instant'})}
 function openModule(id){if(location.hash==='#'+id)renderModule(id);else location.hash=id}
-function dashboard(){history.replaceState(null,'',location.pathname+location.search);showDashboard()}
+function dashboard(){history.replaceState(null,'',location.href.split('#')[0]);showDashboard()}
 function frame(title,desc,html){return `<div class="module-head"><div><div class="kicker">Enesevaatluse mäng</div><h1>${title}</h1><p>${desc}</p></div><button class="back" data-back>← Kõik mängud</button></div>${html}`}
 
 function renderDashboard(){
