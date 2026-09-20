@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="et"><meta charset="utf-8"><title>Insight Games · QA viewport harness</title>
+<style>body{font:16px system-ui;margin:16px}button,input{font:inherit;min-height:44px}input{width:80%}iframe{display:block;border:1px solid #777;height:850px;margin:12px 0;box-sizing:content-box}pre{white-space:pre-wrap}</style>
+<h1>QA: brauseri CSS-vaateala</h1>
+<p>Kasuta ainult mitte-production testvaadet ja sünteetilisi andmeid. See kontrollib päris brauseri renderdust iframe'i CSS-vaatealas, mitte päris telefoni ega puuteklaviatuuri.</p>
+<label>Testvaate URL <input id="url" placeholder="Testvaate URL"></label><button id="open">Ava testvaade</button>
+<div id="widths"><button data-width="360">360 px</button><button data-width="390">390 px</button><button data-width="430">430 px</button><button data-width="1180">1180 px</button><button id="reload">Värskenda rakendust</button><button id="back">Brauseris tagasi</button><button id="forward">Brauseris edasi</button><button id="measure">Mõõda ülevoolu</button></div>
+<output id="status">Vali testvaade.</output><iframe id="app" title="Insight Games QA" style="width:390px"></iframe><pre id="metrics"></pre>
+<script>
+const app=document.getElementById('app'),status=document.getElementById('status');
+document.getElementById('open').onclick=()=>{const url=new URL(document.getElementById('url').value,location.href);if(url.protocol!=='https:'&&url.hostname!=='localhost')throw Error('Kasuta HTTPS testvaadet');app.src=url.href;status.textContent='Testvaade: '+url.href};
+document.querySelectorAll('[data-width]').forEach(b=>b.onclick=()=>{app.style.width=b.dataset.width+'px';status.textContent='CSS-vaateala: '+b.dataset.width+' px'});
+document.getElementById('reload').onclick=()=>app.contentWindow.location.reload();
+document.getElementById('back').onclick=()=>app.contentWindow.history.back();
+document.getElementById('forward').onclick=()=>app.contentWindow.history.forward();
+document.getElementById('measure').onclick=()=>{try{const doc=app.contentDocument;document.getElementById('metrics').textContent=JSON.stringify({viewport:doc.documentElement.clientWidth,scrollWidth:doc.documentElement.scrollWidth,overflow:doc.documentElement.scrollWidth>doc.documentElement.clientWidth,smallButtons:[...doc.querySelectorAll('button')].filter(e=>e.getClientRects().length&&e.getBoundingClientRect().height<44).map(e=>e.textContent)},null,2)}catch{document.getElementById('metrics').textContent='Mõõtmiseks peavad rakendus ja testleht olema samal originil.'}};
+</script></html>
