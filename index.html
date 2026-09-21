@@ -197,11 +197,24 @@ input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-hei
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="edit-dock" id="editDock">
-  <div class="hint"><strong>Tekstiredaktor on sees.</strong> Puuduta katkendjoonega teksti ja kirjuta oma versioon. Muudatused salvestuvad ainult sinu brauserisse.</div>
+  <div class="hint"><strong>Tekstiredaktor on sees.</strong> Muuda teksti ja vajuta „Salvesta muudatused“, et avaldada see kõigile. Seni säilib muudatus selles brauseris.</div>
+  <button class="btn" id="publishEdits">Salvesta muudatused</button>
   <button class="light" id="copyEdits">Kopeeri muudatused</button>
   <button class="soft" id="exportEdits">Ekspordi JSON</button>
   <button class="soft" id="closeEditor">Valmis</button>
 </div>
+<dialog id="publishDialog" data-no-edit style="max-width:min(560px,calc(100vw - 32px));border:0;border-radius:20px;padding:24px">
+ <form id="publishForm">
+  <h2>Avalda tekstimuudatused</h2>
+  <p>Need tekstid muutuvad kõigile nähtavaks. Vaata muudatused üle. Avaldame lihtteksti; mängutulemusi ega mustandeid automaatselt kaasa ei saadeta.</p>
+  <div id="publishPreview" style="max-height:35vh;overflow:auto;overflow-wrap:anywhere"></div>
+  <label for="publishKey">Sinu avaldamisvõti</label>
+  <input id="publishKey" type="password" autocomplete="off" required style="width:100%">
+  <p id="publishStatus" role="status"></p>
+  <button class="btn" id="confirmPublish" type="submit">Avalda kõigile</button>
+  <button class="soft" id="cancelPublish" type="button">Loobu</button>
+ </form>
+</dialog>
 
 <script>
 (() => {
@@ -685,7 +698,31 @@ function parseParticipantNames(text){const names=String(text).split(/\n|,/).map(
 function storedNamesSafe(names){return Array.isArray(names)&&names.length>=2&&names.length<=8&&names.every(n=>typeof n==='string'&&n.trim()&&n.trim().length<=40)&&new Set(names.map(n=>n.trim().toLocaleLowerCase('et'))).size===names.length}
 function invalidNamesScreen(host,id){host.innerHTML=frame(gameTitle(id),'Varasem mustand säilis muutmata.',`<section class="card"><div class="warning">Mustand sisaldab nimesid, mis ei vasta praegusele piirangule: 2–8 erinevat nime, igaüks kuni 40 märki. Ekspordi andmed Minu kaardilt enne uue mängu alustamist.</div><button class="btn" data-open="map">Ava minu kaart</button></section>`);openBindings(host)}
 function readLocalEdits(){try{return plainObject(JSON.parse(safeGet(EDIT_STORE)||'{}'))}catch(e){return {}}}
+const PUBLISH_DRAFT_STORE='insightGamesPublishDraftV1';
+let publishedTexts={},publishedRevision=null,publishingReady=false;
+function pendingTexts(){try{return plainObject(JSON.parse(safeGet(PUBLISH_DRAFT_STORE)||'{}'))}catch{return {}}}
 function readEdits(){return {...BASE_EDITS,...readLocalEdits()}}
+async function loadPublishedTexts(){
+ if(typeof fetch!=='function')return;
+ try{const response=await fetch('/api/texts',{cache:'no-store'});if(!response.ok)throw Error();const data=await response.json();if(data.schemaVersion!==1||!data.edits||typeof data.edits!=='object')throw Error();publishedTexts=data.edits;publishedRevision=data.revision;publishingReady=true;document.querySelectorAll('[data-edit-applied]').forEach(el=>delete el.dataset.editApplied);applyTextEdits()}catch{publishingReady=false}
+}
+async function openPublishDialog(){
+ const dialog=document.getElementById('publishDialog'),preview=document.getElementById('publishPreview');preview.replaceChildren();
+ const entries=Object.entries(pendingTexts());if(!entries.length){toast('Avaldamiseks muuda esmalt mõnda teksti.');return}
+ for(const [key,value] of entries){const p=document.createElement('p');p.textContent=value;preview.append(p)}
+ document.getElementById('publishStatus').textContent='';dialog.showModal();document.getElementById('publishKey').focus();
+}
+async function publishTexts(event){
+ event.preventDefault();const button=document.getElementById('confirmPublish'),status=document.getElementById('publishStatus'),key=document.getElementById('publishKey'),submitted=pendingTexts();button.disabled=true;status.textContent='Avaldan…';
+ try{
+  if(!publishingReady)await loadPublishedTexts();
+  if(!publishingReady)throw Error('Avaldamine vajab serveri seadistamist või ühenduse taastamist. Muudatused säilisid brauseris.');
+  const response=await fetch('/api/texts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key.value},body:JSON.stringify({schemaVersion:1,revision:publishedRevision,edits:submitted})});
+  const data=await response.json();if(!response.ok)throw Error(data.error||'Avaldamine ebaõnnestus.');
+  publishedTexts=data.edits;publishedRevision=data.revision;const remaining=pendingTexts();for(const [k,v] of Object.entries(submitted))if(remaining[k]===v)delete remaining[k];safeSet(PUBLISH_DRAFT_STORE,JSON.stringify(remaining));
+  key.value='';document.getElementById('publishDialog').close();setEditor(false);toast('Tekstimuudatused on kõigile avaldatud.');
+ }catch(error){status.textContent=error.message||'Avaldamine ebaõnnestus. Muudatused säilisid brauseris.'}finally{button.disabled=false;key.value=''}
+}
 function writeEdits(x){try{if(!safeSet(EDIT_STORE,JSON.stringify(plainObject(x))))throw Error();return true}catch(e){toast('Tekstimuudatuste salvestamine ebaõnnestus');return false}}
 function validateDrafts(x){if(!x||![1,2].includes(x.schemaVersion)||!x.games||typeof x.games!=='object'||Array.isArray(x.games))throw new Error('Mustandite vorming või versioon ei ole toetatud.');assertSafeValue(x);for(const [id,d] of Object.entries(x.games)){if(!GAMES.some(g=>g.id===id)||!d||typeof d!=='object'||Array.isArray(d))throw new Error('Tundmatu või vigane mustand.');if(d.fields!==undefined){if(!d.fields||typeof d.fields!=='object'||Array.isArray(d.fields))throw new Error('Vigased väljad.');for(const [key,f] of Object.entries(d.fields)){if(!/^[a-zA-Z][\w-]*$/.test(key)||!f||typeof f.value!=='string')throw new Error('Vigane sisendväli.')}}if(d.state!==undefined){if(!d.state||typeof d.state!=='object'||Array.isArray(d.state))throw new Error('Vigane mänguseis.');validateGameData(id,d.state,true)}}return {...x,schemaVersion:2}}
 function readDraftStore(){const raw=safeGet(DRAFT_STORE);if(!raw){draftReadError='';return {schemaVersion:2,games:{}}}try{const x=validateDrafts(JSON.parse(raw));draftReadError='';return x}catch(e){draftReadError='Pooleliolevaid mänge ei saanud turvaliselt lugeda. Algandmeid ei muudetud.';return {schemaVersion:2,games:{}}}}
@@ -720,13 +757,15 @@ function applyTextEdits(root=document){
    if(!el.dataset.editKey){const original=el.innerHTML.trim();el.dataset.editKey=view+'|'+(el.dataset.editId||stableEditPath(el,scope));el.dataset.editLegacyKey=view+'|'+h32(original)}
    const key=el.dataset.editKey;
    const legacyKey=el.dataset.editLegacyKey,edit=edits[key]!==undefined?edits[key]:edits[legacyKey];
-   if(edit!==undefined && el.dataset.editApplied!=='1'){el.innerHTML=edit;el.dataset.editApplied='1';if(local[legacyKey]!==undefined&&local[key]===undefined){local[key]=local[legacyKey];writeEdits(local)}}
+   const publicText=pendingTexts()[legacyKey]??publishedTexts[legacyKey];
+   if(publicText!==undefined&&el.dataset.editApplied!=='1'){el.textContent=publicText;el.dataset.editApplied='1'}
+   else if(edit!==undefined && el.dataset.editApplied!=='1'){el.innerHTML=edit;el.dataset.editApplied='1';if(local[legacyKey]!==undefined&&local[key]===undefined){local[key]=local[legacyKey];writeEdits(local)}}
    el.classList.toggle('editable-copy',editorOn);
    el.contentEditable=editorOn?'true':'false';
    el.spellcheck=editorOn;
    if(!el.dataset.editBound){
      el.dataset.editBound='1';
-     el.addEventListener('input',()=>{if(!editorOn)return;const all=readLocalEdits();all[el.dataset.editKey]=el.innerHTML;writeEdits(all)});
+     el.addEventListener('input',event=>{if(!editorOn||event.target!==el)return;const all=readLocalEdits();all[el.dataset.editKey]=el.innerHTML;writeEdits(all);const pending=pendingTexts();pending[el.dataset.editLegacyKey]=el.textContent;if(!safeSet(PUBLISH_DRAFT_STORE,JSON.stringify(pending)))toast('Avaldamise mustandit ei saanud brauserisse salvestada.');el.dataset.editApplied='1'});
    }
  });
  document.body.classList.toggle('editor-on',editorOn);
@@ -803,6 +842,12 @@ function deleteAllData(){
  if(!commitGameData(emptyStore(),{schemaVersion:2,games:{}}))return;const copiesRemoved=legacyRecoveryKeys().map(safeRemove).every(Boolean);draftAbort?.abort();lastSave=null;renderModule('map');updateSavedCount();renderMapPreview();toast(copiesRemoved?'Mänguandmed on kustutatud':'Tulemused kustutati, kuid vana taastekoopiat ei saanud eemaldada');
 }
 function initEditor(){
+ document.getElementById('publishEdits').onclick=openPublishDialog;
+ document.getElementById('publishForm').onsubmit=publishTexts;
+ document.getElementById('cancelPublish').onclick=()=>{document.getElementById('publishKey').value='';document.getElementById('publishDialog').close()};
+ document.getElementById('publishDialog').addEventListener('close',()=>{document.getElementById('publishKey').value=''});
+ loadPublishedTexts();
+ window.addEventListener('focus',()=>{if(!editorOn)loadPublishedTexts()});
  document.getElementById('editToggle').onclick=()=>setEditor(!editorOn);
  document.getElementById('closeEditor').onclick=()=>setEditor(false);
  document.getElementById('copyEdits').onclick=copyEditsPayload;
