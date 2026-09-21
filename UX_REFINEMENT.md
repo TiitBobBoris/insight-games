@@ -23,6 +23,6 @@ Actual desktop Chrome, non-production preview checkpoint `582794214e7b001b817fb7
 - Roulette: contextual followups 1/2 and 2/2, disabled completed button, refresh restores the same base question, second followup and count.
 - Pattern: two text answers retained after next/back; form font measured at 16 px.
 - No app JavaScript errors observed; one unrelated browser-extension metadata error.
-- Final small typography adjustments (regular-weight form text and 24 px mobile prompts) are followed by a final preview check before release.
+- Final preview `f560fc6fa017b18694c249f8bb28492cfa7f0f59`: dashboard screenshot inspected; 360 px Pattern view still has no overflow or undersized buttons after typography adjustments. A final map typography consistency adjustment uses the same system font as the other headings.
 
 Narrow desktop Chrome frames are not physical-device testing. iPhone/Android touch feel, virtual keyboard, Safari and system reduced-motion rendering remain unverified. The older full stabilization browser matrix is still incomplete; this focused interaction pass does not close all gaps in QA_REPORT.md.
