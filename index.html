@@ -65,7 +65,7 @@ a{color:inherit}
 .small{font-size:12px;color:var(--muted);line-height:1.45}
 .note{padding:12px 14px;background:#f6f2e9;border-left:3px solid #d2a84a;border-radius:10px;color:#554d42;font-size:13px;line-height:1.5}
 label{display:block;font-weight:750;color:#344054;font-size:13px}
-input[type=text],input[type=date],textarea,select{width:100%;border:1px solid #d8d2c8;background:white;border-radius:12px;padding:11px 12px;margin-top:6px;color:#111827;outline:none}
+input[type=text],input[type=date],input[type=password],textarea,select{width:100%;border:1px solid #d8d2c8;background:white;border-radius:12px;padding:11px 12px;margin-top:6px;color:#111827;outline:none}
 textarea{min-height:76px;resize:none;overflow:hidden}
 input:focus,textarea:focus,select:focus{border-color:#a78b5b;box-shadow:0 0 0 3px rgba(210,168,74,.14)}
 .range-row{display:grid;grid-template-columns:1fr 54px;gap:12px;align-items:center}
@@ -150,7 +150,7 @@ button:not(:disabled):active{transform:scale(.975);opacity:.82;transition-durati
 button:disabled{cursor:default;opacity:.42;transform:none;box-shadow:none}
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
 .module-head h1:focus{outline:none}
-input[type=text],input[type=date],textarea,select{font-size:16px;font-weight:400;min-height:48px;border-color:#c9cbd0;background:#fff;transition:border-color 150ms ease,box-shadow 150ms ease;scroll-margin-block:100px}
+input[type=text],input[type=date],input[type=password],textarea,select{font-size:16px;font-weight:400;min-height:48px;border-color:#c9cbd0;background:#fff;transition:border-color 150ms ease,box-shadow 150ms ease;scroll-margin-block:100px}
 input:focus,textarea:focus,select:focus{border-color:var(--focus);box-shadow:0 0 0 4px rgba(40,100,197,.10)}
 input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-height:1.45;border-radius:20px;padding:20px;transition:transform var(--settle-time) var(--ease-out),background-color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
 .choice:hover{transform:none;background:white;border-color:var(--line)}.choice.selected{transform:none;border-color:#8b641c;background:#fff8e9;box-shadow:inset 0 0 0 1px #8b641c}
@@ -203,16 +203,16 @@ input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-hei
   <button class="soft" id="exportEdits">Ekspordi JSON</button>
   <button class="soft" id="closeEditor">Valmis</button>
 </div>
-<dialog id="publishDialog" data-no-edit style="max-width:min(560px,calc(100vw - 32px));border:0;border-radius:20px;padding:24px">
+<dialog id="publishDialog" aria-labelledby="publishTitle" data-no-edit style="max-width:min(560px,calc(100vw - 32px));border:0;border-radius:20px;padding:24px">
  <form id="publishForm">
-  <h2>Avalda tekstimuudatused</h2>
+  <h2 id="publishTitle">Avalda tekstimuudatused</h2>
   <p>Need tekstid muutuvad kõigile nähtavaks. Vaata muudatused üle. Avaldame lihtteksti; mängutulemusi ega mustandeid automaatselt kaasa ei saadeta.</p>
   <div id="publishPreview" style="max-height:35vh;overflow:auto;overflow-wrap:anywhere"></div>
   <label for="publishKey">Sinu avaldamisvõti</label>
   <input id="publishKey" type="password" autocomplete="off" required style="width:100%">
   <p id="publishStatus" role="status"></p>
   <button class="btn" id="confirmPublish" type="submit">Avalda kõigile</button>
-  <button class="soft" id="cancelPublish" type="button">Loobu</button>
+  <button class="btn secondary" id="cancelPublish" type="button">Loobu</button>
  </form>
 </dialog>
 
@@ -704,7 +704,7 @@ function pendingTexts(){try{return plainObject(JSON.parse(safeGet(PUBLISH_DRAFT_
 function readEdits(){return {...BASE_EDITS,...readLocalEdits()}}
 async function loadPublishedTexts(){
  if(typeof fetch!=='function')return;
- try{const response=await fetch('/api/texts',{cache:'no-store'});if(!response.ok)throw Error();const data=await response.json();if(data.schemaVersion!==1||!data.edits||typeof data.edits!=='object')throw Error();publishedTexts=data.edits;publishedRevision=data.revision;publishingReady=true;document.querySelectorAll('[data-edit-applied]').forEach(el=>delete el.dataset.editApplied);applyTextEdits()}catch{publishingReady=false}
+ try{const response=await fetch('/api/texts',{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!response.ok)throw Error();const data=await response.json();if(data.schemaVersion!==1||!data.edits||typeof data.edits!=='object')throw Error();publishedTexts=data.edits;publishedRevision=data.revision;publishingReady=true;document.querySelectorAll('[data-edit-applied]').forEach(el=>delete el.dataset.editApplied);applyTextEdits()}catch{publishingReady=false}
 }
 async function openPublishDialog(){
  const dialog=document.getElementById('publishDialog'),preview=document.getElementById('publishPreview');preview.replaceChildren();
@@ -717,7 +717,7 @@ async function publishTexts(event){
  try{
   if(!publishingReady)await loadPublishedTexts();
   if(!publishingReady)throw Error('Avaldamine vajab serveri seadistamist või ühenduse taastamist. Muudatused säilisid brauseris.');
-  const response=await fetch('/api/texts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key.value},body:JSON.stringify({schemaVersion:1,revision:publishedRevision,edits:submitted})});
+  const response=await fetch('/api/texts',{method:'POST',signal:AbortSignal.timeout(30000),headers:{'Content-Type':'application/json',Authorization:'Bearer '+key.value},body:JSON.stringify({schemaVersion:1,revision:publishedRevision,edits:submitted})});
   const data=await response.json();if(!response.ok)throw Error(data.error||'Avaldamine ebaõnnestus.');
   publishedTexts=data.edits;publishedRevision=data.revision;const remaining=pendingTexts();for(const [k,v] of Object.entries(submitted))if(remaining[k]===v)delete remaining[k];safeSet(PUBLISH_DRAFT_STORE,JSON.stringify(remaining));
   key.value='';document.getElementById('publishDialog').close();setEditor(false);toast('Tekstimuudatused on kõigile avaldatud.');

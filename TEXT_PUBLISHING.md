@@ -23,7 +23,7 @@ Pärast seadistamist deploy uus kood. Preview-keskkonda ära anna productioni ki
 4. Kahe samaaegse redaktori konflikt peab andma veateate, mitte teise muudatust üle kirjutama.
 5. Mänguvastused peavad jääma ainult oma brauserisse.
 
-`npm test` kontrollib autentimist, sisendi valideerimist, riknenud faili säilitamist, revision-konflikti, avaldamist ja uut lugemist, lihttekstina renderdamist ning mänguandmete eraldatust. Päris productioni autentimise ja salvestuse kontroll jääb serveri seadistuse taha.
+`npm test`: 35 testi läbivad. Kontrollitud on autentimine, puuduva seadistuse korral keeldumine, sisendi valideerimine, riknenud faili säilitamine, revision-konflikt, avaldamine ja uus lugemine, lihttekstina renderdamine, tõrke järel kohaliku paranduse säilitamine ning mänguandmete eraldatus. Päris Chrome'is HTMLPreview kaudu kontrollitud: teksti muutmine, avaldamise eelvaate avamine, „Loobu“ ja paranduse säilimine lehe värskendamisel. Päris productioni autentimise ja salvestuse kontroll jääb serveri seadistuse taha.
 
 Piirangud: avaldamisel kaob muudetud lõigu HTML-vormindus; tekst rakendub sama algtekstiga kohtadele selle vaate sees. Vanad kohaliku redaktori muudatused ei lähe automaatselt üles: ava soovitud lõik ja muuda seda. GitHubi või võrgu tõrke puhul jäävad kasutusele rakenduse senised tekstid; avaldamise tulemust ei väideta kinnitatuks. Tokeni õigused piirduvad repoga, kuid GitHub ei võimalda Contents tokenit piirata ainult ühe failiga. Avaldamisvõtme vahetus toimub Verceli seadetes ja nõuab uut deploy'd.
 

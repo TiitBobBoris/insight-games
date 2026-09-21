@@ -4,6 +4,10 @@ const handler=require('../api/texts');
 const {JSDOM}=require('jsdom');
 const fs=require('node:fs');
 function response(){return {headers:{},setHeader(k,v){this.headers[k]=v},status(n){this.code=n;return this},json(data){this.data=data;return this}}}
+test('missing server configuration fails closed',async t=>{
+ t.mock.property(process,'env',{});t.mock.method(global,'fetch',()=>{throw Error('must not fetch')});
+ const res=response();await handler({method:'POST',headers:{},body:{}},res);assert.equal(res.code,503);
+});
 test('publishing requires a strong owner key and never contacts storage for unauthorized requests',async t=>{
  t.mock.method(global,'fetch',()=>{throw Error('must not fetch')});
  t.mock.property(process,'env',{...process.env,TEXTS_GITHUB_TOKEN:'test-token',TEXTS_PUBLISH_KEY:'x'.repeat(32)});
@@ -44,4 +48,7 @@ test('published copy is rendered as text and private game storage is never sent'
  await w.copyAPI.publishTexts({preventDefault(){}});
  const sent=JSON.parse(calls.find(c=>c.method==='POST').body);assert.deepEqual(sent.edits,{[key]:'Uus avalik tekst'});assert.equal(JSON.stringify(sent).includes('private-game-answer'),false);
  assert.equal(d.querySelector('#publishKey').value,'');assert.equal(w.localStorage.getItem('insightGamesV1'),'private-game-answer');
+ d.querySelector('#editToggle').click();title.textContent='Alles jääv parandus';title.dispatchEvent(new w.Event('input',{bubbles:true}));
+ w.fetch=async()=>({ok:false,json:async()=>({error:'Avaldamisvõti ei sobi.'})});
+ await w.copyAPI.publishTexts({preventDefault(){}});assert.equal(w.copyAPI.pendingTexts()[key],'Alles jääv parandus');assert.equal(d.querySelector('#publishStatus').textContent,'Avaldamisvõti ei sobi.');
 });
