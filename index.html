@@ -131,6 +131,40 @@ input[type=range]{width:100%;accent-color:#1e293b;height:38px}
 .map-banner{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.6fr);gap:14px;align-items:stretch;background:linear-gradient(135deg,#eef7ec,#fffdf9);border:2px solid #b9d8b5;border-radius:22px;padding:20px;box-shadow:0 10px 28px rgba(76,143,84,.08)}
 .map-banner h3{font-family:Georgia,serif;font-size:30px;margin:3px 0 8px}.map-banner p{margin:0;color:#667085;line-height:1.5}.map-side{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}.map-stat{font-family:Georgia,serif;font-size:34px;font-weight:800;color:#2f6a37}.map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.map-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}.map-card h3{font-family:Georgia,serif;font-size:23px;margin:0 0 8px}.map-card p{margin:6px 0;color:#475467;line-height:1.5}.theme-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.theme-chip{padding:8px 11px;border-radius:999px;background:#eef7ec;color:#2f6a37;font-size:12px;font-weight:850}.pattern-item{border-top:1px solid var(--line);padding:11px 0}.pattern-item:first-child{border-top:0;padding-top:0}.new-badge{display:inline-flex;align-items:center;align-self:flex-start;margin-top:10px;padding:6px 9px;border-radius:999px;background:#eef2ff;color:#3949ab;font-size:11px;font-weight:900}.guess-score{font-family:Georgia,serif;font-size:54px;line-height:1;color:#2f6a37;font-weight:800}.secret-screen{text-align:center;padding:28px 18px}.secret-screen .prompt{max-width:720px;margin:8px auto 18px}.guess-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--line);padding:10px 0}.guess-row:first-child{border-top:0}.answer-match{font-weight:900;color:#2f6a37}.answer-miss{color:#667085}@media(max-width:780px){.map-banner,.map-grid{grid-template-columns:1fr}.map-side{align-items:stretch}.guess-row{align-items:flex-start;flex-direction:column}}
 
+/* Quiet surfaces and immediate, interruptible feedback. */
+:root{--ease-out:cubic-bezier(.2,.8,.2,1);--press-time:90ms;--settle-time:180ms;--focus:#2864c5}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f7;-webkit-font-smoothing:antialiased}
+.shell{padding-top:max(18px,env(safe-area-inset-top));padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+.hero{padding:clamp(28px,5vw,60px);border-radius:30px;box-shadow:0 12px 36px rgba(17,24,39,.08)}
+.hero h1,.section-title h2,.game h3,.module-head h1,.prompt,.result h3,.result strong.big,.question-box .q,.answer-card h4{font-family:inherit;letter-spacing:-.035em;font-weight:650}
+.hero h1{line-height:1.04;font-weight:700}.hero p{line-height:1.65}.module-head h1{line-height:1.08}
+.map-banner h3,.map-card h3,.map-stat,.guess-score{font-family:inherit;letter-spacing:-.03em;font-weight:650}
+.section-title{margin-top:36px}.grid{gap:18px}.game,.card{background:#fff;border-color:rgba(17,24,39,.07);box-shadow:0 4px 20px rgba(17,24,39,.035);border-radius:24px}
+.game{padding:24px}.game h3{font-size:25px}.game p{font-size:15px;line-height:1.55}.game.popular{border:1px solid #bed6ba;box-shadow:0 4px 20px rgba(47,106,55,.05)}
+.card{padding:clamp(20px,3vw,30px)}.question-box{background:linear-gradient(160deg,#fff,#faf8f2);padding:clamp(24px,4vw,44px);border-radius:28px}.question-box .q{line-height:1.22}
+button{min-width:44px;touch-action:manipulation;transition:transform var(--settle-time) var(--ease-out),background-color var(--settle-time) ease,border-color var(--settle-time) ease,box-shadow var(--settle-time) ease,opacity var(--settle-time) ease}
+.btn,.back{min-height:48px;padding:13px 20px;border-radius:999px;font-weight:600;line-height:1.35}
+.btn{box-shadow:0 2px 4px rgba(17,24,39,.08)}.btn.secondary,.back{background:#e9e9ec}.btn.ghost{background:transparent;box-shadow:none;border-color:#c9cbd0}.btn.gold{background:#8b641c;color:#fff}
+.btn:hover{filter:none}.btn.danger{box-shadow:none}.chip,.edit-toggle{font-weight:600}.chip.active{box-shadow:0 2px 6px rgba(17,24,39,.14)}
+button:not(:disabled):active{transform:scale(.975);opacity:.82;transition-duration:var(--press-time)}
+button:disabled{cursor:default;opacity:.42;transform:none;box-shadow:none}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.module-head h1:focus{outline:none}
+input[type=text],input[type=date],textarea,select{font-size:16px;font-weight:400;min-height:48px;border-color:#c9cbd0;background:#fff;transition:border-color 150ms ease,box-shadow 150ms ease;scroll-margin-block:100px}
+input:focus,textarea:focus,select:focus{border-color:var(--focus);box-shadow:0 0 0 4px rgba(40,100,197,.10)}
+input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-height:1.45;border-radius:20px;padding:20px;transition:transform var(--settle-time) var(--ease-out),background-color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
+.choice:hover{transform:none;background:white;border-color:var(--line)}.choice.selected{transform:none;border-color:#8b641c;background:#fff8e9;box-shadow:inset 0 0 0 1px #8b641c}
+.game:hover{transform:none;box-shadow:0 4px 20px rgba(17,24,39,.035)}
+@media(hover:hover) and (pointer:fine){.game:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(17,24,39,.09)}button:not(:disabled):hover{box-shadow:0 4px 12px rgba(17,24,39,.12)}.choice:not(:disabled):hover{border-color:#a99a7b;background:#fffaf1}.btn.ghost:not(:disabled):hover,.back:hover{background:#e3e4e8}}
+.progress>div{transition:width 200ms var(--ease-out)}
+.toast{bottom:calc(20px + env(safe-area-inset-bottom));padding:14px 20px;box-shadow:0 8px 30px rgba(0,0,0,.16);line-height:1.45;max-width:calc(100% - 32px);transition:opacity 160ms ease,transform 220ms var(--ease-out)}
+.edit-dock{bottom:calc(14px + env(safe-area-inset-bottom))}.actions{gap:12px}.draft-banner{background:#f0f7ef;border-color:#d3e4d0}
+@keyframes content-arrive{from{opacity:.65;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){.view.active>.module-head,.view.active>.card,.view.active>.split,.view.active>.stack,#module .result,#module .choice-grid,#module #patbody>.prompt{animation:content-arrive 200ms var(--ease-out)}}
+@media(max-width:650px){.shell{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}.topbar{align-items:flex-start}.brand{font-size:15px}.top-actions{gap:6px}.hero{border-radius:24px}.game{padding:22px}.module-head{flex-direction:column-reverse;gap:16px}.back{align-self:flex-start}.choice-grid{gap:10px}.choice{padding:16px}.actions .btn{min-width:min(140px,100%)}.draft-banner .actions{width:100%}.draft-banner .actions .btn{flex:1}.edit-dock{flex-wrap:wrap}.edit-dock .hint{flex-basis:100%}}
+@media(max-width:650px){.prompt{font-size:24px;line-height:1.3}.small{font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}button:not(:disabled):active,.game:hover,.choice:hover{transform:none!important}}
+@media(prefers-contrast:more){.card,.game,.choice,.chip,.btn.ghost{border-color:#667085}.small,.game p,.module-head p{color:#344054}}
 </style>
 </head>
 <body>
@@ -161,7 +195,7 @@ input[type=range]{width:100%;accent-color:#1e293b;height:38px}
   <main id="module" class="view"></main>
   <div class="footer">Need mängud ei ole kliinilised ega teaduslikult valideeritud isiksusetestid. Kasuta tulemusi hüpoteesina: “Kas see tundub minu puhul tõene?” — mitte sildina.<br><span id="buildInfo"></span></div>
 </div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="edit-dock" id="editDock">
   <div class="hint"><strong>Tekstiredaktor on sees.</strong> Puuduta katkendjoonega teksti ja kirjuta oma versioon. Muudatused salvestuvad ainult sinu brauserisse.</div>
   <button class="light" id="copyEdits">Kopeeri muudatused</button>
@@ -173,7 +207,7 @@ input[type=range]{width:100%;accent-color:#1e293b;height:38px}
 (() => {
 'use strict';
 const APP_VERSION='1.1.1';
-const BUILD_VERSION='2026.09.21.1';
+const BUILD_VERSION='2026.09.21.2';
 const DATA_SCHEMA_VERSION=3;
 const STORE='insightGamesV1';
 const EDIT_STORE='insightGamesTextEditsV1';
@@ -777,7 +811,8 @@ function initEditor(){
  obs.observe(document.getElementById('dashboard'),{subtree:true,childList:true});obs.observe(document.getElementById('module'),{subtree:true,childList:true});
  applyTextEdits();
 }
-function showDashboard(){draftAbort?.abort();updateLaunchButtons();document.getElementById('module').classList.remove('active');document.getElementById('dashboard').classList.add('active');renderMapPreview();updateSavedCount();window.scrollTo({top:0,behavior:'instant'})}
+let dashboardScroll=0,lastLaunchId='';
+function showDashboard(){draftAbort?.abort();updateLaunchButtons();document.getElementById('module').classList.remove('active');document.getElementById('dashboard').classList.add('active');renderMapPreview();updateSavedCount();window.scrollTo({top:dashboardScroll,behavior:'instant'});const launch=[...document.querySelectorAll('#gameGrid [data-open]')].find(b=>b.dataset.open===lastLaunchId);launch?.focus({preventScroll:true})}
 function updateLaunchButtons(){document.querySelectorAll('#gameGrid [data-open]').forEach(b=>b.textContent=gameDraft(b.dataset.open)?'Jätka testi':'Alusta uut')}
 function openModule(id){if(location.hash==='#'+id)renderModule(id);else location.hash=id}
 function dashboard(){history.replaceState(null,'',location.href.split('#')[0]);showDashboard()}
@@ -793,6 +828,7 @@ function renderDashboard(){
 }
 
 function renderModule(id){
+ if(document.getElementById('dashboard').classList.contains('active')){dashboardScroll=window.scrollY;lastLaunchId=id}
  draftAbort?.abort();lastSave=null;const host=document.getElementById('module'),existingDraft=gameDraft(id);document.getElementById('dashboard').classList.remove('active');host.classList.add('active');
  if(id==='wheel') renderWheel(host);
  else if(id==='needs') renderNeeds(host);
@@ -807,7 +843,7 @@ function renderModule(id){
  else if(id==='map') renderMyMap(host);
  else return dashboard();
  if(existingDraft&&id!=='map'){const head=host.querySelector('.module-head');if(head){const banner=document.createElement('div');banner.className='draft-banner';banner.innerHTML=`<div><strong>Pooleliolev mäng taastati.</strong><div class="small">Jätka sealt, kus pooleli jäid, või alusta puhtalt lehelt.</div></div><div class="actions"><button class="btn ghost" data-new-game>Alusta uuesti</button></div>`;head.insertAdjacentElement('afterend',banner);banner.querySelector('[data-new-game]').onclick=()=>{if(confirm('Kas loobuda selle mängu pooleliolevast mustandist ja alustada uuesti?')){if(clearGameDraft(id))renderModule(id)}}}}
- host.querySelectorAll('[data-back]').forEach(x=>x.onclick=dashboard);bindAutoGrow(host);bindDraftPersistence(host,id);if(id==='peak'&&gameDraft(id)?.state?.phase==='result')host.querySelector('#pgo').click();if(id==='state'&&gameDraft(id)?.state?.phase==='result')host.querySelector('#stateGo').click();applyTextEdits(host);window.scrollTo({top:0,behavior:'instant'});
+ host.querySelectorAll('[data-back]').forEach(x=>x.onclick=dashboard);bindAutoGrow(host);bindDraftPersistence(host,id);if(id==='peak'&&gameDraft(id)?.state?.phase==='result')host.querySelector('#pgo').click();if(id==='state'&&gameDraft(id)?.state?.phase==='result')host.querySelector('#stateGo').click();applyTextEdits(host);window.scrollTo({top:0,behavior:'instant'});const heading=host.querySelector('h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}
 }
 
 function latestOf(type){return (store().results||[]).find(r=>r.type===type)||null}
@@ -998,6 +1034,7 @@ function renderAppreciation(host){
  if(phase==='reveal')chooseTarget();else if(phase==='write'&&target)resumeHandoff();else if(phase==='choose'&&names.length>=2)chooseTarget();else setup();
 }
 
+function animateContent(el){if(!el?.animate||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;el.getAnimations().forEach(a=>a.cancel());el.animate([{opacity:.65,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:160,easing:'cubic-bezier(.2,.8,.2,1)'})}
 function renderDinner(host){
  const saved=plainObject(gameDraft('dinner')?.state),validCats=['Kõik',...Object.keys(DINNER)];let seenByCategory=plainObject(saved.seenByCategory),currentCat=validCats.includes(saved.currentCat)?saved.currentCat:'Kõik',current=saved.current||null,followup=saved.followup||'',followupIndex=Number.isInteger(saved.followupIndex)?Math.max(0,Math.min(2,saved.followupIndex)):0,totalShown=Math.max(0,Number(saved.totalShown)||saved.seen?.length||0),lastQuestion=typeof saved.lastQuestion==='string'?saved.lastQuestion:(saved.current?.q||''),packComplete=Boolean(saved.packComplete);
  host.innerHTML=frame('Õhtusöögi küsimuste rulett','Telefon laua keskele. Üks küsimus korraga. Igaühel on alati õigus öelda „jätan vahele“ või võtta järgmine küsimus. Hea küsimus ei sunni paljastama — ta teeb aususe lihtsamaks.',`
@@ -1006,7 +1043,7 @@ function renderDinner(host){
  function pool(){let arr=[];Object.entries(DINNER).forEach(([cat,qs])=>{if(currentCat==='Kõik'||currentCat===cat)qs.forEach(q=>arr.push({cat,q}))});return arr}
  if(!saved.seenByCategory&&Array.isArray(saved.seen))for(const cat of validCats){const qs=cat==='Kõik'?Object.values(DINNER).flat():DINNER[cat];seenByCategory[cat]=saved.seen.filter(q=>qs.includes(q))}
  function seenSet(){return new Set(Array.isArray(seenByCategory[currentCat])?seenByCategory[currentCat]:[])}
- function paint(){host.querySelector('#ddeeper').disabled=!current||packComplete||followupIndex>=(DINNER_FOLLOWUPS[current?.q]||[]).length;host.querySelector('#ddeeper').textContent=followupIndex>=2?'Jätkuküsimused läbitud':'Mine sügavamale';if(packComplete){host.querySelector('#dcat').textContent='pakk läbitud';host.querySelector('#dq').textContent='Kõik selle paki küsimused on nähtud.';host.querySelector('#dfollow').textContent='Võite lõpetada või alustada uut ringi.';host.querySelector('#dnew').textContent='Alusta uut ringi'}else if(current){host.querySelector('#dcat').textContent=current.cat;host.querySelector('#dq').textContent=current.q;host.querySelector('#dfollow').textContent=followup;host.querySelector('#dnew').textContent='Uus küsimus'}host.querySelector('#dseen').textContent=totalShown+' küsimust selles sessioonis näidatud'}
+ function paint(){const oldQuestion=host.querySelector('#dq').textContent,oldFollowup=host.querySelector('#dfollow').textContent;host.querySelector('#ddeeper').disabled=!current||packComplete||followupIndex>=(DINNER_FOLLOWUPS[current?.q]||[]).length;host.querySelector('#ddeeper').textContent=followupIndex>=2?'Jätkuküsimused läbitud':'Mine sügavamale';if(packComplete){host.querySelector('#dcat').textContent='pakk läbitud';host.querySelector('#dq').textContent='Kõik selle paki küsimused on nähtud.';host.querySelector('#dfollow').textContent='Võite lõpetada või alustada uut ringi.';host.querySelector('#dnew').textContent='Alusta uut ringi'}else if(current){host.querySelector('#dcat').textContent=current.cat;host.querySelector('#dq').textContent=current.q;host.querySelector('#dfollow').textContent=followup;host.querySelector('#dnew').textContent='Uus küsimus'}host.querySelector('#dseen').textContent=totalShown+' küsimust selles sessioonis näidatud';if(oldQuestion!==host.querySelector('#dq').textContent)animateContent(host.querySelector('#dq'));if(oldFollowup!==host.querySelector('#dfollow').textContent)animateContent(host.querySelector('#dfollow'))}
  function saveDinner(){setGameState('dinner',{seenByCategory,currentCat,current,followup,followupIndex,totalShown,lastQuestion,packComplete})}
  function newQ(){let seen=seenSet();if(packComplete){seen=new Set();seenByCategory[currentCat]=[];packComplete=false}let arr=pool().filter(x=>!seen.has(x.q));if(!arr.length){packComplete=true;current=null;followup='';paint();saveDinner();return}if(seen.size===0&&arr.length>1&&lastQuestion)arr=arr.filter(x=>x.q!==lastQuestion);current=arr[Math.floor(Math.random()*arr.length)];seen.add(current.q);seenByCategory[currentCat]=[...seen];lastQuestion=current.q;totalShown++;followup='';followupIndex=0;paint();saveDinner()}
  host.querySelector('#dnew').onclick=newQ;host.querySelector('#dpass').onclick=newQ;host.querySelector('#ddeeper').onclick=()=>{if(!current||packComplete)return;const questions=DINNER_FOLLOWUPS[current.q]||[];if(followupIndex>=questions.length)return;followup='Jätkuküsimus '+(followupIndex+1)+'/'+questions.length+': '+questions[followupIndex++];paint();saveDinner()};paint();

@@ -4,6 +4,17 @@ const fs=require('node:fs');
 const {JSDOM,VirtualConsole}=require('jsdom');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').replace('})();','window.testAPI={store,migrateData,validateImportPayload,exportPayload,commitGameData,importAllData,saveResult,readDraftStore,renderModule,clearGameDraft,deleteAllData,parseParticipantNames,NEED_KEYS,NEED_QUESTIONS,NEED_PROFILES,NEED_COMBOS,DINNER};})();');
 const STORE='insightGamesV1',DRAFT='insightGamesDraftsV1',EDIT='insightGamesTextEditsV1';
+test('navigation returns keyboard focus and dashboard scroll without changing game data',t=>{
+ const a=app(t);let scrollTop;Object.defineProperty(a.w,'scrollY',{value:960,configurable:true});a.w.scrollTo=options=>{scrollTop=options.top};
+ a.api.renderModule('pattern');assert.equal(a.d.activeElement,a.d.querySelector('#module h1'));assert.equal(scrollTop,0);
+ a.fill('#pfact','Alles jääv vastus');a.click('[data-back]');assert.equal(scrollTop,960);assert.equal(a.d.activeElement.dataset.open,'pattern');assert.equal(a.d.activeElement.textContent,'Jätka testi');
+ a.api.renderModule('pattern');assert.equal(a.d.querySelector('#pfact').value,'Alles jääv vastus');
+});
+test('roulette motion respects reduced motion without delaying state or changing counts',t=>{
+ const a=app(t,{},'#dinner');let animations=0;a.w.Element.prototype.animate=function(){animations++;return {cancel(){}}};a.w.Element.prototype.getAnimations=()=>[];
+ a.w.matchMedia=()=>({matches:true});a.click('#dnew');assert.equal(animations,0);assert.equal(a.api.readDraftStore().games.dinner.state.totalShown,1);
+ a.w.matchMedia=()=>({matches:false});a.click('#ddeeper');assert.equal(animations,1);assert.equal(a.api.readDraftStore().games.dinner.state.followupIndex,1);assert.equal(a.api.readDraftStore().games.dinner.state.totalShown,1);
+});
 test('roulette tailored followups cover every question, advance without repeats and restore',t=>{
  const source=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
  const tailored=JSON.parse(source.match(/const DINNER_FOLLOWUPS=(\{[\s\S]*?\n\});/)[1]);
