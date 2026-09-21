@@ -329,7 +329,200 @@ const DINNER={
   'Mis on kõige kummalisem asi, mille eest sa päriselt tänulik oled?'
  ]
 };
-const FOLLOWUPS=['Miks just see?','Mis selle all veel on?','Millal sa seda esimest korda märkasid?','Mis muutuks, kui sa päriselt selle järgi tegutseksid?','Mida sa selle juures kardad kaotada?','Mida sa võidaksid?','Kas su vastus oleks viis aastat tagasi olnud sama?','Mida võiks keegi, kes sind hästi tunneb, sellele lisada?'];
+const DINNER_FOLLOWUPS={
+  "Milline väike asi on sind sellel reisil ootamatult rõõmustanud?": [
+    "Mis selles väikeses rõõmus sind just praegu puudutas?",
+    "Kuidas saaksid samasugusele väikesele rõõmule kodus rohkem ruumi teha?"
+  ],
+  "Millise Kreeka hetke tahaksid pudelisse panna ja koju kaasa võtta?": [
+    "Mis tegi selle Kreeka hetke sinu jaoks säilitamist väärt?",
+    "Millise osa selle hetke tundest saaksid koju kaasa võtta ilma paika kordamata?"
+  ],
+  "Mis on kõige naljakam asi, mida oled viimase 24 tunni jooksul märganud?": [
+    "Mis selles olukorras sind kõige rohkem naerma ajas?",
+    "Mida võiks keegi sinu huumorimeele kohta just sellest loost õppida?"
+  ],
+  "Kui tänane päev oleks film, mis oleks selle pealkiri?": [
+    "Milline tänane stseen põhjendab seda filmipealkirja kõige paremini?",
+    "Kui sina kirjutaksid homse järje, millise stseeni sinna lisaksid?"
+  ],
+  "Mis maitse, lõhn või heli jääb sulle sellest reisist kõige rohkem meelde?": [
+    "Millise konkreetse hetke see maitse, lõhn või heli sulle tagasi toob?",
+    "Mis tunne selle mälestusega kaasas käib?"
+  ],
+  "Milline hetk pani sind viimati lihtsalt “vau” mõtlema?": [
+    "Mis selles „vau“-hetkes su ootusi ületas?",
+    "Mida sa märkasid siis sellist, millest tavaliselt mööda vaatad?"
+  ],
+  "Mida oled reisikaaslaste juures siin rohkem märganud kui kodus?": [
+    "Millises olukorras see reisikaaslase külg nähtavale tuli?",
+    "Kuidas see tähelepanek muudab seda, kuidas temaga kodus suhelda tahad?"
+  ],
+  "Kui sul oleks homme täiesti vaba päev, mida sa teeksid ilma planeerimata?": [
+    "Mille poole sa sellel vabal päeval kõigepealt tõmbuksid?",
+    "Mida see valik sulle annaks, mida su tavapärases päevas napib?"
+  ],
+  "Millist osa oma elust tahaksid praegu pigem lihtsustada kui parandada?": [
+    "Milline kohustus või ootus teeb selle eluosa praegu keeruliseks?",
+    "Mille võiksid sealt üheks nädalaks ära jätta ja vaadata, mis muutub?"
+  ],
+  "Mis on üks asi, mida sa tead, aga mille järgi sa veel päriselt ei ela?": [
+    "Millises konkreetses olukorras su teadmine ja tegu lahku lähevad?",
+    "Milline väike tegu oleks homme selle teadmisega kooskõlas?"
+  ],
+  "Mis annab sulle praegu kõige rohkem energiat — ja mis võtab märkamatult?": [
+    "Kuidas sa kehas märkad erinevust energiat andva ja võtva tegevuse vahel?",
+    "Mida saaksid järgmisel nädalal vähendada, et energiat andvale rohkem ruumi jääks?"
+  ],
+  "Millal tunned, et oled kõige rohkem “sina ise”?": [
+    "Kellega või mida tehes ei pea sa enda olemist kohendama?",
+    "Millist osa sellest vabamast olekust tahaksid tuua oma argipäeva?"
+  ],
+  "Milline otsus võiks järgmise aasta jooksul sinu elu kõige rohkem muuta?": [
+    "Mis muutuks su tavalises päevas, kui selle otsuse teeksid?",
+    "Mida peaksid enne otsust selgeks tegema, et valida läbimõeldult?"
+  ],
+  "Mis on miski, mille kohta oled viimase viie aasta jooksul oma arvamust täielikult muutnud?": [
+    "Milline kogemus su varasema veendumuse küsimärgi alla pani?",
+    "Kuidas mõjutas uus vaatenurk mõnda sinu päris valikut?"
+  ],
+  "Mida sa tahaksid, et su lähedased sinu kohta paremini mõistaksid?": [
+    "Millises olukorras tunned, et lähedased mõistavad sind teisiti, kui sooviksid?",
+    "Kuidas saaksid oma kogemust neile selgitada ilma süüdistamata?"
+  ],
+  "Mis on üks asi, mida tahaksid tulevikus kahetseda pigem tegemise kui tegematajätmise pärast?": [
+    "Mida sa selle kogemuse kaudu avastada tahaksid, isegi kui kõik ei õnnestu?",
+    "Kuidas saaksid seda proovida väikese ja vastutustundliku sammuna?"
+  ],
+  "Mis paneb sind tundma, et teine inimene päriselt kuulab sind?": [
+    "Mida kuulaja konkreetselt teeb, kui tunned end päriselt kuulduna?",
+    "Kuidas saaksid seda kuulamisviisi ise järgmises vestluses pakkuda?"
+  ],
+  "Milline väike tegu tekitab sinus palju suurema läheduse, kui teised ehk arvavad?": [
+    "Millal keegi viimati just sellise väikese teoga sulle lähedust pakkus?",
+    "Kuidas võiks teine teada saada, et see tegu on sulle nii oluline?"
+  ],
+  "Mida sa heas sõpruses kõige rohkem hindad?": [
+    "Milline ühine hetk näitab kõige paremini seda, mida sõpruses hindad?",
+    "Kuidas sina seda omadust oma sõprussuhetes hoiad?"
+  ],
+  "Milline suhe on sind kõige rohkem kasvama sundinud — ja kuidas?": [
+    "Millist enda harjumust või piiri õppisid selles suhtes paremini tundma?",
+    "Mida tahad sellest õppetunnist tulevastesse suhetesse kaasa võtta?"
+  ],
+  "Mida teised sinult sageli vajavad, aga mida sina ise küsida ei oska?": [
+    "Mis teeb selle toetuse küsimise sulle keeruliseks?",
+    "Kuidas kõlaks üks konkreetne palve, mille puhul teisel on vabadus ka keelduda?"
+  ],
+  "Millal on sul kõige lihtsam armastust või hoolimist vastu võtta?": [
+    "Mis aitab sul hoolimist sel hetkel usaldada ja vastu võtta?",
+    "Kuidas võiksid lähedasele oma sobivat hoolimise viisi selgitada?"
+  ],
+  "Mis on miski, mida sa tahaksid oma lähedastele sagedamini öelda?": [
+    "Mida sa kõige rohkem tahaksid, et lähedane neist sõnadest kuuleks?",
+    "Millal oleks nende sõnade ütlemiseks loomulik ja rahulik hetk?"
+  ],
+  "Millise omaduse tõttu usaldad sa inimest kiiresti?": [
+    "Milline tegu on sulle näidanud, et see omadus on inimesel päriselt olemas?",
+    "Mida vajad veel lisaks esmamuljele, et usaldus ajaga süveneks?"
+  ],
+  "Kui kõik praktilised takistused kaoksid aastaks, mida sa prooviksid?": [
+    "Mis sind just selle katsetuse poole tõmbab?",
+    "Millist väikest osa saaksid proovida ka praeguste piirangute juures?"
+  ],
+  "Milline elu tunduks sulle väljast vaadates “liiga julge”, aga seestpoolt õige?": [
+    "Milline osa sellest julgest elust tundub sulle sisimas õige?",
+    "Kuidas saaksid seda elu väikese katsega proovida enne suuri otsuseid?"
+  ],
+  "Mis on üks unistus, mida sa pole ammu kõva häälega öelnud?": [
+    "Mis sind selle ammu ütlemata unistuse juures endiselt kõnetab?",
+    "Kas see unistus on täna endiselt sinu oma või vajab uut kuju?"
+  ],
+  "Kui peaksid järgmised kümme aastat keskenduma ainult ühele suurele projektile, mis see oleks?": [
+    "Miks vääriks just see projekt kümmet aastat sinu tähelepanu?",
+    "Milline oleks selle projekti esimene tähenduslik tulemus juba kolme kuu pärast?"
+  ],
+  "Milline oskus avaks sulle kõige rohkem uusi võimalusi?": [
+    "Millise konkreetse ukse see oskus sulle avaks?",
+    "Kuidas saaksid proovida selle õppimist enne suuremat aja- või rahakulu?"
+  ],
+  "Mis võiks sinu elus olla 20% rohkem?": [
+    "Kuidas märkaksid oma tavalises nädalas, et seda on tõesti rohkem?",
+    "Mille arvelt sellele ruumi teeksid, ilma et koormus lihtsalt kasvaks?"
+  ],
+  "Millise koha või eluviisi tahaksid vähemalt üheks kuuks läbi proovida?": [
+    "Mis sind selle koha või eluviisi argipäeva juures kõige rohkem huvitab?",
+    "Mida tahaksid selle kuu lõpuks enda kohta teada saada?"
+  ],
+  "Mida teeksid, kui teaksid, et sa ei pea kellelegi muljet avaldama?": [
+    "Milline osa sellest valikust on sinu soov ja milline teiste ootuste mõju?",
+    "Kuidas näeks välja väike versioon sellest tegevusest, mida teeksid ainult enda rõõmuks?"
+  ],
+  "Millist vestlust oled sa edasi lükanud?": [
+    "Mida tahaksid selles vestluses mõista või selgelt välja öelda?",
+    "Milline esimene lause aitaks vestlust alustada rahulikult ja ausalt?"
+  ],
+  "Millises eluvaldkonnas tead sa juba järgmist sammu, aga pole seda teinud?": [
+    "Mis on selle teadaoleva sammu tegemise tegelik takistus?",
+    "Kuidas saaksid sammu vähendada nii, et alustamine oleks jõukohane?"
+  ],
+  "Mis tundub hirmutav just seetõttu, et see on sulle tähtis?": [
+    "Mis on selles sinu jaoks nii väärtuslik, et hirm ja soov on korraga kohal?",
+    "Millist tuge või ettevalmistust vajad, et eristada päris riski ebamugavusest?"
+  ],
+  "Millist “ei”-d oleks sul praegu kasulik öelda?": [
+    "Mida see „ei“ sinu elus kaitseks?",
+    "Kuidas ütleksid selle „ei“ selgelt ja lugupidavalt, ilma pikka õigustust lisamata?"
+  ],
+  "Millist “jah”-i oled liiga kaua edasi lükanud?": [
+    "Millele see „jah“ sinu elus ruumi annaks?",
+    "Millise kohustuse see „jah“ kaasa tooks ja kas oled selleks valmis?"
+  ],
+  "Mis on üks asi, mille tegemisel kardad rohkem hinnangut kui tegelikku ebaõnnestumist?": [
+    "Kelle hinnangut sa kõige rohkem ette kujutad ja mida see sulle tähendaks?",
+    "Kuidas hindaksid oma katset ise, kui keegi teine sellest ei teaks?"
+  ],
+  "Kui peaksid homme olema 20% julgem, mida teeksid teisiti?": [
+    "Millises homses olukorras oleks see 20% rohkem julgust nähtav?",
+    "Milline väike julge tegu austaks ka sinu ja teiste piire?"
+  ],
+  "Mida teeksid, kui oleksid kindel, et ebamugavus ei tähenda ohtu?": [
+    "Milliste märkide järgi kontrolliksid selles olukorras, kas ohtu siiski on?",
+    "Kui olukord on turvaline, millist väikest ebamugavust oleksid valmis katsetuseks taluma?"
+  ],
+  "Kes meie seltskonnast elaks kõige paremini ühe kuu Kreeka saarel ilma plaanita — ja miks?": [
+    "Milline selle inimese päris tegu pani sind just teda valima?",
+    "Mida tema saareeluks sobivast omadusest tahaksid ise õppida?"
+  ],
+  "Milline täiesti ebavajalik oskus sul üllatavalt hästi välja tuleb?": [
+    "Kuidas sa selle kummalise oskuse üldse omandasid?",
+    "Millises täiesti ootamatus olukorras võiks sellest oskusest kasu olla?"
+  ],
+  "Kui peaksid üheks päevaks kellegi teise elu proovima, kelle oma?": [
+    "Millist osa tema argipäevast sa tegelikult kogeda tahaksid?",
+    "Mida võiks see päev sinu enda elu kohta uut näidata?"
+  ],
+  "Milline sinu harjumus oleks tulnukale kõige raskemini seletatav?": [
+    "Kuidas seletaksid tulnukale, mida see harjumus sulle annab?",
+    "Mis juhtuks, kui jätaksid selle harjumuse üheks päevaks ära?"
+  ],
+  "Mis oleks sinu kõige absurdsem “supervõime”?": [
+    "Millise igapäevase pisimure sinu absurdne supervõime lahendaks?",
+    "Milline naljakas kõrvalmõju selle võimega kaasas käiks?"
+  ],
+  "Kui peaksid avama Ateenas baari, mis oleks selle nimi ja teema?": [
+    "Mis tunne peaks inimesel sinu Ateena baari sisse astudes tekkima?",
+    "Milline üks detail teeks su baari teema kohe äratuntavaks?"
+  ],
+  "Milline kuulus inimene oleks kõige hullem reisikaaslane?": [
+    "Milline sinu ettekujutatud reisiharjumus teeks temaga reisimise keeruliseks?",
+    "Mida see valik näitab selle kohta, mida sina reisikaaslaselt vajad?"
+  ],
+  "Mis on kõige kummalisem asi, mille eest sa päriselt tänulik oled?": [
+    "Kuidas see kummaline asi su ellu tuli?",
+    "Mida head see sulle andis, mida sa alguses ei osanud oodata?"
+  ]
+};
 
 const CHALLENGES={
  'Kohalolu':[
@@ -799,17 +992,17 @@ function renderAppreciation(host){
 }
 
 function renderDinner(host){
- const saved=plainObject(gameDraft('dinner')?.state),validCats=['Kõik',...Object.keys(DINNER)];let seenByCategory=plainObject(saved.seenByCategory),currentCat=validCats.includes(saved.currentCat)?saved.currentCat:'Kõik',current=saved.current||null,followup=saved.followup||'',totalShown=Math.max(0,Number(saved.totalShown)||saved.seen?.length||0),lastQuestion=typeof saved.lastQuestion==='string'?saved.lastQuestion:(saved.current?.q||''),packComplete=Boolean(saved.packComplete);
+ const saved=plainObject(gameDraft('dinner')?.state),validCats=['Kõik',...Object.keys(DINNER)];let seenByCategory=plainObject(saved.seenByCategory),currentCat=validCats.includes(saved.currentCat)?saved.currentCat:'Kõik',current=saved.current||null,followup=saved.followup||'',followupIndex=Number.isInteger(saved.followupIndex)?Math.max(0,Math.min(2,saved.followupIndex)):0,totalShown=Math.max(0,Number(saved.totalShown)||saved.seen?.length||0),lastQuestion=typeof saved.lastQuestion==='string'?saved.lastQuestion:(saved.current?.q||''),packComplete=Boolean(saved.packComplete);
  host.innerHTML=frame('Õhtusöögi küsimuste rulett','Telefon laua keskele. Üks küsimus korraga. Igaühel on alati õigus öelda „jätan vahele“ või võtta järgmine küsimus. Hea küsimus ei sunni paljastama — ta teeb aususe lihtsamaks.',`
  <div class="card"><div class="chips" id="dcats"><button class="chip active" data-cat="Kõik">Kõik</button>${Object.keys(DINNER).map(c=>`<button class="chip" data-cat="${c}">${c}</button>`).join('')}</div><div class="question-box" style="margin-top:14px"><div class="cat" id="dcat">valmis?</div><div class="q" id="dq">Vajuta “Uus küsimus”.</div><div class="small" id="dfollow" style="margin-top:18px"></div></div><div class="actions"><button class="btn gold" id="dnew">Uus küsimus</button><button class="btn secondary" id="ddeeper">Mine sügavamale</button><button class="btn ghost" id="dpass">Jätan vahele / järgmine</button></div><div class="small" style="margin-top:10px" id="dseen"></div></div>`);
- host.querySelectorAll('[data-cat]').forEach(c=>{c.classList.toggle('active',c.dataset.cat===currentCat);c.onclick=()=>{currentCat=c.dataset.cat;current=null;followup='';packComplete=false;host.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active',x===c));newQ()}});
+ host.querySelectorAll('[data-cat]').forEach(c=>{c.classList.toggle('active',c.dataset.cat===currentCat);c.onclick=()=>{currentCat=c.dataset.cat;current=null;followup='';followupIndex=0;packComplete=false;host.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active',x===c));newQ()}});
  function pool(){let arr=[];Object.entries(DINNER).forEach(([cat,qs])=>{if(currentCat==='Kõik'||currentCat===cat)qs.forEach(q=>arr.push({cat,q}))});return arr}
  if(!saved.seenByCategory&&Array.isArray(saved.seen))for(const cat of validCats){const qs=cat==='Kõik'?Object.values(DINNER).flat():DINNER[cat];seenByCategory[cat]=saved.seen.filter(q=>qs.includes(q))}
  function seenSet(){return new Set(Array.isArray(seenByCategory[currentCat])?seenByCategory[currentCat]:[])}
- function paint(){if(packComplete){host.querySelector('#dcat').textContent='pakk läbitud';host.querySelector('#dq').textContent='Kõik selle paki küsimused on nähtud.';host.querySelector('#dfollow').textContent='Võite lõpetada või alustada uut ringi.';host.querySelector('#dnew').textContent='Alusta uut ringi'}else if(current){host.querySelector('#dcat').textContent=current.cat;host.querySelector('#dq').textContent=current.q;host.querySelector('#dfollow').textContent=followup;host.querySelector('#dnew').textContent='Uus küsimus'}host.querySelector('#dseen').textContent=totalShown+' küsimust selles sessioonis näidatud'}
- function saveDinner(){setGameState('dinner',{seenByCategory,currentCat,current,followup,totalShown,lastQuestion,packComplete})}
- function newQ(){let seen=seenSet();if(packComplete){seen=new Set();seenByCategory[currentCat]=[];packComplete=false}let arr=pool().filter(x=>!seen.has(x.q));if(!arr.length){packComplete=true;current=null;followup='';paint();saveDinner();return}if(seen.size===0&&arr.length>1&&lastQuestion)arr=arr.filter(x=>x.q!==lastQuestion);current=arr[Math.floor(Math.random()*arr.length)];seen.add(current.q);seenByCategory[currentCat]=[...seen];lastQuestion=current.q;totalShown++;followup='';paint();saveDinner()}
- host.querySelector('#dnew').onclick=newQ;host.querySelector('#dpass').onclick=newQ;host.querySelector('#ddeeper').onclick=()=>{followup='Jätkuküsimus: '+FOLLOWUPS[Math.floor(Math.random()*FOLLOWUPS.length)];paint();saveDinner()};paint();
+ function paint(){host.querySelector('#ddeeper').disabled=!current||packComplete||followupIndex>=(DINNER_FOLLOWUPS[current?.q]||[]).length;host.querySelector('#ddeeper').textContent=followupIndex>=2?'Jätkuküsimused läbitud':'Mine sügavamale';if(packComplete){host.querySelector('#dcat').textContent='pakk läbitud';host.querySelector('#dq').textContent='Kõik selle paki küsimused on nähtud.';host.querySelector('#dfollow').textContent='Võite lõpetada või alustada uut ringi.';host.querySelector('#dnew').textContent='Alusta uut ringi'}else if(current){host.querySelector('#dcat').textContent=current.cat;host.querySelector('#dq').textContent=current.q;host.querySelector('#dfollow').textContent=followup;host.querySelector('#dnew').textContent='Uus küsimus'}host.querySelector('#dseen').textContent=totalShown+' küsimust selles sessioonis näidatud'}
+ function saveDinner(){setGameState('dinner',{seenByCategory,currentCat,current,followup,followupIndex,totalShown,lastQuestion,packComplete})}
+ function newQ(){let seen=seenSet();if(packComplete){seen=new Set();seenByCategory[currentCat]=[];packComplete=false}let arr=pool().filter(x=>!seen.has(x.q));if(!arr.length){packComplete=true;current=null;followup='';paint();saveDinner();return}if(seen.size===0&&arr.length>1&&lastQuestion)arr=arr.filter(x=>x.q!==lastQuestion);current=arr[Math.floor(Math.random()*arr.length)];seen.add(current.q);seenByCategory[currentCat]=[...seen];lastQuestion=current.q;totalShown++;followup='';followupIndex=0;paint();saveDinner()}
+ host.querySelector('#dnew').onclick=newQ;host.querySelector('#dpass').onclick=newQ;host.querySelector('#ddeeper').onclick=()=>{if(!current||packComplete)return;const questions=DINNER_FOLLOWUPS[current.q]||[];if(followupIndex>=questions.length)return;followup='Jätkuküsimus '+(followupIndex+1)+'/'+questions.length+': '+questions[followupIndex++];paint();saveDinner()};paint();
 }
 
 function renderGreece(host){
