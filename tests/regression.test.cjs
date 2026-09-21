@@ -4,6 +4,22 @@ const fs=require('node:fs');
 const {JSDOM,VirtualConsole}=require('jsdom');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').replace('})();','window.testAPI={store,migrateData,validateImportPayload,exportPayload,commitGameData,importAllData,saveResult,readDraftStore,renderModule,clearGameDraft,deleteAllData,parseParticipantNames,NEED_KEYS,NEED_QUESTIONS,NEED_PROFILES,NEED_COMBOS,DINNER};})();');
 const STORE='insightGamesV1',DRAFT='insightGamesDraftsV1',EDIT='insightGamesTextEditsV1';
+test('roulette tailored followups cover every question, advance without repeats and restore',t=>{
+ const source=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+ const tailored=JSON.parse(source.match(/const DINNER_FOLLOWUPS=(\{[\s\S]*?\n\});/)[1]);
+ let a=app(t,{},'#dinner');
+ assert.deepEqual(Object.keys(tailored),Object.values(a.api.DINNER).flat());
+ assert.equal(a.d.querySelector('#ddeeper').disabled,true);
+ for(const [q,followups] of Object.entries(tailored)){
+  assert.equal(followups.length,2);assert.equal(new Set(followups).size,2);
+  const cat=Object.entries(a.api.DINNER).find(([,qs])=>qs.includes(q))[0];
+  a=app(t,{[DRAFT]:JSON.stringify({schemaVersion:2,games:{dinner:{state:{currentCat:cat,current:{cat,q}}}}})},'#dinner');
+  a.click('#ddeeper');assert.ok(a.d.querySelector('#dfollow').textContent.endsWith(followups[0]));
+  a=app(t,a.snapshot(),'#dinner');assert.ok(a.d.querySelector('#dfollow').textContent.endsWith(followups[0]));
+  a.click('#ddeeper');assert.ok(a.d.querySelector('#dfollow').textContent.endsWith(followups[1]));assert.equal(a.d.querySelector('#ddeeper').disabled,true);
+  a.click('#dnew');assert.equal(a.d.querySelector('#dfollow').textContent,'');assert.equal(a.d.querySelector('#ddeeper').disabled,false);
+ }
+});
 function app(t,seed={},hash=''){
  const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
  const dom=new JSDOM(html,{url:'https://qa.example/'+hash,runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};w.CSS={escape:s=>s.replace(/[^\w-]/g,'\\$&')};w.confirm=()=>false;for(const [k,v] of Object.entries(seed))w.localStorage.setItem(k,v)}});
