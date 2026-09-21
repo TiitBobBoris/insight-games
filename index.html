@@ -173,13 +173,20 @@ input[type=range]{width:100%;accent-color:#1e293b;height:38px}
 (() => {
 'use strict';
 const APP_VERSION='1.1.1';
-const BUILD_VERSION='2026.09.20.3';
+const BUILD_VERSION='2026.09.21.1';
 const DATA_SCHEMA_VERSION=3;
 const STORE='insightGamesV1';
 const EDIT_STORE='insightGamesTextEditsV1';
 const DRAFT_STORE='insightGamesDraftsV1';
 const TRANSACTION_STORE='insightGamesTransactionV1';
 const BASE_EDITS={
+  "dashboard|section:3/article:10/p:1": "Üks vastab enda kohta (enda peas), teised ennustavad. Vastuse avamine näitab, kui hästi te päriselt üksteist tunnete — ja mis üllatab.",
+  "dashboard|section:4/div:3": "Ära püüa leida “õiget” vastust. Otsi vastust, mis kohe pinnale kerkib",
+  "dashboard|section:4/div:2": "Leia üks asi, mille järgi sa veel ei ela, aga tead et peaksid?",
+  "dashboard|section:3/article:7/p:1": "Spontaansus, kohalolu, julgus, sõbralikkus — juhuslik väljakutse tänaseks.",
+  "dashboard|section:3/article:6/p:1": "Üks küsimus korraga. Mõni ajab naerma, mõni avab uue tahu inimeses, keda arvasid juba tundvat.",
+  "dashboard|section:3/article:4/p:1": "Kui kaks põhiväärtust lähevad konflikti, siis kumb võidab ja Sind juhib? Sinu väärtused muutuvad nähtavaks just valikutes.",
+  "dashboard|section:3/article:1/p:1": "Sinu eluratas: kus oled praegu, mis on päriselt oluline ja mis on üks samm, mille saad teha juba täna, et jõuda paremasse kohta?",
   "dashboard|section:1/p:1": "Need mängud aitavad märgata oma mustreid, väärtusi, mõtestada suhteid ja hetki. Inspireeritud Tony Robbinsi õpetuste, kuue inimese põhivajaduse ja strateegilise coachingu ideedest — mõttevahetuse ja enesevaatluse tööriistad.",
   "dashboard|6awl9z": "Mõtle. Märka.&nbsp;<span style=\"font-size: clamp(42px, 7vw, 78px);\">Jaga.</span>",
   "dashboard|1hktiiw": "Need mängud aitavad märgata oma mustreid, väärtusi, mõtestada suhteid ja hetki. Inspireeritud Tony Robbinsi coaching’u, kuue inimese põhivajaduse raamistiku ja strateegilise süsteemse mõtlemise ideedest — mõttevahetuse ja enesevaatluse tööriistad.",
@@ -771,7 +778,7 @@ function initEditor(){
  applyTextEdits();
 }
 function showDashboard(){draftAbort?.abort();updateLaunchButtons();document.getElementById('module').classList.remove('active');document.getElementById('dashboard').classList.add('active');renderMapPreview();updateSavedCount();window.scrollTo({top:0,behavior:'instant'})}
-function updateLaunchButtons(){document.querySelectorAll('#gameGrid [data-open]').forEach(b=>b.textContent=gameDraft(b.dataset.open)?'Jätka mustandit':'Alusta uut')}
+function updateLaunchButtons(){document.querySelectorAll('#gameGrid [data-open]').forEach(b=>b.textContent=gameDraft(b.dataset.open)?'Jätka testi':'Alusta uut')}
 function openModule(id){if(location.hash==='#'+id)renderModule(id);else location.hash=id}
 function dashboard(){history.replaceState(null,'',location.href.split('#')[0]);showDashboard()}
 function frame(title,desc,html){return `<div class="module-head"><div><div class="kicker">Enesevaatluse mäng</div><h1>${title}</h1><p>${desc}</p></div><button class="back" data-back>← Kõik mängud</button></div>${html}`}
