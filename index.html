@@ -109,6 +109,8 @@ input[type=range]{width:100%;accent-color:#1e293b;height:38px}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);opacity:0;background:#111827;color:white;padding:10px 14px;border-radius:999px;font-size:13px;z-index:50;transition:.2s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .footer{margin-top:34px;text-align:center;color:#7a746a;font-size:12px;line-height:1.5}
+.ai-panel{margin-top:14px;padding:18px;border:1px solid #c9d8c6;border-radius:16px;background:linear-gradient(180deg,#f8fff7,#fffdf9)}
+.ai-panel h4{font-family:Georgia,serif;font-size:22px;margin:0 0 7px}.ai-panel p{margin:7px 0;line-height:1.5}.ai-consent{display:flex;align-items:flex-start;gap:9px;padding:12px;border-radius:12px;background:white;border:1px solid var(--line);font-weight:600}.ai-consent input{margin-top:3px}.ai-output{display:grid;gap:10px;margin-top:14px}.ai-output ul{margin:5px 0 0;padding-left:20px}.ai-output li{margin:6px 0;line-height:1.45}.ai-status{margin-top:10px;color:var(--muted);font-size:13px}.ai-status.error{color:var(--danger)}
 
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
 .version-badge{font-size:11px;font-weight:900;letter-spacing:.05em;color:#667085;white-space:nowrap}
@@ -171,7 +173,7 @@ input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-hei
 <div class="shell">
   <div class="topbar">
     <div class="brand"><div class="brand-mark">I</div>Insight Games</div>
-    <div class="top-actions"><span class="version-badge" id="versionBadge">v1.1.1</span><div class="pill" id="storageStatus">🔒 Andmed jäävad sinu seadmesse</div><button class="edit-toggle" id="editToggle">✎ Muuda tekste</button></div>
+    <div class="top-actions"><span class="version-badge" id="versionBadge">v1.2.0</span><div class="pill" id="storageStatus">🔒 Vaikimisi jäävad andmed seadmesse</div><button class="edit-toggle" id="editToggle">✎ Muuda tekste</button></div>
   </div>
 
   <main id="dashboard" class="view active">
@@ -193,7 +195,7 @@ input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-hei
   </main>
 
   <main id="module" class="view"></main>
-  <div class="footer">Need mängud ei ole kliinilised ega teaduslikult valideeritud isiksusetestid. Kasuta tulemusi hüpoteesina: “Kas see tundub minu puhul tõene?” — mitte sildina.<br><span id="buildInfo"></span></div>
+  <div class="footer">Need mängud ei ole kliinilised ega teaduslikult valideeritud isiksusetestid. Kasuta tulemusi hüpoteesina: “Kas see tundub minu puhul tõene?” — mitte sildina. Valikuline AI-peegeldus saadab ainult sinu kinnitatud Peak Momenti vastused OpenAI-le.<br><span id="buildInfo"></span></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="edit-dock" id="editDock">
@@ -206,8 +208,8 @@ input[type=range]{min-height:44px;cursor:pointer}.choice{font-size:16px;line-hei
 <script>
 (() => {
 'use strict';
-const APP_VERSION='1.1.1';
-const BUILD_VERSION='2026.09.21.2';
+const APP_VERSION='1.2.0';
+const BUILD_VERSION='2026.09.29.1';
 const DATA_SCHEMA_VERSION=3;
 const STORE='insightGamesV1';
 const EDIT_STORE='insightGamesTextEditsV1';
@@ -1112,7 +1114,32 @@ function renderPattern(host){
 function renderPeak(host){
  host.innerHTML=frame('Päeva tipphetk','Päeva tipphetk on vihje. Kui uurid, mis selle hetke tähenduslikuks tegi, hakkad märkama, millist elu tahad rohkem ehitada — mitte ainult milliseid fotosid alles hoida.',`
  <div class="split"><section class="card stack"><label>Mis oli tänase päeva kõige elusam või tähenduslikum hetk?<textarea id="pmoment" placeholder="Kirjelda võimalikult konkreetselt..."></textarea></label><label>Mis emotsioon oli seal kõige tugevam?<input id="pemotion" type="text" placeholder="nt vabadus, hellus, elevus, rahu, uhkus"></label><label>Mis tegi selle hetke oluliseks?<textarea id="pmeaning" placeholder="Mitte mis juhtus, vaid miks see sulle korda läks..."></textarea></label></section><section class="card stack"><label>Millist vajadust see hetk kõige rohkem täitis?<select id="pneed"><option value="">Vali… / Ei oska öelda</option>${NEED_KEYS.map(k=>`<option value="${k}">${NEEDS[k].name}</option>`).join('')}</select></label><label>Millist väärtust see hetk väljendas?<select id="pvalue"><option value="">Vali… / Ei oska öelda</option>${VALUE_LIST.map(v=>`<option>${v}</option>`).join('')}</select></label><label>Mida võiksid sellest hetkest oma tavapärasesse ellu kaasa võtta?<textarea id="pcarry" placeholder="Üks väike korduv element, rituaal või otsus..."></textarea></label><div class="actions"><button class="btn" id="pgo">Loo minu päeva tähelepanek</button></div></section></div><div id="presult" style="margin-top:14px"></div>`);bindAutoGrow(host);
- host.querySelector('#pgo').onclick=()=>{const m=host.querySelector('#pmoment').value.trim(),e=host.querySelector('#pemotion').value.trim(),meaning=host.querySelector('#pmeaning').value.trim(),need=host.querySelector('#pneed').value,val=host.querySelector('#pvalue').value,carry=host.querySelector('#pcarry').value.trim();if(!m){toast('Kirjelda kõigepealt hetke');return}setGameState('peak',{phase:'result'});host.querySelector('#presult').innerHTML=`<div class="result"><div class="kicker">Tänase päeva signaal</div><h3>Võib-olla ei taha sa lihtsalt rohkem selliseid hetki. Sa tahad rohkem seda, mida need hetked sinus käivitavad.</h3><p><strong>Hetk:</strong> ${esc(m)}</p>${e?`<p><strong>Tunne:</strong> ${esc(e)}</p>`:''}<p>${need?`Sinu valitud vajadus: <strong>${NEEDS[need].name}</strong>.`:"Vajadust ei valitud."} ${val?`Sinu valitud väärtus: <strong>${esc(val)}</strong>.`:"Väärtust ei valitud."}</p><div class="note">Küsi homme: “Kuidas saaksin luua 10% sellest kvaliteedist ka täiesti tavalisse päeva?”${carry?`<br><br><strong>Sinu vastus juba praegu:</strong> ${esc(carry)}`:''}</div><div class="actions"><button class="btn" id="psave">Salvesta päeva tipphetk</button><button class="btn secondary" id="pcopy">Kopeeri postkaardiks</button></div></div>`;host.querySelector('#psave').onclick=()=>saveResult('peak',{moment:m,emotion:e,meaning,need,value:val,carry,date:today()});host.querySelector('#pcopy').onclick=()=>copyText(`Tänane päeva tipphetk: ${m}\nTunne: ${e}\nMida see mulle ütles: ${meaning}\nVajadus: ${NEEDS[need]?.name||"Valimata"}\nVäärtus: ${val}\nMida võtan kaasa: ${carry}`)};
+ host.querySelector('#pgo').onclick=()=>{
+  const data={moment:host.querySelector('#pmoment').value.trim(),emotion:host.querySelector('#pemotion').value.trim(),meaning:host.querySelector('#pmeaning').value.trim(),need:host.querySelector('#pneed').value,value:host.querySelector('#pvalue').value,carry:host.querySelector('#pcarry').value.trim()};
+  if(!data.moment){toast('Kirjelda kõigepealt hetke');return}
+  setGameState('peak',{phase:'result'});
+  const result=host.querySelector('#presult');
+  result.innerHTML=`<div class="result"><div class="kicker">Tänase päeva signaal</div><h3>Võib-olla ei taha sa lihtsalt rohkem selliseid hetki. Sa tahad rohkem seda, mida need hetked sinus käivitavad.</h3><p><strong>Hetk:</strong> ${esc(data.moment)}</p>${data.emotion?`<p><strong>Tunne:</strong> ${esc(data.emotion)}</p>`:''}<p>${data.need?`Sinu valitud vajadus: <strong>${NEEDS[data.need].name}</strong>.`:"Vajadust ei valitud."} ${data.value?`Sinu valitud väärtus: <strong>${esc(data.value)}</strong>.`:"Väärtust ei valitud."}</p><div class="note">Küsi homme: “Kuidas saaksin luua 10% sellest kvaliteedist ka täiesti tavalisse päeva?”${data.carry?`<br><br><strong>Sinu vastus juba praegu:</strong> ${esc(data.carry)}`:''}</div><div class="actions"><button class="btn" id="psave">Salvesta päeva tipphetk</button><button class="btn secondary" id="pcopy">Kopeeri postkaardiks</button></div><div class="ai-panel"><div class="kicker">Valikuline · GPT-6 Sol</div><h4>Loo sügavam AI-peegeldus</h4><p class="small">Kui jätkad, saadetakse OpenAI-le ainult ülal täidetud päeva tipphetke väljad. Teisi salvestatud mängutulemusi ei saadeta.</p><label class="ai-consent"><input type="checkbox" id="paiconsent"> <span>Nõustun nende vastuste saatmisega AI-peegelduse loomiseks.</span></label><div class="actions"><button class="btn gold" id="paigo" disabled>Loo AI-peegeldus</button></div><div class="ai-status" id="paistatus"></div><div id="paioutput"></div></div></div>`;
+  result.querySelector('#psave').onclick=()=>saveResult('peak',{...data,date:today()});
+  result.querySelector('#pcopy').onclick=()=>copyText(`Tänane päeva tipphetk: ${data.moment}\nTunne: ${data.emotion}\nMida see mulle ütles: ${data.meaning}\nVajadus: ${NEEDS[data.need]?.name||"Valimata"}\nVäärtus: ${data.value||"Valimata"}\nMida võtan kaasa: ${data.carry}`);
+  const consent=result.querySelector('#paiconsent'),aiButton=result.querySelector('#paigo'),status=result.querySelector('#paistatus'),output=result.querySelector('#paioutput');
+  consent.onchange=()=>{aiButton.disabled=!consent.checked};
+  aiButton.onclick=async()=>{
+   aiButton.disabled=true;consent.disabled=true;status.className='ai-status';status.textContent='Loon peegeldust…';output.innerHTML='';
+   try{
+    const response=await fetch('/api/peak-reflection',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const payload=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(payload.error||'AI-peegeldust ei õnnestunud luua.');
+    const a=payload.reflection;
+    output.innerHTML=`<div class="ai-output"><div class="note"><strong>${esc(a.summary)}</strong></div><div><strong>Mida sinu vastus võib peegeldada</strong><ul>${a.observations.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div><strong>Küsimused kaasa</strong><ul>${a.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="result"><strong>Väike järgmine samm</strong><p>${esc(a.nextStep)}</p></div><p class="small">${esc(a.limitation)}</p><div class="actions"><button class="btn" id="paisave">Salvesta AI-peegeldus</button><button class="btn secondary" id="paicopy">Kopeeri</button></div></div>`;
+    const reflectionText=`AI-peegeldus\n${a.summary}\n\nTähelepanekud:\n- ${a.observations.join('\n- ')}\n\nKüsimused:\n- ${a.questions.join('\n- ')}\n\nJärgmine samm: ${a.nextStep}\n\n${a.limitation}`;
+    output.querySelector('#paisave').onclick=()=>saveResult('peak-ai',{...data,reflection:a,date:today()});
+    output.querySelector('#paicopy').onclick=()=>copyText(reflectionText);
+    status.textContent='AI-peegeldus valmis.';
+   }catch(error){status.className='ai-status error';status.textContent=error.message||'AI-peegeldust ei õnnestunud luua.';aiButton.disabled=false;consent.disabled=false}
+  };
+  applyTextEdits(result);
+ };
 }
 
 if(!recoverTransaction()){storeReadError='Katkestatud andmetoimingu taastamine ebaõnnestus. Taastekoopia säilis.';draftReadError=storeReadError}

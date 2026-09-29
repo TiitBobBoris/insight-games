@@ -2,7 +2,13 @@
 
 Estonian, local-only reflection and party games. Static application in `index.html`.
 
-Current QA branch version: **1.1.1**, build **2026.09.20.2**.
+Current application version: **1.2.0**, build **2026.09.29.1**.
+
+## GPT-6 Peak Moment
+
+Peak Momenti mängus saab kasutaja soovi korral luua personaalse AI-peegelduse. Enne saatmist küsib rakendus nõusolekut ja saadab serverile ainult selle mängu täidetud väljad. Ülejäänud lokaalseid tulemusi ei saadeta.
+
+Serverifunktsioon asub failis `api/peak-reflection.js` ja kasutab OpenAI Responses API-t mudeliga `gpt-6-sol`. API-võti jääb serverisse. Vercelis peab olema määratud keskkonnamuutuja `OPENAI_API_KEY`; päris võtit ei tohi Git-repositooriumisse lisada.
 
 ## Checks
 
