@@ -6,36 +6,351 @@
 <title>TUBE — arhitekti loodud kodu</title>
 <meta name="description" content="Vali läbiproovitud TUBE maja. Kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.">
 <style>
-:root{--paper:#f1efe9;--ink:#171716;--muted:#706d66;--line:#c9c5bc;--soft:#e4e1da;--white:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.wrap{max-width:1440px;margin:auto;padding:0 clamp(22px,4.2vw,72px)}.display{font-family:"Arial Narrow","Avenir Next Condensed",Arial,sans-serif;font-weight:300;letter-spacing:-.04em;line-height:.94}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.btn{display:inline-flex;align-items:center;justify-content:center;gap:24px;border:1px solid var(--ink);background:var(--ink);color:#fff;padding:17px 22px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.btn.light{background:#fff;color:var(--ink);border-color:#fff}.hero{min-height:100svh;position:relative;color:#fff;overflow:hidden;background:#222}.hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.68),rgba(0,0,0,.12) 70%)}.hero-inner{position:relative;z-index:1;min-height:100svh;display:flex;flex-direction:column}.nav{height:84px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff55}.logo{font-size:30px}.navlinks{display:flex;gap:25px;font-size:11px;text-transform:uppercase}.hero-copy{margin-top:auto;padding-bottom:8vh;max-width:930px}.hero h1{font-size:clamp(60px,7.4vw,118px);margin:14px 0 10px}.hero-lead{font-size:clamp(30px,3vw,50px);margin-bottom:22px}.hero p{max-width:680px;font-size:18px;line-height:1.55}.section{padding:clamp(90px,10vw,160px) 0}.section-head{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:50px}.section-head h2,.models h2,.offer h2,.final h2{font-size:clamp(54px,6vw,94px);margin:10px 0}.section-head p{font-size:19px;line-height:1.55}.proof{display:grid;grid-template-columns:1.35fr .8fr .8fr;grid-template-rows:320px 250px;gap:14px}.shot{position:relative;overflow:hidden;background:#ccc}.shot.big{grid-row:1/3}.shot img,.story-image img,.model img{width:100%;height:100%;object-fit:cover;display:block}.caption{position:absolute;left:16px;bottom:14px;color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 8px #000}.story{background:var(--ink);color:#fff}.story-top{display:grid;grid-template-columns:.9fr 1.1fr;gap:7vw;align-items:end}.story h2{font-size:clamp(58px,6vw,94px);margin:10px 0}.story p{font-size:19px;line-height:1.55;color:#d7d4cd}.story-image{height:min(560px,54vw);margin-top:45px;overflow:hidden}.video{aspect-ratio:16/9;margin-top:18px}.video iframe{width:100%;height:100%;border:0}.video-label{display:flex;justify-content:space-between;gap:30px;margin-top:14px;color:#ccc}.position h2{font-size:clamp(54px,6vw,94px);margin:10px 0 45px}.spectrum{display:grid;grid-template-columns:1fr 1.15fr 1fr;border:1px solid var(--line)}.spectrum>div{padding:30px;min-height:210px;border-right:1px solid var(--line)}.spectrum>div:last-child{border:0}.spectrum .mid{background:var(--ink);color:#fff}.spectrum h3{font-size:36px;margin:0 0 32px}.spectrum p{line-height:1.55;color:var(--muted)}.spectrum .mid p{color:#ddd}.models{background:var(--soft)}.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.model{background:#fff;cursor:pointer;border:1px solid transparent;transition:border-color .2s,transform .2s}.model:hover{border-color:#888;transform:translateY(-2px)}.model>img{height:480px}.model-info{padding:24px 26px 28px}.model-info b{font:300 42px "Arial Narrow",Arial}.model-info small{display:block;margin-top:16px;text-transform:uppercase;letter-spacing:.12em;font-weight:700}.model-info div{font-size:23px;margin-top:8px}.sizes-note{margin-top:45px;border-top:1px solid #bbb;padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:30px}.sizes-note strong{font-size:30px;font-weight:300}.sizes-note p{margin:0;line-height:1.55;color:var(--muted)}.process-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.step{padding:28px;border-right:1px solid var(--line)}.step:last-child{border:0}.step span{font-size:11px;font-weight:700;letter-spacing:.12em}.step h3{font-size:30px;font-weight:300;margin:22px 0 14px}.step p{line-height:1.55;color:var(--muted)}.offer{background:#cbc8bf}.offer-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:8vw;align-items:start}.offer-intro p{font-size:19px;line-height:1.6}.promise{padding:20px 0;border-top:1px solid #9f9b93;border-bottom:1px solid #9f9b93;margin-top:28px}.form-card{background:#fff;padding:clamp(25px,4vw,48px)}.form-card h3{font-size:38px;font-weight:300;margin:0 0 10px}.form-card>p{color:var(--muted);line-height:1.5;margin:0 0 30px}.field{margin-bottom:18px}.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.field input,.field select{width:100%;border:1px solid #aaa;background:#fff;padding:15px 14px;border-radius:0}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.choice{border:1px solid #aaa;padding:15px 10px;text-align:center;cursor:pointer;background:#fff}.choice.active{background:var(--ink);color:#fff;border-color:var(--ink)}.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#555;margin:20px 0}.status{display:none;margin-top:20px;padding:18px;border:1px solid #8d8a84;background:#f4f2ed;line-height:1.5}.status.show{display:block}.final{text-align:center}.final p{font-size:20px}.final h2{font-size:clamp(58px,7vw,100px)}@media(max-width:850px){.navlinks{display:none}.hero h1{font-size:50px}.hero-lead{font-size:30px}.section-head,.story-top,.offer-grid,.sizes-note{grid-template-columns:1fr}.proof{grid-template-columns:1fr 1fr;grid-template-rows:auto}.shot{height:42vw;min-height:230px}.shot.big{grid-row:auto;grid-column:1/3;height:65vw}.model-grid{grid-template-columns:1fr}.model>img{height:62vw;min-height:350px}.spectrum,.process-grid{grid-template-columns:1fr}.spectrum>div,.step{border-right:0;border-bottom:1px solid var(--line)}.choice-row,.two{grid-template-columns:1fr}.video-label{display:block}.video-label span{display:block;margin-top:8px}.section{padding:90px 0}}
+:root{
+  --paper:#f1efe9;--ink:#171716;--muted:#706d66;--line:#c9c5bc;
+  --soft:#e4e1da;--white:#fff;--warm:#cbc8bf
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{border-radius:0}
+.wrap{max-width:1440px;margin:auto;padding:0 clamp(22px,4.2vw,72px)}
+.display{font-family:"Arial Narrow","Avenir Next Condensed",Arial,sans-serif;font-weight:300;letter-spacing:-.04em;line-height:.94}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:24px;border:1px solid var(--ink);background:var(--ink);color:#fff;padding:17px 22px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.btn.light{background:#fff;color:var(--ink);border-color:#fff}
+.response-note{display:inline-block;margin-left:18px;font-size:13px}
+.hero{min-height:100svh;position:relative;color:#fff;overflow:hidden;background:#2b2b28}
+.hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.68),rgba(0,0,0,.12) 72%)}
+.hero-inner{position:relative;z-index:1;min-height:100svh;display:flex;flex-direction:column}
+.nav{height:84px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff55}
+.logo{font-size:30px}
+.navlinks{display:flex;gap:25px;font-size:11px;text-transform:uppercase}
+.hero-copy{margin-top:auto;padding-bottom:8vh;max-width:930px}
+.hero h1{font-size:clamp(60px,7.4vw,118px);margin:14px 0 10px}
+.hero-lead{font-size:clamp(30px,3vw,50px);margin-bottom:22px}
+.hero p{max-width:680px;font-size:18px;line-height:1.55}
+.section{padding:clamp(90px,10vw,160px) 0}
+.section-head{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:50px}
+.section-head h2,.models h2,.offer h2,.final h2{font-size:clamp(54px,6vw,94px);margin:10px 0}
+.section-head p{font-size:19px;line-height:1.55}
+.proof{display:grid;grid-template-columns:1.35fr .8fr .8fr;grid-template-rows:320px 250px;gap:14px}
+.shot{position:relative;overflow:hidden;background:#d1cec6}
+.shot.big{grid-row:1/3}
+.shot img,.story-image img,.model img{width:100%;height:100%;object-fit:cover;display:block}
+.caption{position:absolute;left:16px;bottom:14px;color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 8px #000}
+.story{background:var(--ink);color:#fff}
+.story-top{display:grid;grid-template-columns:.9fr 1.1fr;gap:7vw;align-items:end}
+.story h2{font-size:clamp(58px,6vw,94px);margin:10px 0}
+.story p{font-size:19px;line-height:1.55;color:#d7d4cd}
+.story-image{height:min(560px,54vw);margin-top:45px;overflow:hidden}
+.video{aspect-ratio:16/9;margin-top:18px}
+.video iframe{width:100%;height:100%;border:0}
+.video-label{display:flex;justify-content:space-between;gap:30px;margin-top:14px;color:#ccc}
+.position h2{font-size:clamp(54px,6vw,94px);margin:10px 0 45px}
+.spectrum{display:grid;grid-template-columns:1fr 1.15fr 1fr;border:1px solid var(--line)}
+.spectrum>div{padding:30px;min-height:210px;border-right:1px solid var(--line)}
+.spectrum>div:last-child{border:0}
+.spectrum .mid{background:var(--ink);color:#fff}
+.spectrum h3{font-size:36px;margin:0 0 32px}
+.spectrum p{line-height:1.55;color:var(--muted)}
+.spectrum .mid p{color:#ddd}
+.models{background:var(--soft)}
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.model{background:#fff;cursor:pointer;border:1px solid transparent;transition:border-color .2s,transform .2s}
+.model:hover,.model.selected{border-color:#6d6962;transform:translateY(-2px)}
+.model>img{height:440px}
+.model-info{padding:24px 26px 28px}
+.model-info b{font:300 42px "Arial Narrow",Arial}
+.model-info small{display:block;margin-top:16px;text-transform:uppercase;letter-spacing:.12em;font-weight:700}
+.model-info div{font-size:23px;margin-top:8px}
+.sizes-note{margin-top:45px;border-top:1px solid #bbb;padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.sizes-note strong{font-size:30px;font-weight:300}
+.sizes-note p{margin:0;line-height:1.55;color:var(--muted)}
+.process-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.step{padding:28px;border-right:1px solid var(--line)}
+.step:last-child{border:0}
+.step span{font-size:11px;font-weight:700;letter-spacing:.12em}
+.step h3{font-size:30px;font-weight:300;margin:22px 0 14px}
+.step p{line-height:1.55;color:var(--muted)}
+.offer{background:var(--warm)}
+.offer-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:8vw;align-items:start}
+.offer-intro p{font-size:19px;line-height:1.6}
+.promise{padding:20px 0;border-top:1px solid #9f9b93;border-bottom:1px solid #9f9b93;margin-top:28px;font-size:18px}
+.form-card{background:#fff;padding:clamp(25px,4vw,48px)}
+.form-card h3{font-size:38px;font-weight:300;margin:0 0 10px}
+.form-card>p{color:var(--muted);line-height:1.5;margin:0 0 30px}
+.field{margin-bottom:18px}
+.field label,.group-label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.field input,.field select,.field textarea{width:100%;border:1px solid #aaa;background:#fff;padding:15px 14px;border-radius:0}
+.field textarea{min-height:125px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.choice{border:1px solid #aaa;padding:16px 12px;text-align:center;cursor:pointer;background:#fff}
+.choice.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.choice span{display:block;font-size:12px;color:inherit;margin-top:3px}
+.conditional.hidden{display:none}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#555;margin:20px 0}
+.status{display:none;margin-top:20px;padding:18px;border:1px solid #8d8a84;background:#f4f2ed;line-height:1.5}
+.status.show{display:block}
+.final{text-align:center}
+.final p{font-size:20px}
+.final h2{font-size:clamp(58px,7vw,100px)}
+@media(max-width:850px){
+  .navlinks{display:none}
+  .hero h1{font-size:50px}
+  .hero-lead{font-size:30px}
+  .response-note{display:block;margin:15px 0 0}
+  .section-head,.story-top,.offer-grid,.sizes-note{grid-template-columns:1fr}
+  .proof{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .shot{height:42vw;min-height:230px}
+  .shot.big{grid-row:auto;grid-column:1/3;height:65vw}
+  .model-grid{grid-template-columns:1fr}
+  .model>img{height:62vw;min-height:320px}
+  .spectrum,.process-grid{grid-template-columns:1fr}
+  .spectrum>div,.step{border-right:0;border-bottom:1px solid var(--line)}
+  .choice-row,.two{grid-template-columns:1fr}
+  .video-label{display:block}
+  .video-label span{display:block;margin-top:8px}
+  .section{padding:90px 0}
+}
 </style>
 </head>
 <body>
+
 <section class="hero">
-<img class="hero-media" src="https://www.dropbox.com/scl/fi/93dpi5gufmhbpgkndcg0h/IMG_2472.JPG?rlkey=nclpe7e33xcrnvpx38vnyt1kq&raw=1" alt="Nõmme TUBE maja aiavaade" fetchpriority="high" referrerpolicy="no-referrer">
-<div class="wrap hero-inner">
-<header class="nav"><div class="logo display">TUBE</div><nav class="navlinks"><a href="#built">Valminud majad</a><a href="#models">Majad</a><a href="#process">Kuidas töötab</a><a href="#offer">Pakkumine</a></nav><a class="eyebrow" href="#offer">Küsi pakkumist →</a></header>
-<div class="hero-copy"><div class="eyebrow">TUBE by Projektbüroo Sport</div><h1 class="display">Hubane ja valgusküllane<br>oma kodu.</h1><div class="hero-lead display">Ilma nullist alustamata.</div><p>Vali läbiproovitud TUBE maja. Meie kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.</p><a class="btn light" href="#offer">Küsi automaatpakkumist →</a></div>
-</div></section>
-<section class="section" id="built"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Valminud TUBE majad</div><h2 class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2></div><p>TUBE ei ole ainult arhitektuurne idee. Need majad on Eestis päriselt valmis ehitatud erinevatele kruntidele ja erinevate perede jaoks.</p></div><div class="proof">
-<div class="shot big"><img src="https://www.dropbox.com/scl/fi/prka3cfn9jsjxxlth06db/IMG_0949-1.jpg?rlkey=ncz5e6l9tg4wfhedmptro9ee1&raw=1" alt="Nõmme TUBE" loading="lazy" referrerpolicy="no-referrer"><span class="caption">Nõmme / Tallinn</span></div>
-<div class="shot"><img src="https://www.dropbox.com/scl/fi/2vi6h3qp9k273h7vw2npv/IMG_1018-6.jpg?rlkey=z4twnchl9jn5x10g7zg3olrfz&raw=1" alt="Saku TUBE" loading="lazy" referrerpolicy="no-referrer"><span class="caption">Saku</span></div>
-<div class="shot"><img src="https://www.dropbox.com/scl/fi/q6nr5g6siib5m5r7gqo3k/IMG_2478.JPG?rlkey=p5thxj3tgq4e9goe9mj13z984&raw=1" alt="Saku TUBE" loading="lazy" referrerpolicy="no-referrer"><span class="caption">Saku</span></div>
-<div class="shot"><img src="https://www.dropbox.com/scl/fi/42mn4jwdnt7l9ngusquro/IMG_0968-16.jpg?rlkey=omdtctavq0lb8gvw3d8oovd3g&raw=1" alt="Nõmme TUBE" loading="lazy" referrerpolicy="no-referrer"><span class="caption">Nõmme</span></div>
-<div class="shot"><img src="https://www.dropbox.com/scl/fi/93dpi5gufmhbpgkndcg0h/IMG_2472.JPG?rlkey=nclpe7e33xcrnvpx38vnyt1kq&raw=1" alt="Nõmme TUBE aiavaade" loading="lazy" referrerpolicy="no-referrer"><span class="caption">Nõmme</span></div>
-</div></div></section>
-<section class="section story"><div class="wrap"><div class="story-top"><div><div class="eyebrow">Nõmme / Tallinn</div><h2 class="display">Kuidas on TUBE majas päriselt elada?</h2></div><p>Kõige parem on seda küsida inimestelt, kes on TUBE valiku juba teinud. Nõmme maja kliendilugu on videos.</p></div><div class="story-image"><img src="https://www.dropbox.com/scl/fi/l7avvi07okjwr8cxjry0l/IMG_0952-17.jpg?rlkey=9o8c6d60q0pnc3ctpk29jozbb&raw=1" alt="Nõmme TUBE maja" loading="lazy" referrerpolicy="no-referrer"></div><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/OTBnb2TdElQ?rel=0" title="Nõmme TUBE maja omanike kogemus" loading="lazy" allowfullscreen></iframe></div><div class="video-label"><strong>Nõmme TUBE maja omanike kogemus</strong><span>Kliendilugu on videos — laseme omanikel endil rääkida.</span></div></div></section>
-<section class="section position"><div class="wrap"><div class="eyebrow">Miks TUBE?</div><h2 class="display">Individuaalne kodu ei pea algama tühjalt lehelt.</h2><div class="spectrum"><div><h3 class="display">Tüüpprojekt</h3><p>Kiire lähtekoht, kuid sageli vähe ruumi sinu krundi ja pere eripäradele.</p></div><div class="mid"><h3 class="display">TUBE</h3><p>Läbiproovitud arhitektuurne lähtekoht, mida kohandame sinu perele ja sinu krundile.</p></div><div><h3 class="display">Individuaalprojekt</h3><p>Maksimaalne vabadus, kuid kõik algab nullist.</p></div></div></div></section>
-<section class="section models" id="models"><div class="wrap"><div class="eyebrow">Vali arhitektuur</div><h2 class="display">Milline TUBE maja sobib sinu perele?</h2><div class="model-grid">
-<article class="model" data-model="TUBE 01"><img src="https://www.dropbox.com/scl/fi/pr4pxwcyvmyrmdyb10sp1/8_Photo-1Q.jpg?rlkey=essrfbmzokcyzemzwczg14yc7&raw=1" alt="TUBE 01" loading="lazy" referrerpolicy="no-referrer"><div class="model-info"><b>TUBE 01</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
-<article class="model" data-model="TUBE 02"><img src="https://www.dropbox.com/scl/fi/y66wt7ttxat5t9anuefn2/1_Photo-2.jpg?rlkey=ug0yyl77h7wospxtmw9u4y8nx&raw=1" alt="TUBE 02" loading="lazy" referrerpolicy="no-referrer"><div class="model-info"><b>TUBE 02</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
-<article class="model" data-model="TUBE 03"><img src="https://www.dropbox.com/scl/fi/01dwg2xfbjp6s4ve9b5bf/1_Photo-4.jpg?rlkey=buy9r76kiv1cjiwj0pd0mb4a8&raw=1" alt="TUBE 03" loading="lazy" referrerpolicy="no-referrer"><div class="model-info"><b>TUBE 03</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
-<article class="model" data-model="TUBE 04"><img src="https://www.dropbox.com/scl/fi/d6gggstxy0kx6u7nzrd2f/1_Photo-4.jpg?rlkey=6lxsqde6x8sw1a5nsslwtn36j&raw=1" alt="TUBE 04" loading="lazy" referrerpolicy="no-referrer"><div class="model-info"><b>TUBE 04</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
-</div><div class="sizes-note"><strong class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p>Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div></div></section>
-<section class="section" id="process"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Kuidas see töötab?</div><h2 class="display">Lihtne tee ideest ehitusloani.</h2></div><p>Täida pakkumise vorm. Saadame sulle e-postile sinu asukohale vastava TUBE pakkumise ning lepime soovi korral kokku järgmise sammu.</p></div><div class="process-grid"><div class="step"><span>01</span><h3>Vali TUBE</h3><p>Vali arhitektuur, suurus ja kirjelda krunti.</p></div><div class="step"><span>02</span><h3>Saad pakkumise</h3><p>Automaatpakkumine saadetakse sinu e-postile. Hinda veebilehel ei kuvata.</p></div><div class="step"><span>03</span><h3>Räägi Tiiduga</h3><p>Vaatame üle krundi, vajadused ja sobiva projekteerimise lähtekoha.</p></div></div></div></section>
-<section class="section offer" id="offer"><div class="wrap offer-grid"><div class="offer-intro"><div class="eyebrow">Automaatpakkumine</div><h2 class="display">Küsi TUBE pakkumine e-postile.</h2><p>Täida lühike vorm. Pakkumine koostatakse sinu asukoha, valitud TUBE variandi ja suuruse põhjal ning saadetakse sinu e-postile.</p><div class="promise"><strong>Hinda sellel lehel ei näidata.</strong><br>Saad personaalse pakkumise enda e-postile.</div></div><form class="form-card" id="offerForm"><h3 class="display">Sinu TUBE lähtekoht</h3><p>Vormi täitmine võtab ligikaudu ühe minuti.</p><div class="field"><label>Asukoht</label><div class="choice-row" id="locationChoices"><button type="button" class="choice active" data-value="muu-eesti">Muu Eesti</button><button type="button" class="choice" data-value="tallinn">Tallinn</button><button type="button" class="choice" data-value="viimsi">Viimsi vald</button></div><input type="hidden" id="location" name="location" value="muu-eesti"></div><div class="two"><div class="field"><label for="model">TUBE variant</label><select id="model" name="model" required><option>TUBE 01</option><option>TUBE 02</option><option>TUBE 03</option><option>TUBE 04</option></select></div><div class="field"><label for="size">Suurus</label><select id="size" name="size" required><option>89,7 m²</option><option>109,7 m²</option><option>123,4 m²</option></select></div></div><div class="field"><label for="plot">Krundi aadress või katastritunnus</label><input id="plot" name="plot" autocomplete="street-address" placeholder="Näiteks Lepiku 3, Tartu" required></div><div class="field"><label for="name">Nimi</label><input id="name" name="name" autocomplete="name" required></div><div class="two"><div class="field"><label for="email">E-post</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="phone">Telefon</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div></div><label class="consent"><input type="checkbox" id="consent" required><span>Nõustun, et Projektbüroo Sport kasutab sisestatud andmeid pakkumise saatmiseks ja minuga ühenduse võtmiseks.</span></label><button class="btn" type="submit">Saada automaatpakkumine e-postile →</button><div class="status" id="status" role="status"></div></form></div></section>
-<section class="section final"><div class="wrap"><div class="eyebrow">TUBE by Projektbüroo Sport</div><h2 class="display">Hea maja võib alata<br>juba heast lähtekohast.</h2><p>Sul on krunt või oled seda ostmas? Küsi TUBE pakkumine e-postile.</p><a class="btn" href="#offer">Küsi pakkumist →</a></div></section>
+  <img class="hero-media" src="./tube-assets/hero.webp" alt="Nõmme TUBE maja aiavaade" fetchpriority="high">
+  <div class="wrap hero-inner">
+    <header class="nav">
+      <div class="logo display">TUBE</div>
+      <nav class="navlinks">
+        <a href="#built">Valminud majad</a>
+        <a href="#models">Majad</a>
+        <a href="#process">Kuidas töötab</a>
+        <a href="#offer">Pakkumine</a>
+      </nav>
+      <a class="eyebrow" href="#offer">Küsi pakkumist →</a>
+    </header>
+    <div class="hero-copy">
+      <div class="eyebrow">TUBE by Projektbüroo Sport</div>
+      <h1 class="display">Hubane ja valgusküllane<br>oma kodu.</h1>
+      <div class="hero-lead display">Ilma nullist alustamata.</div>
+      <p>Vali läbiproovitud TUBE maja. Meie kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.</p>
+      <a class="btn light" href="#offer">Küsi pakkumist →</a>
+      <span class="response-note">Vastame ööpäeva jooksul.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="built">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Valminud TUBE majad</div>
+        <h2 class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2>
+      </div>
+      <p>TUBE ei ole ainult arhitektuurne idee. Need majad on Eestis päriselt valmis ehitatud erinevatele kruntidele ja erinevate perede jaoks.</p>
+    </div>
+    <div class="proof">
+      <div class="shot big"><img src="./tube-assets/nomme-front.webp" alt="Nõmme TUBE maja"><span class="caption">Nõmme / Tallinn</span></div>
+      <div class="shot"><img src="./tube-assets/tube-built-2.webp" alt="Valminud TUBE maja"><span class="caption">TUBE</span></div>
+      <div class="shot"><img src="./tube-assets/tube-built-3.webp" alt="Valminud TUBE maja"><span class="caption">TUBE</span></div>
+      <div class="shot"><img src="./tube-assets/hero.webp" alt="Nõmme TUBE maja aiavaade"><span class="caption">Nõmme</span></div>
+      <div class="shot"><img src="./tube-assets/nomme-front.webp" alt="Nõmme TUBE maja eestvaade"><span class="caption">Nõmme</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section story">
+  <div class="wrap">
+    <div class="story-top">
+      <div>
+        <div class="eyebrow">Nõmme / Tallinn</div>
+        <h2 class="display">Kuidas on TUBE majas päriselt elada?</h2>
+      </div>
+      <p>Kõige parem on seda küsida inimestelt, kes on TUBE valiku juba teinud. Nõmme maja kliendilugu on videos.</p>
+    </div>
+    <div class="story-image"><img src="./tube-assets/hero.webp" alt="Nõmme TUBE maja"></div>
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/OTBnb2TdElQ?rel=0" title="Nõmme TUBE maja omanike kogemus" loading="lazy" allowfullscreen></iframe></div>
+    <div class="video-label"><strong>Nõmme TUBE maja omanike kogemus</strong><span>Kliendilugu on videos — laseme omanikel endil rääkida.</span></div>
+  </div>
+</section>
+
+<section class="section position">
+  <div class="wrap">
+    <div class="eyebrow">Miks TUBE?</div>
+    <h2 class="display">Individuaalne kodu ei pea algama tühjalt lehelt.</h2>
+    <div class="spectrum">
+      <div><h3 class="display">Tüüpprojekt</h3><p>Kiire lähtekoht, kuid sageli vähe ruumi sinu krundi ja pere eripäradele.</p></div>
+      <div class="mid"><h3 class="display">TUBE</h3><p>Läbiproovitud arhitektuurne lähtekoht, mida kohandame sinu perele ja sinu krundile.</p></div>
+      <div><h3 class="display">Individuaalprojekt</h3><p>Maksimaalne vabadus, kuid kõik algab nullist.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section models" id="models">
+  <div class="wrap">
+    <div class="eyebrow">Vali arhitektuur</div>
+    <h2 class="display">Milline TUBE maja sobib sinu perele?</h2>
+    <div class="model-grid">
+      <article class="model" data-model="TUBE 01"><img src="./tube-assets/hero.webp" alt="TUBE 01"><div class="model-info"><b>TUBE 01</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
+      <article class="model" data-model="TUBE 02"><img src="./tube-assets/tube-built-2.webp" alt="TUBE 02"><div class="model-info"><b>TUBE 02</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
+      <article class="model" data-model="TUBE 03"><img src="./tube-assets/tube-built-3.webp" alt="TUBE 03"><div class="model-info"><b>TUBE 03</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
+      <article class="model" data-model="TUBE 04"><img src="./tube-assets/nomme-front.webp" alt="TUBE 04"><div class="model-info"><b>TUBE 04</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div></div></article>
+    </div>
+    <div class="sizes-note"><strong class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p>Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div>
+  </div>
+</section>
+
+<section class="section" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Kuidas see töötab?</div><h2 class="display">Lihtne tee ideest ehitusloani.</h2></div>
+      <p>Kirjelda lühidalt oma krunti ja soove. Vaatame info üle, vajadusel täpsustame ning saadame sulle konkreetse pakkumise.</p>
+    </div>
+    <div class="process-grid">
+      <div class="step"><span>01</span><h3>Vali lähtekoht</h3><p>Vaata TUBE arhitektuure ja põhisuurusi. Täpne valik ei pea veel lõplik olema.</p></div>
+      <div class="step"><span>02</span><h3>Saada päring</h3><p>Anna meile krundi olukord, lähteandmed ja olulisemad erisoovid.</p></div>
+      <div class="step"><span>03</span><h3>Vastame ööpäeva jooksul</h3><p>Saadame konkreetse pakkumise ja lepime soovi korral kokku järgmise vestluse.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section offer" id="offer">
+  <div class="wrap offer-grid">
+    <div class="offer-intro">
+      <div class="eyebrow">Pakkumise päring</div>
+      <h2 class="display">Küsi TUBE pakkumist.</h2>
+      <p>Kirjelda lühidalt oma krunti ja soove. Vaatame info üle ning saadame sulle konkreetse pakkumise.</p>
+      <div class="promise"><strong>Vastame ööpäeva jooksul.</strong><br>Päring ei kohusta sind midagi tellima.</div>
+    </div>
+
+    <form class="form-card" id="offerForm">
+      <h3 class="display">Räägi meile oma plaanist</h3>
+      <p>Vormi täitmine võtab umbes kaks minutit.</p>
+
+      <div class="two">
+        <div class="field"><label for="name">Sinu nimi</label><input id="name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="email">E-posti aadress</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="field"><label for="phone">Telefon</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+
+      <div class="field">
+        <span class="group-label">Krundi olukord</span>
+        <div class="choice-row" id="plotChoices">
+          <button type="button" class="choice active" data-value="Krunt on olemas">Krunt on olemas<span>Saan aadressi lisada</span></button>
+          <button type="button" class="choice" data-value="Alles otsin krunti">Alles otsin krunti<span>Aadressi pole veel</span></button>
+        </div>
+        <input type="hidden" id="plotStatus" name="plotStatus" value="Krunt on olemas">
+      </div>
+
+      <div class="field conditional" id="plotAddressField">
+        <label for="plot">Krundi aadress või katastritunnus</label>
+        <input id="plot" name="plot" autocomplete="street-address" placeholder="Näiteks Lepiku 3, Tartu">
+      </div>
+
+      <div class="field">
+        <label for="planning">Kas detailplaneering või projekteerimistingimused on olemas?</label>
+        <select id="planning" name="planning" required>
+          <option value="">Vali vastus</option>
+          <option>Detailplaneering on olemas</option>
+          <option>Projekteerimistingimused on olemas</option>
+          <option>Ei ole</option>
+          <option>Ei tea</option>
+        </select>
+      </div>
+
+      <div class="two">
+        <div class="field">
+          <label for="model">Milline TUBE huvitab?</label>
+          <select id="model" name="model">
+            <option>Pole veel otsustanud</option>
+            <option>TUBE 01</option><option>TUBE 02</option><option>TUBE 03</option><option>TUBE 04</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="size">Milline suurus tundub sobiv?</label>
+          <select id="size" name="size">
+            <option>Pole veel otsustanud</option>
+            <option>89,7 m²</option><option>109,7 m²</option><option>123,4 m²</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="notes">Erisoovid või muu oluline</label>
+        <textarea id="notes" name="notes" placeholder="Näiteks saun, kabinet, suurem köök, eraldi külalistetuba või küsimus krundi kohta…"></textarea>
+      </div>
+
+      <label class="consent"><input type="checkbox" id="consent" required><span>Nõustun, et Projektbüroo Sport kasutab sisestatud andmeid pakkumise koostamiseks ja minuga ühenduse võtmiseks.</span></label>
+      <button class="btn" type="submit">Saada päring →</button>
+      <div class="status" id="status" role="status"></div>
+    </form>
+  </div>
+</section>
+
+<section class="section final">
+  <div class="wrap">
+    <div class="eyebrow">TUBE by Projektbüroo Sport</div>
+    <h2 class="display">Hea maja võib alata<br>juba heast lähtekohast.</h2>
+    <p>Kirjelda oma krunti ja soove. Vastame ööpäeva jooksul.</p>
+    <a class="btn" href="#offer">Küsi pakkumist →</a>
+  </div>
+</section>
+
 <script>
-const form=document.getElementById('offerForm');const statusBox=document.getElementById('status');document.querySelectorAll('#locationChoices .choice').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#locationChoices .choice').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('location').value=btn.dataset.value}));document.querySelectorAll('.model').forEach(card=>card.addEventListener('click',()=>{document.getElementById('model').value=card.dataset.model;document.getElementById('offer').scrollIntoView({behavior:'smooth'})}));form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const subject=encodeURIComponent('TUBE automaatpakkumise päring — '+data.get('name'));const body=encodeURIComponent('TUBE pakkumise päring\n\nNimi: '+data.get('name')+'\nE-post: '+data.get('email')+'\nTelefon: '+data.get('phone')+'\nAsukoht: '+data.get('location')+'\nTUBE variant: '+data.get('model')+'\nSuurus: '+data.get('size')+'\nKrunt: '+data.get('plot'));statusBox.classList.add('show');statusBox.innerHTML='<strong>Andmed on valmis.</strong><br>Preview-versioon avab praegu päringu saatmiseks sinu e-posti rakenduse. Automaatse pakkumise saatmine ühendatakse lõplikus versioonis e-posti teenusega.';setTimeout(()=>{window.location.href='mailto:tiit@sportsport.ee?subject='+subject+'&body='+body},350)});
+const form=document.getElementById('offerForm');
+const statusBox=document.getElementById('status');
+const plotField=document.getElementById('plotAddressField');
+const plotInput=document.getElementById('plot');
+const plotStatus=document.getElementById('plotStatus');
+
+document.querySelectorAll('#plotChoices .choice').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#plotChoices .choice').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    plotStatus.value=btn.dataset.value;
+    const searching=btn.dataset.value==='Alles otsin krunti';
+    plotField.classList.toggle('hidden',searching);
+    plotInput.required=!searching;
+    if(searching) plotInput.value='';
+  });
+});
+
+document.querySelectorAll('.model').forEach(card=>{
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.model').forEach(x=>x.classList.remove('selected'));
+    card.classList.add('selected');
+    document.getElementById('model').value=card.dataset.model;
+    document.getElementById('offer').scrollIntoView({behavior:'smooth'});
+  });
+});
+
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!form.reportValidity()) return;
+  const data=new FormData(form);
+  const plotValue=data.get('plotStatus')==='Alles otsin krunti' ? 'Alles otsin krunti' : (data.get('plot')||'—');
+  const subject=encodeURIComponent('TUBE pakkumise päring — '+data.get('name'));
+  const body=encodeURIComponent(
+    'TUBE pakkumise päring\n\n'+
+    'Nimi: '+data.get('name')+'\n'+
+    'E-post: '+data.get('email')+'\n'+
+    'Telefon: '+data.get('phone')+'\n'+
+    'Krundi olukord: '+data.get('plotStatus')+'\n'+
+    'Krundi aadress / katastritunnus: '+plotValue+'\n'+
+    'Detailplaneering / projekteerimistingimused: '+data.get('planning')+'\n'+
+    'TUBE variant: '+data.get('model')+'\n'+
+    'Suurus: '+data.get('size')+'\n'+
+    'Erisoovid: '+(data.get('notes')||'—')
+  );
+  statusBox.classList.add('show');
+  statusBox.innerHTML='<strong>Päring on valmis.</strong><br>Avame sinu e-posti rakenduse, et saaksid selle saata. Vastame ööpäeva jooksul.';
+  setTimeout(()=>{window.location.href='mailto:tiit@sportsport.ee?subject='+subject+'&body='+body},350);
+});
 </script>
 </body>
 </html>
