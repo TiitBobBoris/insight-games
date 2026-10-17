@@ -1,0 +1,51 @@
+name: Patch TUBE page image paths
+
+on:
+  push:
+    branches:
+      - tmp/tube-v5-auto-offer
+    paths:
+      - .github/workflows/tube-html-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout preview branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp/tube-v5-auto-offer
+          fetch-depth: 0
+
+      - name: Point page to full local image files
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          s = s.replace('./tube-assets/tube-built-2.webp', './tube-assets/saku-1.webp')
+          s = s.replace('./tube-assets/tube-built-3.webp', './tube-assets/saku-2.webp')
+          s = s.replace('<div class="story-image"><img src="./tube-assets/hero.webp" alt="Nõmme TUBE maja"></div>', '<div class="story-image"><img src="./tube-assets/nomme-story.webp" alt="Nõmme TUBE maja"></div>')
+          s = s.replace('<article class="model" data-model="TUBE 01"><img src="./tube-assets/hero.webp" alt="TUBE 01">', '<article class="model" data-model="TUBE 01"><img src="./tube-assets/model-1.webp" alt="TUBE 01">')
+          s = s.replace('<article class="model" data-model="TUBE 02"><img src="./tube-assets/saku-1.webp" alt="TUBE 02">', '<article class="model" data-model="TUBE 02"><img src="./tube-assets/model-2.webp" alt="TUBE 02">')
+          s = s.replace('<article class="model" data-model="TUBE 03"><img src="./tube-assets/saku-2.webp" alt="TUBE 03">', '<article class="model" data-model="TUBE 03"><img src="./tube-assets/model-3.webp" alt="TUBE 03">')
+          s = s.replace('<article class="model" data-model="TUBE 04"><img src="./tube-assets/nomme-front.webp" alt="TUBE 04">', '<article class="model" data-model="TUBE 04"><img src="./tube-assets/model-4.webp" alt="TUBE 04">')
+          s = s.replace('<div class="shot"><img src="./tube-assets/nomme-front.webp" alt="Nõmme TUBE maja eestvaade"><span class="caption">Nõmme</span></div>', '<div class="shot"><img src="./tube-assets/nomme-2.webp" alt="Nõmme TUBE maja"><span class="caption">Nõmme</span></div>')
+          p.write_text(s)
+          PY
+          grep -q 'model-4.webp' index.html
+          grep -q 'nomme-story.webp' index.html
+
+      - name: Commit page patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'fix: use full local TUBE assets [skip ci]'
+          git push origin HEAD:tmp/tube-v5-auto-offer
