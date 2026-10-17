@@ -1,0 +1,69 @@
+name: Import full TUBE images
+
+on:
+  push:
+    branches:
+      - tmp/tube-v5-auto-offer
+    paths:
+      - .github/workflows/tube-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout preview branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp/tube-v5-auto-offer
+          fetch-depth: 0
+
+      - name: Download source images from Dropbox
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf tube-assets-src
+          mkdir -p tube-assets-src tube-assets
+          curl -L --fail --retry 3 'https://uc36924f10e823c7e3fc24a89002.dl.dropboxusercontent.com/cd/0/get/DKL133IV3za1BGItvzlMSr9eTwlG4iZ1PleenUG40h7hsYxa0CZt2Sp3ST6IbIfAOKhq0RJwLZddMqTJj0KSkoTRSgqK_nr1qfCE-NtUe9Pa1ysJiHsZ2jTnMdWlSqJjd0KacSfnWWTYpyu_Fk7w3j61dK7JuYVjgBQkBmI6sVwwfA/file?c_luid=0bf567ce' -o tube-assets-src/hero.jpg
+          curl -L --fail --retry 3 'https://uca45015318ccdc896dbfd8ab17d.dl.dropboxusercontent.com/cd/0/get/DKJwzJLs_JQ7Hn32-aWb0DdNXX-K6OtSPSQIPtEZesSIln1tfTObOz1yuQufhtSquYL8_CEFhvuOEpRl-m15qFuanzP__j61qLVDNwDtj0RUIRiYrbUO4D5zkXScPuNBuEng1TpdzYNgMVf7bayZ5eOp1F9UifL4BjMrdY3qZ86cug/file?c_luid=0bf567ce' -o tube-assets-src/nomme-front.jpg
+          curl -L --fail --retry 3 'https://uc695eac9449acbe34fe383b213d.dl.dropboxusercontent.com/cd/0/get/DKI92uSIhtLiJEtI2vi0vT3Wnlc55cmvonvvsuMk1Al_PETb11Iq3CgyF00q9xCR74u_QHihX5opYPnJqJs9t4ZFnajS6WRRiKRe6_B5bBdOppOZjQXIqSi6n5t8Ie8jeyvPM5-WpcF4Bcuj9Rj50M_SixNNJqCzwD5JVr9S9VhmVA/file?c_luid=0bf567ce' -o tube-assets-src/nomme-2.jpg
+          curl -L --fail --retry 3 'https://uca52aabfacf725020c87fb11520.dl.dropboxusercontent.com/cd/0/get/DKLRg_LFFps6NH0jo6sveuFRIXGvWhcLV46ANHxEEWKU0ssB_3nKBiEpZy17AojD1LjBmKGCcw2Z4yQfjagTXlTTwgqcvXCJdkvediYx3NDnPBTQbotvxJhCFli_D4j2l-255WYjY7R8o0rF4i5ZbfgB9tjD2tUKJ_43-6N-kSRCow/file?c_luid=0bf567ce' -o tube-assets-src/nomme-story.jpg
+          curl -L --fail --retry 3 'https://uc93a3f8f61115ca92a3b3086782.dl.dropboxusercontent.com/cd/0/get/DKJbDOGcXyBOudH7VjjLFjZjGXpFwnWbbsIvFi1u6qZ2oj8dpPE9p86qPITbyEDo4Q41PUE0HrDv-JwOUmZu4x2j2y_zBIksWaDoxMgA3iDI3m6Eo9AFhObWOBQ3W1Q5HkCOVbNM6zsQRvfH4WRTgOrafhehX-bY7sVomU4fTTaw9w/file?c_luid=0bf567ce' -o tube-assets-src/saku-1.jpg
+          curl -L --fail --retry 3 'https://uce0696872bbf4ef95ee7411eab8.dl.dropboxusercontent.com/cd/0/get/DKKtWdRjoaRmqZDT_3V4G2Lqd5caEYPQjVICYOttF-9Q_D5_wqeIqv7fefTElUoLpr3n9JSds8oZlAduk7_I1SCLDKe0t0chrf28ZDYP6ADv6c7XsbxTqjYYnch3yw7_hkL7q6Qe3Hz2nliMQCBgCMSdeYjSYYBeRVqjq49Y0uLzrw/file?c_luid=0bf567ce' -o tube-assets-src/saku-2.jpg
+          curl -L --fail --retry 3 'https://uc33d517669b0098fcc712090078.dl.dropboxusercontent.com/cd/0/get/DKIv7KIxengCZX2f1q30vUtUH7ZINqckHu6i2lmTuX9lisw3w68o-2RoToYfmE1PTm7h6PxOf9UhuW569Xnb7U62nc7Zm5kwmQIbDjCAyW4GcGswqVxKDtYc4GPBbHNPHWHv6d4ShN2l-VUzq5jWXoLjepgrgDU-CCMA3St65dOYrQ/file?c_luid=0bf567ce' -o tube-assets-src/model-1.jpg
+          curl -L --fail --retry 3 'https://ucddbd2e2380409d1ffcd4c094bb.dl.dropboxusercontent.com/cd/0/get/DKKpEQq7ouc5KHEOZgMl-9uyxBQdyjJAB2wcZwk3Q7rqh_c-wjYvVsSb699LcWElbmObXLXUMI735Pvf4d6tm2vC2CM7RQhDSLBUhT7O0LSsq8IGbuQsnxIOE39qofBVWSgrHp-IyR4IAATW1x2tpoLyUIri8EmvLZDhgtCW6wAqrA/file?c_luid=0bf567ce' -o tube-assets-src/model-2.jpg
+          curl -L --fail --retry 3 'https://ucc83b305f7bdebcb47a2871af0c.dl.dropboxusercontent.com/cd/0/get/DKJjPV4CTTmKtBP12hSwU5N9FQ15ZI96pqcgdYkbjhwCx8UDbN1NINukwA9fL5iMs41B7dWLG8qOZzPn58EXHZnujUQmSsijCtnNyunbXvdojGR_AvGnJMI2xbzTvxawuogsvosgV21N95MoUr2XOuygM3IRIlveTe-PrwEt34Ltjg/file?c_luid=0bf567ce' -o tube-assets-src/model-3.jpg
+          curl -L --fail --retry 3 'https://uc7b432ed782f408b4b37d48feb5.dl.dropboxusercontent.com/cd/0/get/DKJTJt4dZV64ylBI_gJ__nIT5tDWj2w971j27Qu4Xbv6IwaZtI0jm4gcuOhLxs4Fz8C4niO6BXfbJsedVFaSjALxelWTv_UKauVEnR8ckIN04L9yQnO-e1zLUD4ucpvgvE2QQsJkhxUhSrDnA0jrCCSGx4s4w_oUQDZn-krnQQ6H-A/file?c_luid=0bf567ce' -o tube-assets-src/model-4.jpg
+          ls -lh tube-assets-src
+
+      - name: Optimise images for web
+        shell: bash
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          src = Path('tube-assets-src')
+          dst = Path('tube-assets')
+          dst.mkdir(exist_ok=True)
+          for path in sorted(src.glob('*.jpg')):
+              with Image.open(path) as im:
+                  im = ImageOps.exif_transpose(im).convert('RGB')
+                  im.thumbnail((2400, 1800), Image.Resampling.LANCZOS)
+                  target = dst / f'{path.stem}.webp'
+                  im.save(target, 'WEBP', quality=86, method=6)
+                  print(target, target.stat().st_size)
+          PY
+
+      - name: Commit full local images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tube-assets
+          git commit -m 'fix: add full locally hosted TUBE images [skip ci]'
+          git push origin HEAD:tmp/tube-v5-auto-offer
