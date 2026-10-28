@@ -1,0 +1,60 @@
+name: Import TUBE photo library
+on:
+  push:
+    branches: [tmp/tube-v5-auto-offer]
+    paths:
+      - .github/workflows/tube-import-photos.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp/tube-v5-auto-offer
+          persist-credentials: true
+      - run: python -m pip install pillow requests
+      - name: Download and optimize approved photo library
+        run: |
+          python - <<'PY'
+          import json, re, pathlib, requests, io, os, time
+          from PIL import Image, ImageOps
+          text=pathlib.Path('index.html').read_text(encoding='utf-8')
+          match=re.search(r'const photoLibrary=(\[.*?\]);',text,re.S)
+          if not match: raise RuntimeError('Photo library missing in editor')
+          photos=json.loads(match.group(1))
+          root=pathlib.Path('tube-assets/photo-library')
+          root.mkdir(parents=True,exist_ok=True)
+          manifest=[]
+          failures=[]
+          for i,p in enumerate(photos):
+            link=p['share']
+            if not link.startswith('https://www.dropbox.com/scl/fi/'): raise RuntimeError('Unexpected source URL')
+            link=link.replace('dl=0','raw=1')
+            try:
+              resp=requests.get(link,timeout=75)
+              resp.raise_for_status()
+              im=Image.open(io.BytesIO(resp.content))
+              im=ImageOps.exif_transpose(im).convert('RGB')
+              im.thumbnail((1800,1800),Image.Resampling.LANCZOS)
+              group=re.sub(r'[^a-z0-9]+','-',p['group'].lower()).strip('-')
+              name=f'{group}-{i+1:03}.webp'
+              im.save(root/name,'WEBP',quality=82,method=5)
+              manifest.append({'group':p['group'],'name':p['name'],'src':'./tube-assets/photo-library/'+name,'width':im.width,'height':im.height})
+              print('OK',i+1,p['group'],p['name'],im.size,flush=True)
+            except Exception as e:
+              failures.append((i,p['name'],str(e)))
+              print('FAILED',i+1,p['name'],str(e),flush=True)
+          if failures: raise RuntimeError(f'{len(failures)} photos failed: {failures[:5]}')
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          print('IMPORTED',len(manifest))
+          PY
+      - name: Commit optimized photos
+        run: |
+          git config user.name "TUBE asset importer"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tube-assets/photo-library/
+          git commit -m "assets: persist 45 optimized TUBE photographs in repository"
+          git push origin HEAD:tmp/tube-v5-auto-offer
