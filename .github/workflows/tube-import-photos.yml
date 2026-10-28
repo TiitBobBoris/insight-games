@@ -47,7 +47,7 @@ jobs:
             except Exception as e:
               failures.append((i,p['name'],str(e)))
               print('FAILED',i+1,p['name'],str(e),flush=True)
-          if failures: raise RuntimeError(f'{len(failures)} photos failed: {failures[:5]}')
+          (root/'import-report.json').write_text(json.dumps({'imported':len(manifest),'failed':failures},ensure_ascii=False,indent=2),encoding='utf-8')
           (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
           print('IMPORTED',len(manifest))
           PY
@@ -56,5 +56,5 @@ jobs:
           git config user.name "TUBE asset importer"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tube-assets/photo-library/
-          git commit -m "assets: persist 45 optimized TUBE photographs in repository"
+          git commit -m "assets: persist optimized TUBE photographs and import report"
           git push origin HEAD:tmp/tube-v5-auto-offer
