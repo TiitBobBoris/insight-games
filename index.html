@@ -480,5 +480,49 @@ function renderGallery(){
 }
 groupSelect.onchange=renderGallery;btn.onclick=()=>{gallery.classList.toggle('open');if(gallery.classList.contains('open'))renderGallery()};
 })();
+</script><style>
+#tubeEditor .te-gallery{border:1px solid #d1cdc5;padding:10px;margin:12px 0;background:#f1eee8}
+#tubeEditor .te-gallery.open{display:block}
+#tubeEditor .te-gallery-grid{max-height:40dvh}
+#tubeEditor #tePhotoBank{background:#d7ebdc;color:#143923;border-color:#729a7d;font-weight:700}
+@media(max-width:800px){#tubeEditor.te-expanded{height:78dvh;max-height:82dvh}#tubeEditor .te-gallery-grid{max-height:35dvh}}
+</style>
+<script>
+(function(){
+const panel=document.getElementById('tubeEditor');if(!panel)return;
+const gallery=panel.querySelector('#teGallery');if(!gallery)return;
+const body=panel.querySelector('.te-body'),quick=panel.querySelector('.te-quick');
+body.insertBefore(gallery,body.querySelector('#teSelected'));
+const b=document.createElement('button');b.id='tePhotoBank';b.type='button';b.textContent='Fotopank (45)';
+quick.prepend(b);
+b.onclick=()=>{panel.classList.add('te-expanded');gallery.classList.toggle('open');if(gallery.classList.contains('open')){const select=gallery.querySelector('#teGalleryGroup');select.dispatchEvent(new Event('change'))}};
+fetch('./tube-assets/photo-library/manifest.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Assets not imported yet');return r.json()}).then(list=>{
+ const scripts=[...document.scripts];const source=scripts.find(x=>x.textContent.includes('const photoLibrary='));
+ if(!source)return;
+ // A permanent local catalog is preferred over expiring Dropbox thumbnails.
+ const original=source.textContent;
+ const newRecords=list.map(p=>({group:p.group,name:p.name,thumb:p.src,share:p.src,open:p.src}));
+ // The library renderer reads its lexical photoLibrary; update via a dedicated event.
+ window.tubeLocalPhotoLibrary=newRecords;
+ b.textContent='Fotopank ('+list.length+')';
+ const grid=gallery.querySelector('#teGalleryGrid');
+ function renderLocal(){
+   grid.replaceChildren();
+   const chosen=gallery.querySelector('#teGalleryGroup').value;
+   newRecords.filter(p=>chosen==='all'||p.group===chosen).forEach(photo=>{
+     const card=document.createElement('div');card.className='te-gallery-item';
+     const img=document.createElement('img');img.src=photo.thumb;img.loading='lazy';img.alt=photo.name;
+     const label=document.createElement('span');label.textContent=photo.group+' · '+photo.name;
+     const use=document.createElement('button');use.type='button';use.textContent='Kasuta pilti';use.style.width='100%';
+     use.onclick=()=>{const target=document.querySelector('.tube-current');if(!target||target.tagName!=='IMG'){alert('Vali esmalt veebilehe pilt, mida soovid asendada.');return;}target.src=photo.src||photo.share;panel.querySelector('#teImagePreview').src=target.src;const id=target.dataset.tubeEditId;const key='tube-editor-draft-v1';try{const d=JSON.parse(localStorage.getItem(key)||'{}');d.images??={};d.images[id]=target.src;localStorage.setItem(key,JSON.stringify(d));panel.querySelector('#teState').textContent='Püsiv veebipilt valitud. Ekspordi muudatused.'}catch(e){alert('Mustandi salvestamine ebaõnnestus')}};
+     card.append(img,label,use);grid.append(card);
+   });
+ }
+ // Capture listener overrides the temporary Dropbox catalog's existing renderer.
+ gallery.querySelector('#teGalleryGroup').addEventListener('change',e=>{e.stopImmediatePropagation();renderLocal()},true);
+ b.onclick=()=>{panel.classList.add('te-expanded');gallery.classList.toggle('open');if(gallery.classList.contains('open'))renderLocal()};
+ if(gallery.classList.contains('open'))renderLocal();
+}).catch(()=>{b.title='Fotod on Dropboxi eelvaadetena; püsivate failide import käib.'});
+})();
 </script></body>
 </html>
