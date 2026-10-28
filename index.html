@@ -151,6 +151,13 @@ body.tube-editing{padding-bottom:44vh}
 #tubeEditor .te-gallery-item span{font-size:10px;display:block;overflow-wrap:anywhere;margin:5px 0}
 #tubeEditor .te-gallery-item a{font-size:10px;display:inline-block;color:#165e9b;text-decoration:underline}
 #tubeEditor .te-gallery-help{font-size:11px;color:#555;line-height:1.45}
+</style><style>
+/* Allow tapping the hero background image in visual editing mode, without blocking hero text editing. */
+body.tube-editing .hero:after{pointer-events:none}
+body.tube-editing .hero-inner{pointer-events:none}
+body.tube-editing .hero-inner .tube-editable{pointer-events:auto}
+body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
+#tubeEditor #teHeroImage{background:#e5efe5;color:#173d25;border-color:#95b49a;font-weight:700}
 </style></head>
 <body>
 
@@ -432,6 +439,7 @@ const panel=document.createElement('aside');panel.id='tubeEditor';panel.innerHTM
 '<div id="teState" class="te-help"></div></div>'+
 '<div class="te-footer"><button id="teExport" class="te-primary">Ekspordi muudatused</button><button id="teImport">Impordi JSON</button><input id="teImportFile" type="file" accept=".json,application/json" hidden><button id="teExit">Sulge</button></div>';
 document.body.append(panel);
+const heroButton=document.createElement('button');heroButton.type='button';heroButton.id='teHeroImage';heroButton.textContent='Muuda suurt esipilti';panel.querySelector('.te-quick').prepend(heroButton);heroButton.onclick=()=>{choose('hero-image');panel.classList.add('te-expanded');const g=panel.querySelector('#teGallery');if(g){g.classList.add('open');panel.querySelector('#teGalleryGroup')?.dispatchEvent(new Event('change'))}};
 
 function picker(type){
  const holder=document.getElementById('tePicker');holder.replaceChildren();
