@@ -118,7 +118,12 @@ button{border-radius:0}
   .section{padding:90px 0}
 }
 </style>
-<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-frame{background:#fff;margin-top:8px;padding:10px}.tube-plan-frame iframe{width:100%;height:min(70vh,660px);border:0;background:#fff}.tube-plan-frame p{font-size:12px;color:#706d66;margin:10px}</style></head>
+<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-frame{background:#fff;margin-top:8px;padding:10px}.tube-plan-frame iframe{width:100%;height:min(70vh,660px);border:0;background:#fff}.tube-plan-frame p{font-size:12px;color:#706d66;margin:10px}</style><style>
+body.tube-editing{padding-right:360px}body.tube-editing .tube-editable{outline:1px dashed rgba(24,111,164,.45);outline-offset:3px;cursor:crosshair!important}body.tube-editing .tube-editable:hover{outline:3px solid #1e8ab4}body.tube-editing .tube-editable.tube-current{outline:3px solid #f59e0b!important;outline-offset:3px}
+#tubeEditor{position:fixed;z-index:999999;right:0;top:0;bottom:0;width:360px;background:#f8f7f3;color:#1e1e1e;box-shadow:-5px 0 28px #0003;font:14px/1.4 Arial,sans-serif;display:flex;flex-direction:column}
+#tubeEditor *{box-sizing:border-box}#tubeEditor .te-header{padding:18px 18px 13px;background:#191919;color:white}#tubeEditor h2{font:600 18px Arial;margin:0 0 6px}#tubeEditor .te-body{padding:17px;overflow-y:auto;flex:1}#tubeEditor .te-label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin:15px 0 7px}#tubeEditor textarea,#tubeEditor input[type=text]{width:100%;border:1px solid #aaa;padding:10px;font:14px Arial;background:white}#tubeEditor textarea{min-height:125px;resize:vertical}#tubeEditor button,#tubeEditor .te-file{padding:10px 12px;border:1px solid #777;background:white;cursor:pointer;font:12px Arial}#tubeEditor .te-primary{background:#171716;color:white}#tubeEditor .te-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}#tubeEditor .te-help{font-size:12px;color:#666;line-height:1.55}#tubeEditor .te-note{padding:9px;background:#eeece6;margin:7px 0;white-space:pre-wrap;font-size:12px}#tubeEditor .te-note button{float:right;padding:0 5px}#tubeEditor .te-footer{border-top:1px solid #ddd;padding:12px 17px;display:flex;gap:6px;flex-wrap:wrap}#tubeEditor #teSelected{font-weight:700;margin:12px 0 0}#tubeEditor .te-image-preview{max-width:100%;max-height:145px;object-fit:contain;margin-top:8px}
+@media(max-width:800px){body.tube-editing{padding-right:0;padding-bottom:40vh}#tubeEditor{width:100%;top:auto;height:40vh;border-top:3px solid #171716}#tubeEditor .te-header{padding:10px 15px}#tubeEditor .te-body{padding:10px 15px}#tubeEditor .te-footer{padding:8px 15px}}
+</style></head>
 <body>
 
 <section class="hero">
@@ -348,5 +353,54 @@ form.addEventListener('submit',e=>{
   setTimeout(()=>{window.location.href='mailto:tiit@sportsport.ee?subject='+subject+'&body='+body},350);
 });
 </script>
-</body>
+<script>
+(function(){
+const params=new URLSearchParams(location.search);if(params.get('edit')!=='1')return;
+document.body.classList.add('tube-editing');
+const storageKey='tube-editor-draft-v1';
+let draft={text:{},images:{},comments:{}};
+try{draft=Object.assign(draft,JSON.parse(localStorage.getItem(storageKey)||'{}'))}catch(e){}
+let selected=null,selectedId=null;
+const selectors=[
+['hero-title','.hero h1'],['hero-subtitle','.hero-lead'],['hero-body','.hero-copy p'],
+['built-title','#built h2'],['built-description','#built .section-head p'],
+['story-title','.story h2'],['story-description','.story-top p'],
+['position-title','.position h2'],['models-title','#models h2'],
+['sizes-title','.sizes-note strong'],['sizes-description','.sizes-note p'],
+['process-title','#process h2'],['process-description','#process .section-head p'],
+['offer-title','.offer-intro h2'],['offer-description','.offer-intro p'],
+['final-title','.final h2'],['final-description','.final p'],
+['hero-image','.hero-media'],['nomme-image','.proof .shot.big img'],['story-image','.story-image img'],
+['proof-2','.proof .shot:nth-child(2) img'],['proof-3','.proof .shot:nth-child(3) img'],['proof-4','.proof .shot:nth-child(4) img'],['proof-5','.proof .shot:nth-child(5) img'],
+['model-1-image','.model:nth-child(1)>img'],['model-2-image','.model:nth-child(2)>img'],['model-3-image','.model:nth-child(3)>img'],['model-4-image','.model:nth-child(4)>img'],
+['model-1-title','.model:nth-child(1) .model-info b'],['model-2-title','.model:nth-child(2) .model-info b'],['model-3-title','.model:nth-child(3) .model-info b'],['model-4-title','.model:nth-child(4) .model-info b']
+];
+document.querySelectorAll('.step').forEach((el,i)=>selectors.push(['process-step-'+(i+1),'.step:nth-child('+(i+1)+') p']));
+function save(){try{localStorage.setItem(storageKey,JSON.stringify(draft));document.getElementById('teState').textContent='Mustand salvestatud selles brauseris'}catch(e){document.getElementById('teState').textContent='Salvestusruum täis: ekspordi mustand JSON-failina!'}}
+const elements=new Map();
+selectors.forEach(([id,sel])=>{const el=document.querySelector(sel);if(!el)return;elements.set(id,el);el.dataset.tubeEditId=id;el.classList.add('tube-editable');if(draft.text[id]!==undefined)el.textContent=draft.text[id];if(draft.images[id]&&el.tagName==='IMG')el.src=draft.images[id];el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();choose(id)},{capture:true})});
+const panel=document.createElement('aside');panel.id='tubeEditor';panel.innerHTML=
+'<div class="te-header"><h2>TUBE / visuaalne redaktor</h2><div style="font-size:12px;color:#ddd">Klõpsa lehel tekstile või pildile.</div></div>'+
+'<div class="te-body"><div id="teSelected">Vali lehelt element</div><div id="teControls" hidden>'+
+'<label class="te-label" for="teText">Muuda teksti</label><textarea id="teText"></textarea>'+
+'<div id="teImageArea" hidden><label class="te-label" for="teImage">Asenda pilt</label><input id="teImage" type="file" accept="image/png,image/jpeg,image/webp"><img id="teImagePreview" class="te-image-preview" alt="Pildi eelvaade"><p class="te-help">Pilt vähendatakse brauseris enne mustandisse salvestamist. Algfail jääb muutmata.</p></div>'+
+'<div class="te-buttons"><button id="teApply" class="te-primary">Rakenda muudatus</button><button id="teReset">Taasta see element</button></div>'+
+'<label class="te-label" for="teComment">Kommentaar selle elemendi kohta</label><textarea id="teComment" placeholder="Näiteks: pealkiri liiga suur; foto aiapoolsemaks; muuda paigutust..."></textarea>'+
+'<button id="teAddComment" class="te-primary">Lisa kommentaar</button><div id="teComments"></div></div>'+
+'<p class="te-help">See on privaatne brauseripõhine mustand, mitte avaldatud veebimuudatus. Päris avaldamiseks ekspordi JSON ja saada see arendajale / siia vestlusse.</p>'+
+'<div id="teState" class="te-help"></div></div>'+
+'<div class="te-footer"><button id="teExport" class="te-primary">Ekspordi muudatused</button><button id="teImport">Impordi JSON</button><input id="teImportFile" type="file" accept=".json,application/json" hidden><button id="teExit">Sulge</button></div>';
+document.body.append(panel);
+function choose(id){if(selected)selected.classList.remove('tube-current');selectedId=id;selected=elements.get(id);selected.classList.add('tube-current');document.getElementById('teSelected').textContent=id.replaceAll('-',' · ');document.getElementById('teControls').hidden=false;const isImage=selected.tagName==='IMG';document.getElementById('teText').parentElement.querySelector('label[for=teText]').hidden=isImage;document.getElementById('teText').hidden=isImage;document.getElementById('teImageArea').hidden=!isImage;document.getElementById('teText').value=isImage?'':selected.textContent;document.getElementById('teImagePreview').src=isImage?selected.src:'';document.getElementById('teImage').value='';document.getElementById('teComment').value='';renderComments()}
+function renderComments(){const c=document.getElementById('teComments');c.replaceChildren();(draft.comments[selectedId]||[]).forEach((note,i)=>{const d=document.createElement('div');d.className='te-note';d.textContent=note;const b=document.createElement('button');b.textContent='×';b.title='Kustuta kommentaar';b.onclick=()=>{draft.comments[selectedId].splice(i,1);save();renderComments()};d.prepend(b);c.append(d)})}
+document.getElementById('teApply').onclick=()=>{if(!selected)return;if(selected.tagName!=='IMG'){draft.text[selectedId]=document.getElementById('teText').value;selected.textContent=draft.text[selectedId];save()}};
+document.getElementById('teReset').onclick=()=>{if(!selected)return;delete draft.text[selectedId];delete draft.images[selectedId];save();location.reload()};
+document.getElementById('teAddComment').onclick=()=>{if(!selected)return;const v=document.getElementById('teComment').value.trim();if(!v)return;(draft.comments[selectedId]??=[]).push(v);document.getElementById('teComment').value='';save();renderComments()};
+document.getElementById('teImage').onchange=async e=>{if(!selected||!e.target.files?.[0])return;const file=e.target.files[0];if(!file.type.startsWith('image/'))return;const url=URL.createObjectURL(file);try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});const ratio=Math.min(1,1600/img.width);const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.79);draft.images[selectedId]=data;selected.src=data;document.getElementById('teImagePreview').src=data;save()}catch(err){alert('Pildi avamine ebaõnnestus')}finally{URL.revokeObjectURL(url)}};
+document.getElementById('teExport').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,source:location.pathname,exportedAt:new Date().toISOString(),changes:draft},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='TUBE-kommentaarid-ja-muudatused.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+document.getElementById('teImport').onclick=()=>document.getElementById('teImportFile').click();
+document.getElementById('teImportFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.changes||!d.changes.text||!d.changes.images||!d.changes.comments)throw Error();draft=d.changes;save();location.reload()}catch(err){alert('Vigane muudatuste JSON-fail')}};
+document.getElementById('teExit').onclick=()=>{const u=new URL(location.href);u.searchParams.delete('edit');location.href=u.toString()};
+})();
+</script></body>
 </html>
