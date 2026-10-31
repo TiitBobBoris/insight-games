@@ -96,6 +96,11 @@ button{border-radius:0}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#555;margin:20px 0}
 .status{display:none;margin-top:20px;padding:18px;border:1px solid #8d8a84;background:#f4f2ed;line-height:1.5}
 .status.show{display:block}
+.status.ok{border-color:#3d6b45;background:#eef4ee}
+.status.error{border-color:#9b3b30;background:#f8ecea}
+.status-mail{text-decoration:underline;font-weight:700}
+.btn:disabled{opacity:.6;cursor:wait}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .final{text-align:center}
 .final p{font-size:20px}
 .final h2{font-size:clamp(58px,7vw,100px)}
@@ -284,6 +289,7 @@ button{border-radius:0}
         <textarea id="notes" name="notes" placeholder="Näiteks saun, kabinet, suurem köök, eraldi külalistetuba/korter või soov paiknemise osas krundil."></textarea>
       </div>
 
+      <div class="hp" aria-hidden="true"><label for="website">Veebileht</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
       <label class="consent"><input type="checkbox" id="consent" required><span>Nõustun, et Projektbüroo Sport kasutab sisestatud andmeid pakkumise koostamiseks ja minuga ühenduse võtmiseks.</span></label>
       <button data-tube-id="extra-text-59" class="btn" type="submit">Saada päring →</button>
       <div class="status" id="status" role="status"></div>
@@ -327,27 +333,53 @@ document.querySelectorAll('.model').forEach((card,i)=>{const open=()=>{selectedM
 function goToOffer(e){if(e)e.preventDefault();const t=document.getElementById('offer');t.scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#offer');setTimeout(()=>document.getElementById('name').focus({preventScroll:true}),600)}
 document.querySelectorAll('a[href="#offer"]').forEach(a=>a.addEventListener('click',goToOffer));
 document.getElementById('tubeOffer').onclick=()=>{document.getElementById('model').value='TUBE 0'+(selectedModel+1);document.getElementById('size').value=sizes[selectedSize];dialog.close();goToOffer()};
-form.addEventListener('submit',e=>{
+/* Pakkumise päring: salvestub Supabase'i tabelisse tube_offer_requests, seejärel saadab
+   funktsioon tube-offer-notify Tiidule e-kirja. Kui salvestamine ebaõnnestub, jääb varuks mailto. */
+const SB_URL='https://xlhtavzsanlikmxrddrb.supabase.co',SB_KEY='sb_publishable_qIgkHTONrtkXj1CjDUofWw_erFDQGo3';
+const submitBtn=form.querySelector('button[type=submit]');
+function offerFields(data){
+  const s=k=>String(data.get(k)||'').trim();
+  return {name:s('name'),email:s('email'),phone:s('phone'),plot_status:s('plotStatus'),
+    plot:s('plotStatus')==='Alles otsin krunti'?'':s('plot'),planning:s('planning'),model:s('model'),size:s('size'),
+    notes:s('notes'),page_url:(location.origin+location.pathname).slice(0,500)};
+}
+function offerMailto(r){
+  const body='TUBE pakkumise päring\n\n'+
+    'Nimi: '+r.name+'\nE-post: '+r.email+'\nTelefon: '+r.phone+'\n'+
+    'Krundi olukord: '+r.plot_status+'\nKrundi aadress / katastritunnus: '+(r.plot||'—')+'\n'+
+    'Detailplaneering / projekteerimistingimused: '+r.planning+'\n'+
+    'TUBE variant: '+r.model+'\nSuurus: '+r.size+'\nErisoovid: '+(r.notes||'—');
+  return 'mailto:tiit@sportsport.ee?subject='+encodeURIComponent('TUBE pakkumise päring — '+r.name)+'&body='+encodeURIComponent(body);
+}
+function showStatus(kind,html){statusBox.className='status show '+kind;statusBox.innerHTML=html;statusBox.scrollIntoView({behavior:'smooth',block:'nearest'})}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+form.addEventListener('submit',async e=>{
   e.preventDefault();
   if(!form.reportValidity()) return;
   const data=new FormData(form);
-  const plotValue=data.get('plotStatus')==='Alles otsin krunti' ? 'Alles otsin krunti' : (data.get('plot')||'—');
-  const subject=encodeURIComponent('TUBE pakkumise päring — '+data.get('name'));
-  const body=encodeURIComponent(
-    'TUBE pakkumise päring\n\n'+
-    'Nimi: '+data.get('name')+'\n'+
-    'E-post: '+data.get('email')+'\n'+
-    'Telefon: '+data.get('phone')+'\n'+
-    'Krundi olukord: '+data.get('plotStatus')+'\n'+
-    'Krundi aadress / katastritunnus: '+plotValue+'\n'+
-    'Detailplaneering / projekteerimistingimused: '+data.get('planning')+'\n'+
-    'TUBE variant: '+data.get('model')+'\n'+
-    'Suurus: '+data.get('size')+'\n'+
-    'Erisoovid: '+(data.get('notes')||'—')
-  );
-  statusBox.classList.add('show');
-  statusBox.innerHTML='<strong>Päring on valmis.</strong><br>Avame sinu e-posti rakenduse, et saaksid selle saata. Vastame ööpäeva jooksul.';
-  setTimeout(()=>{window.location.href='mailto:tiit@sportsport.ee?subject='+subject+'&body='+body},350);
+  if(data.get('website')) return; // robotilõks
+  const r=offerFields(data);
+  submitBtn.disabled=true;const label=submitBtn.textContent;submitBtn.textContent='Saadan…';
+  showStatus('sending','Saadan päringut…');
+  try{
+    const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),15000);
+    const res=await fetch(SB_URL+'/rest/v1/tube_offer_requests',{method:'POST',signal:ctrl.signal,
+      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify(r)});
+    clearTimeout(t);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    // Teavitus on eraldi samm: kui see ebaõnnestub, on päring ikkagi salvestatud ja kiri läheb järgmise päringuga.
+    fetch(SB_URL+'/functions/v1/tube-offer-notify',{method:'POST',keepalive:true,
+      headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:'{}'}).catch(()=>{});
+    form.reset();plotField.classList.remove('hidden');plotInput.required=true;
+    document.querySelectorAll('#plotChoices .choice').forEach((b,i)=>b.classList.toggle('active',i===0));
+    plotStatus.value='Krunt on olemas';
+    showStatus('ok','<strong>Aitäh, '+esc(r.name)+'! Päring jõudis meieni.</strong><br>Vastame ööpäeva jooksul aadressile '+esc(r.email)+'.');
+  }catch(err){
+    showStatus('error','<strong>Päringu saatmine ebaõnnestus.</strong><br>Sinu andmed on vormis alles. Proovi uuesti või saada päring e-postiga: <a class="status-mail" href="'+esc(offerMailto(r))+'">ava e-kiri →</a><br>Võid ka kirjutada otse aadressile tiit@sportsport.ee.');
+  }finally{
+    submitBtn.disabled=false;submitBtn.textContent=label;
+  }
 });
 </script>
 <script>
