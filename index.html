@@ -118,69 +118,29 @@ button{border-radius:0}
   .section{padding:90px 0}
 }
 </style>
-<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-frame{background:#fff;margin-top:8px;padding:10px}.tube-plan-frame iframe{width:100%;height:min(70vh,660px);border:0;background:#fff}.tube-plan-frame p{font-size:12px;color:#706d66;margin:10px}</style><style>
-body.tube-editing{padding-right:360px}body.tube-editing .tube-editable{outline:1px dashed rgba(24,111,164,.45);outline-offset:3px;cursor:crosshair!important}body.tube-editing .tube-editable:hover{outline:3px solid #1e8ab4}body.tube-editing .tube-editable.tube-current{outline:3px solid #f59e0b!important;outline-offset:3px}
-#tubeEditor{position:fixed;z-index:999999;right:0;top:0;bottom:0;width:360px;background:#f8f7f3;color:#1e1e1e;box-shadow:-5px 0 28px #0003;font:14px/1.4 Arial,sans-serif;display:flex;flex-direction:column}
-#tubeEditor *{box-sizing:border-box}#tubeEditor .te-header{padding:18px 18px 13px;background:#191919;color:white}#tubeEditor h2{font:600 18px Arial;margin:0 0 6px}#tubeEditor .te-body{padding:17px;overflow-y:auto;flex:1}#tubeEditor .te-label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin:15px 0 7px}#tubeEditor textarea,#tubeEditor input[type=text]{width:100%;border:1px solid #aaa;padding:10px;font:14px Arial;background:white}#tubeEditor textarea{min-height:125px;resize:vertical}#tubeEditor button,#tubeEditor .te-file{padding:10px 12px;border:1px solid #777;background:white;cursor:pointer;font:12px Arial}#tubeEditor .te-primary{background:#171716;color:white}#tubeEditor .te-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}#tubeEditor .te-help{font-size:12px;color:#666;line-height:1.55}#tubeEditor .te-note{padding:9px;background:#eeece6;margin:7px 0;white-space:pre-wrap;font-size:12px}#tubeEditor .te-note button{float:right;padding:0 5px}#tubeEditor .te-footer{border-top:1px solid #ddd;padding:12px 17px;display:flex;gap:6px;flex-wrap:wrap}#tubeEditor #teSelected{font-weight:700;margin:12px 0 0}#tubeEditor .te-image-preview{max-width:100%;max-height:145px;object-fit:contain;margin-top:8px}
-@media(max-width:800px){body.tube-editing{padding-right:0;padding-bottom:40vh}#tubeEditor{width:100%;top:auto;height:40vh;border-top:3px solid #171716}#tubeEditor .te-header{padding:10px 15px}#tubeEditor .te-body{padding:10px 15px}#tubeEditor .te-footer{padding:8px 15px}}
-</style><style>
-#tubeEditor .te-quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-#tubeEditor .te-quick button{background:#383838;color:#fff;border-color:#777}
-#tubeEditor .te-quick button.active{background:#e7c78a;color:#161616}
-#tubeEditor .te-picker{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
-#tubeEditor .te-picker button{font-size:12px;background:#fff;color:#171716}
-#tubeEditor .te-image-upload{display:block;background:#171716;color:#fff;text-align:center;padding:15px 10px;cursor:pointer;font-weight:700;font-size:14px;margin-top:9px}
-#tubeEditor .te-image-upload input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
-#tubeEditor .te-note{overflow-wrap:anywhere}
-@media(max-width:800px){
-body.tube-editing{padding-bottom:44vh}
-#tubeEditor{height:44dvh;min-height:260px;max-height:75dvh;transition:height .2s}
-#tubeEditor.te-expanded{height:73dvh}
-#tubeEditor .te-body{min-height:0}
-#tubeEditor textarea{min-height:85px}
-#tubeEditor .te-header{padding:10px 15px}
-#tubeEditor .te-footer{flex-shrink:0}
-}
-</style><style>
-#tubeEditor .te-gallery{display:none;border-top:1px solid #ccc;margin-top:10px;padding-top:10px}
-#tubeEditor .te-gallery.open{display:block}
-#tubeEditor .te-gallery select{width:100%;padding:10px;margin:8px 0;background:#fff;border:1px solid #bbb}
-#tubeEditor .te-gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:310px;overflow:auto}
-#tubeEditor .te-gallery-item{border:1px solid #ccc;background:white;padding:4px;cursor:pointer;text-align:left;overflow:hidden}
-#tubeEditor .te-gallery-item img{display:block;width:100%;height:95px;object-fit:cover;background:#e5e5e5}
-#tubeEditor .te-gallery-item span{font-size:10px;display:block;overflow-wrap:anywhere;margin:5px 0}
-#tubeEditor .te-gallery-item a{font-size:10px;display:inline-block;color:#165e9b;text-decoration:underline}
-#tubeEditor .te-gallery-help{font-size:11px;color:#555;line-height:1.45}
-</style><style>
-/* Allow tapping the hero background image in visual editing mode, without blocking hero text editing. */
-body.tube-editing .hero:after{pointer-events:none}
-body.tube-editing .hero-inner{pointer-events:none}
-body.tube-editing .hero-inner .tube-editable{pointer-events:auto}
-body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
-#tubeEditor #teHeroImage{background:#e5efe5;color:#173d25;border-color:#95b49a;font-weight:700}
-</style></head>
+<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-frame{background:#fff;margin-top:8px;padding:10px}.tube-plan-frame iframe{width:100%;height:min(70vh,660px);border:0;background:#fff}.tube-plan-frame p{font-size:12px;color:#706d66;margin:10px}</style></head>
 <body>
 
 <section class="hero">
-  <img class="hero-media" src="./tube-assets/hero.webp" alt="Nõmme TUBE maja aiavaade" fetchpriority="high">
+  <img data-tube-id="hero-image" class="hero-media" src="./tube-assets/photo-library/n-mme-002.webp" alt="Nõmme TUBE maja aiavaade" fetchpriority="high">
   <div class="wrap hero-inner">
     <header class="nav">
       <div class="logo display">TUBE</div>
       <nav class="navlinks">
-        <a href="#built">Valminud majad</a>
-        <a href="#models">Majad</a>
-        <a href="#process">Kuidas töötab</a>
-        <a href="#offer">Pakkumine</a>
+        <a data-tube-id="extra-text-1" href="#built">Valminud majad</a>
+        <a data-tube-id="extra-text-2" href="#models">Majad</a>
+        <a data-tube-id="extra-text-3" href="#process">Kuidas töötab</a>
+        <a data-tube-id="extra-text-4" href="#offer">Pakkumine</a>
       </nav>
-      <a class="eyebrow" href="#offer">Küsi pakkumist →</a>
+      <a data-tube-id="extra-text-5" class="eyebrow" href="#offer">Küsi pakkumist →</a>
     </header>
     <div class="hero-copy">
-      <div class="eyebrow">TUBE by Projektbüroo Sport</div>
-      <h1 class="display">Hubane ja valgusküllane<br>oma kodu.</h1>
-      <div class="hero-lead display">Ilma nullist alustamata.</div>
-      <p>Vali läbiproovitud TUBE maja. Meie kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.</p>
-      <a class="btn light" href="#offer">Küsi pakkumist →</a>
-      <span class="response-note">Vastame ööpäeva jooksul.</span>
+      <div data-tube-id="extra-text-6" class="eyebrow">TUBE by Projektbüroo Sport</div>
+      <h1 data-tube-id="hero-title" class="display">Hubane ja valgusküllane<br>oma kodu.</h1>
+      <div data-tube-id="hero-subtitle" class="hero-lead display">Ilma nullist alustamata.</div>
+      <p data-tube-id="hero-body">Vali läbiproovitud TUBE maja. Meie kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.</p>
+      <a data-tube-id="extra-text-7" class="btn light" href="#offer">Küsi pakkumist →</a>
+      <span data-tube-id="extra-text-8" class="response-note">Vastame ööpäeva jooksul.</span>
     </div>
   </div>
 </section>
@@ -189,17 +149,17 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow">Valminud TUBE majad</div>
-        <h2 class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2>
+        <div data-tube-id="extra-text-9" class="eyebrow">Valminud TUBE majad</div>
+        <h2 data-tube-id="built-title" class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2>
       </div>
-      <p>TUBE ei ole ainult arhitektuurne idee. Need majad on Eestis päriselt valmis ehitatud erinevatele kruntidele ja erinevate perede jaoks.</p>
+      <p data-tube-id="built-description">TUBE ei ole ainult arhitektuurne idee. Need majad on Eestis päriselt valmis ehitatud erinevatele kruntidele vastavalt erinevate perede vajadustele.</p>
     </div>
     <div class="proof">
-      <div class="shot big"><img src="./tube-assets/nomme-front.webp" alt="Nõmme TUBE maja"><span class="caption">Nõmme / Tallinn</span></div>
-      <div class="shot"><img src="./tube-assets/saku-1.webp" alt="Valminud TUBE maja"><span class="caption">TUBE</span></div>
-      <div class="shot"><img src="./tube-assets/saku-2.webp" alt="Valminud TUBE maja"><span class="caption">TUBE</span></div>
-      <div class="shot"><img src="./tube-assets/hero.webp" alt="Nõmme TUBE maja aiavaade"><span class="caption">Nõmme</span></div>
-      <div class="shot"><img src="./tube-assets/nomme-2.webp" alt="Nõmme TUBE maja"><span class="caption">Nõmme</span></div>
+      <div class="shot big"><img data-tube-id="nomme-image" src="./tube-assets/nomme-front.webp" alt="Nõmme TUBE maja"><span data-tube-id="extra-text-10" class="caption">VALGUSKÜLLANE ELAMU NÕMMEL</span></div>
+      <div class="shot"><img data-tube-id="proof-2" src="./tube-assets/mere-aares.webp" alt="Valminud TUBE maja"><span data-tube-id="extra-text-11" class="caption">MERE ÄÄRES</span></div>
+      <div class="shot"><img data-tube-id="proof-3" src="./tube-assets/saku-2.webp" alt="Valminud TUBE maja"><span data-tube-id="extra-text-12" class="caption">NÕMME METSADE VAHEL</span></div>
+      <div class="shot"><img data-tube-id="proof-4" src="./tube-assets/hero.webp" alt="Nõmme TUBE maja aiavaade"><span data-tube-id="extra-text-13" class="caption">SAKU SUVILARAJOONIS</span></div>
+      <div class="shot"><img data-tube-id="proof-5" src="./tube-assets/nomme-2.webp" alt="Nõmme TUBE maja"><span data-tube-id="extra-text-14" class="caption">SAKU UUSELAMURAJOONIS</span></div>
     </div>
   </div>
 </section>
@@ -208,53 +168,52 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
   <div class="wrap">
     <div class="story-top">
       <div>
-        <div class="eyebrow">Nõmme / Tallinn</div>
-        <h2 class="display">Kuidas on TUBE majas päriselt elada?</h2>
+        <div data-tube-id="extra-text-15" class="eyebrow">Nõmme / Tallinn</div>
+        <h2 data-tube-id="story-title" class="display">Kuidas on TUBE majas päriselt elada?</h2>
       </div>
-      <p>Kõige parem on seda küsida inimestelt, kes on TUBE valiku juba teinud. Nõmme maja kliendilugu on videos.</p>
+      <p data-tube-id="story-description">Kõige parem on seda küsida inimestelt, kes on TUBE MAJA valiku juba teinud. Nõmme maja kliendilugu on videos.</p>
     </div>
-    <div class="story-image"><img src="./tube-assets/nomme-story.webp" alt="Nõmme TUBE maja"></div>
     <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/OTBnb2TdElQ?rel=0" title="Nõmme TUBE maja omanike kogemus" loading="lazy" allowfullscreen></iframe></div>
-    <div class="video-label"><strong>Nõmme TUBE maja omanike kogemus</strong><span>Kliendilugu on videos — laseme omanikel endil rääkida.</span></div>
+    <div class="video-label"><strong data-tube-id="extra-text-16">Nõmme TUBE maja omanike kogemus</strong><span data-tube-id="extra-text-17">Kliendilugu on videos — laseme omanikel endil rääkida.</span></div>
   </div>
 </section>
 
 <section class="section position">
   <div class="wrap">
-    <div class="eyebrow">Miks TUBE?</div>
-    <h2 class="display">Individuaalne kodu ei pea algama tühjalt lehelt.</h2>
+    <div data-tube-id="extra-text-18" class="eyebrow">Miks TUBE?</div>
+    <h2 data-tube-id="position-title" class="display">Individuaalne kodu ei pea algama tühjalt lehelt.</h2>
     <div class="spectrum">
-      <div><h3 class="display">Tüüpprojekt</h3><p>Kiire lähtekoht, kuid sageli vähe ruumi sinu krundi ja pere eripäradele.</p></div>
-      <div class="mid"><h3 class="display">TUBE</h3><p>Läbiproovitud arhitektuurne lähtekoht, mida kohandame sinu perele ja sinu krundile.</p></div>
-      <div><h3 class="display">Individuaalprojekt</h3><p>Maksimaalne vabadus, kuid kõik algab nullist.</p></div>
+      <div><h3 data-tube-id="extra-text-19" class="display">Tüüpprojekt</h3><p data-tube-id="extra-text-20">Kiire lähtekoht, kuid sageli vähe ruumi sinu krundi ja pere eripäradele.</p></div>
+      <div class="mid"><h3 data-tube-id="extra-text-21" class="display">TUBE</h3><p data-tube-id="extra-text-22">Läbiproovitud arhitektuurne lähtekoht, mida kohandame sinu pere vajadustele vastavalt sinu krundile.</p></div>
+      <div><h3 data-tube-id="extra-text-23" class="display">Individuaalprojekt</h3><p data-tube-id="extra-text-24">Maksimaalne vabadus, kuid kõik algab nullist.</p></div>
     </div>
   </div>
 </section>
 
 <section class="section models" id="models">
   <div class="wrap">
-    <div class="eyebrow">Vali arhitektuur</div>
-    <h2 class="display">Milline TUBE maja sobib sinu perele?</h2>
+    <div data-tube-id="extra-text-25" class="eyebrow">Vali arhitektuur</div>
+    <h2 data-tube-id="models-title" class="display">Milline TUBE maja sobib sinu perele?</h2>
     <div class="model-grid">
-      <article class="model" data-model="TUBE 01"><img src="./tube-assets/model-1.webp" alt="TUBE 01"><div class="model-info"><b>TUBE 01</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div><span class="model-more">Vaata plaane →</span></div></article>
-      <article class="model" data-model="TUBE 02"><img src="./tube-assets/model-2.webp" alt="TUBE 02"><div class="model-info"><b>TUBE 02</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div><span class="model-more">Vaata plaane →</span></div></article>
-      <article class="model" data-model="TUBE 03"><img src="./tube-assets/model-3.webp" alt="TUBE 03"><div class="model-info"><b>TUBE 03</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div><span class="model-more">Vaata plaane →</span></div></article>
-      <article class="model" data-model="TUBE 04"><img src="./tube-assets/model-4.webp" alt="TUBE 04"><div class="model-info"><b>TUBE 04</b><small>3 suurust saadaval</small><div>89,7 / 109,7 / 123,4 m²</div><span class="model-more">Vaata plaane →</span></div></article>
+      <article class="model" data-model="TUBE 01"><img data-tube-id="model-1-image" src="./tube-assets/model-1.webp" alt="TUBE 01"><div class="model-info"><b data-tube-id="model-1-title">TUBE 01</b><small data-tube-id="extra-text-26">3 suurust saadaval</small><div data-tube-id="extra-text-27">89,7 / 109,7 / 123,4 m²</div><span data-tube-id="extra-text-28" class="model-more">Vaata plaane →</span></div></article>
+      <article class="model" data-model="TUBE 02"><img data-tube-id="model-2-image" src="./tube-assets/model-2.webp" alt="TUBE 02"><div class="model-info"><b data-tube-id="model-2-title">TUBE 02</b><small data-tube-id="extra-text-29">3 suurust saadaval</small><div data-tube-id="extra-text-30">89,7 / 109,7 / 123,4 m²</div><span data-tube-id="extra-text-31" class="model-more">Vaata plaane →</span></div></article>
+      <article class="model" data-model="TUBE 03"><img data-tube-id="model-3-image" src="./tube-assets/model-3.webp" alt="TUBE 03"><div class="model-info"><b data-tube-id="model-3-title">TUBE 03</b><small data-tube-id="extra-text-32">3 suurust saadaval</small><div data-tube-id="extra-text-33">89,7 / 109,7 / 123,4 m²</div><span data-tube-id="extra-text-34" class="model-more">Vaata plaane →</span></div></article>
+      <article class="model" data-model="TUBE 04"><img data-tube-id="model-4-image" src="./tube-assets/model-4.webp" alt="TUBE 04"><div class="model-info"><b data-tube-id="model-4-title">TUBE 04</b><small data-tube-id="extra-text-35">3 suurust saadaval</small><div data-tube-id="extra-text-36">89,7 / 109,7 / 123,4 m²</div><span data-tube-id="extra-text-37" class="model-more">Vaata plaane →</span></div></article>
     </div>
-    <div class="sizes-note"><strong class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p>Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div>
+    <div class="sizes-note"><strong data-tube-id="sizes-title" class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p data-tube-id="sizes-description">Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div>
   </div>
 </section>
 
 <section class="section" id="process">
   <div class="wrap">
     <div class="section-head">
-      <div><div class="eyebrow">Kuidas see töötab?</div><h2 class="display">Lihtne tee ideest ehitusloani.</h2></div>
-      <p>Kirjelda lühidalt oma krunti ja soove. Vaatame info üle, vajadusel täpsustame ning saadame sulle konkreetse pakkumise.</p>
+      <div><div data-tube-id="extra-text-38" class="eyebrow">Kuidas see töötab?</div><h2 data-tube-id="process-title" class="display">Lihtne tee ideest ehitusloani.</h2></div>
+      <p data-tube-id="process-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle, vajadusel täpsustame ning saadame sulle konkreetse pakkumise 24 tunni jooksul.</p>
     </div>
     <div class="process-grid">
-      <div class="step"><span>01</span><h3>Vali lähtekoht</h3><p>Vaata TUBE arhitektuure ja põhisuurusi. Täpne valik ei pea veel lõplik olema.</p></div>
-      <div class="step"><span>02</span><h3>Saada päring</h3><p>Anna meile krundi olukord, lähteandmed ja olulisemad erisoovid.</p></div>
-      <div class="step"><span>03</span><h3>Vastame ööpäeva jooksul</h3><p>Saadame konkreetse pakkumise ja lepime soovi korral kokku järgmise vestluse.</p></div>
+      <div class="step"><span data-tube-id="extra-text-39">01</span><h3 data-tube-id="extra-text-40">Vali lähtekoht</h3><p data-tube-id="process-step-1">Vaata TUBE arhitektuure ja põhisuurusi. Valik ei pea kohe valmis ega lõplik olema.</p></div>
+      <div class="step"><span data-tube-id="extra-text-41">02</span><h3 data-tube-id="extra-text-42">Saada päring</h3><p data-tube-id="process-step-2">Anna meile krundi olukord, lähteandmed ja olulisemad erisoovid.</p></div>
+      <div class="step"><span data-tube-id="extra-text-43">03</span><h3 data-tube-id="extra-text-44">Vastame ööpäeva jooksul</h3><p data-tube-id="process-step-3">Saadame konkreetse pakkumise ja lepime Teie soovil vajadusel kokku näost näkku vestluse.</p></div>
     </div>
   </div>
 </section>
@@ -262,38 +221,38 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
 <section class="section offer" id="offer">
   <div class="wrap offer-grid">
     <div class="offer-intro">
-      <div class="eyebrow">Pakkumise päring</div>
-      <h2 class="display">Küsi TUBE pakkumist.</h2>
-      <p>Kirjelda lühidalt oma krunti ja soove. Vaatame info üle ning saadame sulle konkreetse pakkumise.</p>
-      <div class="promise"><strong>Vastame ööpäeva jooksul.</strong><br>Päring ei kohusta sind midagi tellima.</div>
+      <div data-tube-id="extra-text-45" class="eyebrow">Pakkumise päring</div>
+      <h2 data-tube-id="offer-title" class="display">Küsi TUBE pakkumist.</h2>
+      <p data-tube-id="offer-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle ning saadame sulle konkreetse pakkumise.</p>
+      <div class="promise"><strong data-tube-id="extra-text-46">Vastame ööpäeva jooksul.</strong><br><span data-tube-id="promise-note">Päring ei kohusta sind midagi tellima.</span></div>
     </div>
 
     <form class="form-card" id="offerForm">
-      <h3 class="display">Räägi meile oma plaanist</h3>
-      <p>Vormi täitmine võtab umbes kaks minutit.</p>
+      <h3 data-tube-id="extra-text-47" class="display">Räägi meile oma plaanist</h3>
+      <p data-tube-id="extra-text-48">Vormi täitmine võtab umbes kaks minutit.</p>
 
       <div class="two">
-        <div class="field"><label for="name">Sinu nimi</label><input id="name" name="name" autocomplete="name" required></div>
-        <div class="field"><label for="email">E-posti aadress</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label data-tube-id="extra-text-49" for="name">Sinu nimi</label><input id="name" name="name" autocomplete="name" required></div>
+        <div class="field"><label data-tube-id="extra-text-50" for="email">E-posti aadress</label><input id="email" name="email" type="email" autocomplete="email" required></div>
       </div>
-      <div class="field"><label for="phone">Telefon</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+      <div class="field"><label data-tube-id="extra-text-51" for="phone">Telefon</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
 
       <div class="field">
         <span class="group-label">Krundi olukord</span>
         <div class="choice-row" id="plotChoices">
-          <button type="button" class="choice active" data-value="Krunt on olemas">Krunt on olemas<span>Saan aadressi lisada</span></button>
-          <button type="button" class="choice" data-value="Alles otsin krunti">Alles otsin krunti<span>Aadressi pole veel</span></button>
+          <button type="button" class="choice active" data-value="Krunt on olemas">Krunt on olemas<span data-tube-id="extra-text-52">Saan aadressi lisada</span></button>
+          <button type="button" class="choice" data-value="Alles otsin krunti">Alles otsin krunti<span data-tube-id="extra-text-53">Aadressi pole veel</span></button>
         </div>
         <input type="hidden" id="plotStatus" name="plotStatus" value="Krunt on olemas">
       </div>
 
       <div class="field conditional" id="plotAddressField">
-        <label for="plot">Krundi aadress või katastritunnus</label>
+        <label data-tube-id="extra-text-54" for="plot">Krundi aadress või katastritunnus</label>
         <input id="plot" name="plot" autocomplete="street-address" placeholder="Näiteks Lepiku 3, Tartu">
       </div>
 
       <div class="field">
-        <label for="planning">Kas detailplaneering või projekteerimistingimused on olemas?</label>
+        <label data-tube-id="extra-text-55" for="planning">Kas detailplaneering või projekteerimistingimused on olemas?</label>
         <select id="planning" name="planning" required>
           <option value="">Vali vastus</option>
           <option>Detailplaneering on olemas</option>
@@ -305,14 +264,14 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
 
       <div class="two">
         <div class="field">
-          <label for="model">Milline TUBE huvitab?</label>
+          <label data-tube-id="extra-text-56" for="model">Milline TUBE huvitab?</label>
           <select id="model" name="model">
             <option>Pole veel otsustanud</option>
             <option>TUBE 01</option><option>TUBE 02</option><option>TUBE 03</option><option>TUBE 04</option>
           </select>
         </div>
         <div class="field">
-          <label for="size">Milline suurus tundub sobiv?</label>
+          <label data-tube-id="extra-text-57" for="size">Milline suurus tundub sobiv?</label>
           <select id="size" name="size">
             <option>Pole veel otsustanud</option>
             <option>89,7 m²</option><option>109,7 m²</option><option>123,4 m²</option>
@@ -321,12 +280,12 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
       </div>
 
       <div class="field">
-        <label for="notes">Erisoovid või muu oluline</label>
+        <label data-tube-id="extra-text-58" for="notes">Erisoovid või muu oluline</label>
         <textarea id="notes" name="notes" placeholder="Näiteks saun, kabinet, suurem köök, eraldi külalistetuba või küsimus krundi kohta…"></textarea>
       </div>
 
       <label class="consent"><input type="checkbox" id="consent" required><span>Nõustun, et Projektbüroo Sport kasutab sisestatud andmeid pakkumise koostamiseks ja minuga ühenduse võtmiseks.</span></label>
-      <button class="btn" type="submit">Saada päring →</button>
+      <button data-tube-id="extra-text-59" class="btn" type="submit">Saada päring →</button>
       <div class="status" id="status" role="status"></div>
     </form>
   </div>
@@ -334,10 +293,10 @@ body.tube-editing .hero-media{pointer-events:auto;cursor:pointer;z-index:0}
 
 <section class="section final">
   <div class="wrap">
-    <div class="eyebrow">TUBE by Projektbüroo Sport</div>
-    <h2 class="display">Hea maja võib alata<br>juba heast lähtekohast.</h2>
-    <p>Kirjelda oma krunti ja soove. Vastame ööpäeva jooksul.</p>
-    <a class="btn" href="#offer">Küsi pakkumist →</a>
+    <div data-tube-id="extra-text-60" class="eyebrow">TUBE by Projektbüroo Sport</div>
+    <h2 data-tube-id="final-title" class="display">Mõnus kodu algab hubasest tundest.</h2>
+    <p data-tube-id="final-description">Kirjelda oma krunti ja soove. Vastame ööpäeva jooksul.</p>
+    <a data-tube-id="extra-text-61" class="btn" href="#offer">Küsi pakkumist →</a>
   </div>
 </section>
 
@@ -389,194 +348,8 @@ form.addEventListener('submit',e=>{
 });
 </script>
 <script>
-(function(){
-const params=new URLSearchParams(location.search);if(params.get('edit')!=='1')return;
-document.body.classList.add('tube-editing');
-const storageKey='tube-editor-draft-v1';
-let draft={text:{},images:{},comments:{}};
-try{draft=Object.assign(draft,JSON.parse(localStorage.getItem(storageKey)||'{}'))}catch(e){}
-let selected=null,selectedId=null;
-const selectors=[
-['hero-title','.hero h1'],['hero-subtitle','.hero-lead'],['hero-body','.hero-copy p'],
-['built-title','#built h2'],['built-description','#built .section-head p'],
-['story-title','.story h2'],['story-description','.story-top p'],
-['position-title','.position h2'],['models-title','#models h2'],
-['sizes-title','.sizes-note strong'],['sizes-description','.sizes-note p'],
-['process-title','#process h2'],['process-description','#process .section-head p'],
-['offer-title','.offer-intro h2'],['offer-description','.offer-intro p'],
-['final-title','.final h2'],['final-description','.final p'],
-['hero-image','.hero-media'],['nomme-image','.proof .shot.big img'],['story-image','.story-image img'],
-['proof-2','.proof .shot:nth-child(2) img'],['proof-3','.proof .shot:nth-child(3) img'],['proof-4','.proof .shot:nth-child(4) img'],['proof-5','.proof .shot:nth-child(5) img'],
-['model-1-image','.model:nth-child(1)>img'],['model-2-image','.model:nth-child(2)>img'],['model-3-image','.model:nth-child(3)>img'],['model-4-image','.model:nth-child(4)>img'],
-['model-1-title','.model:nth-child(1) .model-info b'],['model-2-title','.model:nth-child(2) .model-info b'],['model-3-title','.model:nth-child(3) .model-info b'],['model-4-title','.model:nth-child(4) .model-info b']
-];
-document.querySelectorAll('.step').forEach((el,i)=>selectors.push(['process-step-'+(i+1),'.step:nth-child('+(i+1)+') p']));
-/* Include every visible leaf text element and all images in the main page. Keep previous stable IDs. */
-const additional='h1,h2,h3,h4,p,small,label,button,a,.eyebrow,.caption,.response-note,.model-info b,.model-info div,.model-more,.promise strong,.video-label span,.video-label strong,.step span,.choice span,select,textarea,input,img';
-let autoIndex=0;
-document.querySelectorAll(additional).forEach(el=>{
- if(el.closest('#tubeEditor,script,style,dialog'))return;
- if(el.matches('input,select,textarea'))return; // form controls are annotated via their labels
- if(el.matches('img')){if(!selectors.some(([,sel])=>document.querySelector(sel)===el)){const id='extra-image-'+(++autoIndex);selectors.push([id,'[data-tube-extra="'+id+'"]']);el.dataset.tubeExtra=id;}return}
- if(el.children.length>0&&[...el.children].some(child=>child.matches('h1,h2,h3,h4,p,small,label,button,a,span,strong,div')))return;
- if(!el.textContent.trim())return;
- if(selectors.some(([,sel])=>document.querySelector(sel)===el))return;
- const id='extra-text-'+(++autoIndex);el.dataset.tubeExtra=id;selectors.push([id,'[data-tube-extra="'+id+'"]']);
-});
-
-function save(){try{localStorage.setItem(storageKey,JSON.stringify(draft));document.getElementById('teState').textContent='Mustand salvestatud selles brauseris'}catch(e){document.getElementById('teState').textContent='Salvestusruum täis: ekspordi mustand JSON-failina!'}}
-const elements=new Map();
-selectors.forEach(([id,sel])=>{const el=document.querySelector(sel);if(!el)return;elements.set(id,el);el.dataset.tubeEditId=id;el.classList.add('tube-editable');if(draft.text[id]!==undefined)el.textContent=draft.text[id];if(draft.images[id]&&el.tagName==='IMG')el.src=draft.images[id];el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();choose(id)},{capture:true})});
-const panel=document.createElement('aside');panel.id='tubeEditor';panel.innerHTML=
-'<div class="te-header"><h2>TUBE / visuaalne redaktor</h2><div style="font-size:12px;color:#ddd">Klõpsa lehel tekstile või pildile.</div></div>'+
-'<div class="te-body"><div class="te-quick"><button id="teAllTexts">Tekstid</button><button id="teAllImages">Pildid</button><button id="teExpand">Suurenda paneeli</button></div><div class="te-picker" id="tePicker"></div><div id="teSelected">Vali lehelt element</div><div id="teControls" hidden>'+
-'<label class="te-label" for="teText">Muuda teksti</label><textarea id="teText"></textarea>'+
-'<div id="teImageArea" hidden><label class="te-label">Asenda valitud pilt</label><label class="te-image-upload">Vali foto iPadist või Files-rakendusest<input id="teImage" type="file" accept="image/*"></label><img id="teImagePreview" class="te-image-preview" alt="Pildi eelvaade"><p class="te-help">Pilt vähendatakse brauseris enne mustandisse salvestamist. Algfail jääb muutmata.</p></div>'+
-'<div class="te-buttons"><button id="teApply" class="te-primary">Rakenda muudatus</button><button id="teReset">Taasta see element</button></div>'+
-'<label class="te-label" for="teComment">Kommentaar selle elemendi kohta</label><textarea id="teComment" placeholder="Näiteks: pealkiri liiga suur; foto aiapoolsemaks; muuda paigutust..."></textarea>'+
-'<button id="teAddComment" class="te-primary">Lisa kommentaar</button><div id="teComments"></div></div>'+
-'<p class="te-help">See on privaatne brauseripõhine mustand, mitte avaldatud veebimuudatus. Päris avaldamiseks ekspordi JSON ja saada see arendajale / siia vestlusse.</p>'+
-'<div id="teState" class="te-help"></div></div>'+
-'<div class="te-footer"><button id="teExport" class="te-primary">Ekspordi muudatused</button><button id="teImport">Impordi JSON</button><input id="teImportFile" type="file" accept=".json,application/json" hidden><button id="teExit">Sulge</button></div>';
-document.body.append(panel);
-const heroButton=document.createElement('button');heroButton.type='button';heroButton.id='teHeroImage';heroButton.textContent='Muuda suurt esipilti';panel.querySelector('.te-quick').prepend(heroButton);heroButton.onclick=()=>{choose('hero-image');panel.classList.add('te-expanded');const g=panel.querySelector('#teGallery');if(g){g.classList.add('open');panel.querySelector('#teGalleryGroup')?.dispatchEvent(new Event('change'))}};
-
-function picker(type){
- const holder=document.getElementById('tePicker');holder.replaceChildren();
- [...elements.entries()].filter(([id,el])=>type==='image'?el.tagName==='IMG':el.tagName!=='IMG').forEach(([id,el])=>{
-  const b=document.createElement('button');b.type='button';b.textContent=type==='image'?(el.alt||id):el.textContent.trim().slice(0,42)||id;
-  b.onclick=()=>{choose(id);if(type==='image')document.getElementById('teImage').focus()};
-  holder.append(b);
- });
-}
-document.getElementById('teAllTexts').onclick=()=>picker('text');
-document.getElementById('teAllImages').onclick=()=>picker('image');
-document.getElementById('teExpand').onclick=()=>{panel.classList.toggle('te-expanded');document.getElementById('teExpand').textContent=panel.classList.contains('te-expanded')?'Vähenda paneeli':'Suurenda paneeli'};
-
-function choose(id){if(selected)selected.classList.remove('tube-current');selectedId=id;selected=elements.get(id);selected.classList.add('tube-current');document.getElementById('teSelected').textContent=id.replaceAll('-',' · ');document.getElementById('teControls').hidden=false;const isImage=selected.tagName==='IMG';document.getElementById('teText').parentElement.querySelector('label[for=teText]').hidden=isImage;document.getElementById('teText').hidden=isImage;document.getElementById('teImageArea').hidden=!isImage;document.getElementById('teText').value=isImage?'':selected.textContent;document.getElementById('teImagePreview').src=isImage?selected.src:'';document.getElementById('teImage').value='';document.getElementById('teComment').value='';if(isImage)panel.classList.add('te-expanded');renderComments()}
-function renderComments(){const c=document.getElementById('teComments');c.replaceChildren();(draft.comments[selectedId]||[]).forEach((note,i)=>{const d=document.createElement('div');d.className='te-note';d.textContent=note;const b=document.createElement('button');b.textContent='×';b.title='Kustuta kommentaar';b.onclick=()=>{draft.comments[selectedId].splice(i,1);save();renderComments()};d.prepend(b);c.append(d)})}
-document.getElementById('teApply').onclick=()=>{if(!selected)return;if(selected.tagName!=='IMG'){draft.text[selectedId]=document.getElementById('teText').value;selected.textContent=draft.text[selectedId];save()}};
-document.getElementById('teReset').onclick=()=>{if(!selected)return;delete draft.text[selectedId];delete draft.images[selectedId];save();location.reload()};
-document.getElementById('teAddComment').onclick=()=>{if(!selected)return;const v=document.getElementById('teComment').value.trim();if(!v)return;(draft.comments[selectedId]??=[]).push(v);document.getElementById('teComment').value='';save();renderComments()};
-document.getElementById('teImage').onchange=async e=>{if(!selected||!e.target.files?.[0])return;const file=e.target.files[0];if(!file.type.startsWith('image/'))return;const url=URL.createObjectURL(file);try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});const ratio=Math.min(1,1100/img.width);const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.72);draft.images[selectedId]=data;selected.src=data;document.getElementById('teImagePreview').src=data;save()}catch(err){alert('Pildi avamine ebaõnnestus')}finally{URL.revokeObjectURL(url)}};
-document.getElementById('teExport').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,source:location.pathname,exportedAt:new Date().toISOString(),changes:draft},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='TUBE-kommentaarid-ja-muudatused.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
-document.getElementById('teImport').onclick=()=>document.getElementById('teImportFile').click();
-document.getElementById('teImportFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.changes||!d.changes.text||!d.changes.images||!d.changes.comments)throw Error();draft=d.changes;save();location.reload()}catch(err){alert('Vigane muudatuste JSON-fail')}};
-document.getElementById('teExit').onclick=()=>{const u=new URL(location.href);u.searchParams.delete('edit');location.href=u.toString()};
-})();
-</script><script>
-(function(){
-const photoLibrary=[{"group":"Nõmme","name":"IMG_2472.JPG","thumb":"./tube-assets/photo-library/n-mme-001.webp","share":"./tube-assets/photo-library/n-mme-001.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2472.JPG?role=work"},{"group":"Nõmme","name":"IMG_0949-1.jpg","thumb":"./tube-assets/photo-library/n-mme-002.webp","share":"./tube-assets/photo-library/n-mme-002.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_0949-1.jpg?role=work"},{"group":"Nõmme","name":"IMG_2452.JPG","thumb":"./tube-assets/photo-library/n-mme-003.webp","share":"./tube-assets/photo-library/n-mme-003.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2452.JPG?role=work"},{"group":"Nõmme","name":"IMG_0968-16.jpg","thumb":"./tube-assets/photo-library/n-mme-004.webp","share":"./tube-assets/photo-library/n-mme-004.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_0968-16.jpg?role=work"},{"group":"Nõmme","name":"IMG_2468.JPG","thumb":"./tube-assets/photo-library/n-mme-005.webp","share":"./tube-assets/photo-library/n-mme-005.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2468.JPG?role=work"},{"group":"Nõmme","name":"IMG_0959-2.jpg","thumb":"./tube-assets/photo-library/n-mme-006.webp","share":"./tube-assets/photo-library/n-mme-006.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_0959-2.jpg?role=work"},{"group":"Nõmme","name":"IMG_2469.JPG","thumb":"./tube-assets/photo-library/n-mme-007.webp","share":"./tube-assets/photo-library/n-mme-007.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2469.JPG?role=work"},{"group":"Nõmme","name":"IMG_2456.JPG","thumb":"./tube-assets/photo-library/n-mme-008.webp","share":"./tube-assets/photo-library/n-mme-008.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2456.JPG?role=work"},{"group":"Nõmme","name":"IMG_2443.JPG","thumb":"./tube-assets/photo-library/n-mme-009.webp","share":"./tube-assets/photo-library/n-mme-009.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2443.JPG?role=work"},{"group":"Nõmme","name":"IMG_0950-15.jpg","thumb":"./tube-assets/photo-library/n-mme-010.webp","share":"./tube-assets/photo-library/n-mme-010.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_0950-15.jpg?role=work"},{"group":"Nõmme","name":"IMG_2462.JPG","thumb":"./tube-assets/photo-library/n-mme-011.webp","share":"./tube-assets/photo-library/n-mme-011.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2462.JPG?role=work"},{"group":"Nõmme","name":"IMG_2454.JPG","thumb":"./tube-assets/photo-library/n-mme-012.webp","share":"./tube-assets/photo-library/n-mme-012.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2454.JPG?role=work"},{"group":"Nõmme","name":"IMG_2438.JPG","thumb":"./tube-assets/photo-library/n-mme-013.webp","share":"./tube-assets/photo-library/n-mme-013.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2438.JPG?role=work"},{"group":"Nõmme","name":"IMG_2440.JPG","thumb":"./tube-assets/photo-library/n-mme-014.webp","share":"./tube-assets/photo-library/n-mme-014.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2440.JPG?role=work"},{"group":"Nõmme","name":"IMG_2476.JPG","thumb":"./tube-assets/photo-library/n-mme-015.webp","share":"./tube-assets/photo-library/n-mme-015.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_2476.JPG?role=work"},{"group":"Nõmme","name":"IMG_0952-17.jpg","thumb":"./tube-assets/photo-library/n-mme-016.webp","share":"./tube-assets/photo-library/n-mme-016.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/N%C3%B5mme_Tallinn_photos_by_Martin%20Siplane/IMG_0952-17.jpg?role=work"},{"group":"Saku 1","name":"_MG_6185.jpg","thumb":"./tube-assets/photo-library/saku-1-017.webp","share":"./tube-assets/photo-library/saku-1-017.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6185.jpg?role=work"},{"group":"Saku 1","name":"_MG_6152.jpg","thumb":"./tube-assets/photo-library/saku-1-018.webp","share":"./tube-assets/photo-library/saku-1-018.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6152.jpg?role=work"},{"group":"Saku 1","name":"_MG_6153.jpg","thumb":"./tube-assets/photo-library/saku-1-019.webp","share":"./tube-assets/photo-library/saku-1-019.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6153.jpg?role=work"},{"group":"Saku 1","name":"_MG_6165.jpg","thumb":"./tube-assets/photo-library/saku-1-020.webp","share":"./tube-assets/photo-library/saku-1-020.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6165.jpg?role=work"},{"group":"Saku 1","name":"_MG_6172.jpg","thumb":"./tube-assets/photo-library/saku-1-021.webp","share":"./tube-assets/photo-library/saku-1-021.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6172.jpg?role=work"},{"group":"Saku 1","name":"_MG_6166.jpg","thumb":"./tube-assets/photo-library/saku-1-022.webp","share":"./tube-assets/photo-library/saku-1-022.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6166.jpg?role=work"},{"group":"Saku 1","name":"_MG_6154.jpg","thumb":"./tube-assets/photo-library/saku-1-023.webp","share":"./tube-assets/photo-library/saku-1-023.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6154.jpg?role=work"},{"group":"Saku 1","name":"_MG_6162.jpg","thumb":"./tube-assets/photo-library/saku-1-024.webp","share":"./tube-assets/photo-library/saku-1-024.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6162.jpg?role=work"},{"group":"Saku 1","name":"_MG_6149.jpg","thumb":"./tube-assets/photo-library/saku-1-025.webp","share":"./tube-assets/photo-library/saku-1-025.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6149.jpg?role=work"},{"group":"Saku 1","name":"_MG_6155.jpg","thumb":"./tube-assets/photo-library/saku-1-026.webp","share":"./tube-assets/photo-library/saku-1-026.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6155.jpg?role=work"},{"group":"Saku 1","name":"Drone photo for prefab home Tube.JPG","thumb":"./tube-assets/photo-library/saku-1-027.webp","share":"./tube-assets/photo-library/saku-1-027.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/Drone%20photo%20for%20prefab%20home%20Tube.JPG?role=work"},{"group":"Saku 1","name":"_MG_6139.jpg","thumb":"./tube-assets/photo-library/saku-1-028.webp","share":"./tube-assets/photo-library/saku-1-028.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6139.jpg?role=work"},{"group":"Saku 1","name":"_MG_6142.jpg","thumb":"./tube-assets/photo-library/saku-1-029.webp","share":"./tube-assets/photo-library/saku-1-029.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6142.jpg?role=work"},{"group":"Saku 1","name":"_MG_6161.jpg","thumb":"./tube-assets/photo-library/saku-1-030.webp","share":"./tube-assets/photo-library/saku-1-030.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6161.jpg?role=work"},{"group":"Saku 1","name":"_MG_6181.jpg","thumb":"./tube-assets/photo-library/saku-1-031.webp","share":"./tube-assets/photo-library/saku-1-031.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6181.jpg?role=work"},{"group":"Saku 1","name":"_MG_6169.jpg","thumb":"./tube-assets/photo-library/saku-1-032.webp","share":"./tube-assets/photo-library/saku-1-032.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6169.jpg?role=work"},{"group":"Saku 1","name":"_MG_6143.jpg","thumb":"./tube-assets/photo-library/saku-1-033.webp","share":"./tube-assets/photo-library/saku-1-033.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_1_photos_by_Martin%20Siplane/_MG_6143.jpg?role=work"},{"group":"Saku 2","name":"IMG_1018-6.jpg","thumb":"./tube-assets/photo-library/saku-2-034.webp","share":"./tube-assets/photo-library/saku-2-034.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_1018-6.jpg?role=work"},{"group":"Saku 2","name":"IMG_0996-3.jpg","thumb":"./tube-assets/photo-library/saku-2-035.webp","share":"./tube-assets/photo-library/saku-2-035.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_0996-3.jpg?role=work"},{"group":"Saku 2","name":"IMG_1002-4.jpg","thumb":"./tube-assets/photo-library/saku-2-036.webp","share":"./tube-assets/photo-library/saku-2-036.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_1002-4.jpg?role=work"},{"group":"Saku 2","name":"IMG_2494.JPG","thumb":"./tube-assets/photo-library/saku-2-037.webp","share":"./tube-assets/photo-library/saku-2-037.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2494.JPG?role=work"},{"group":"Saku 2","name":"IMG_2508.JPG","thumb":"./tube-assets/photo-library/saku-2-038.webp","share":"./tube-assets/photo-library/saku-2-038.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2508.JPG?role=work"},{"group":"Saku 2","name":"IMG_1013-9.jpg","thumb":"./tube-assets/photo-library/saku-2-039.webp","share":"./tube-assets/photo-library/saku-2-039.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_1013-9.jpg?role=work"},{"group":"Saku 2","name":"IMG_2505.JPG","thumb":"./tube-assets/photo-library/saku-2-040.webp","share":"./tube-assets/photo-library/saku-2-040.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2505.JPG?role=work"},{"group":"Saku 2","name":"IMG_2484.JPG","thumb":"./tube-assets/photo-library/saku-2-041.webp","share":"./tube-assets/photo-library/saku-2-041.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2484.JPG?role=work"},{"group":"Saku 2","name":"IMG_2507.jpg","thumb":"./tube-assets/photo-library/saku-2-042.webp","share":"./tube-assets/photo-library/saku-2-042.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2507.jpg?role=work"},{"group":"Saku 2","name":"IMG_2478.JPG","thumb":"./tube-assets/photo-library/saku-2-043.webp","share":"./tube-assets/photo-library/saku-2-043.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhitektuurikaubamaja/Articles/Tube%20houses/Saku_2_photos_by_Martin%20Siplane/IMG_2478.JPG?role=work"},{"group":"Pärnapuu 2a","name":"Tube tüüpmaja Sport OÜ Tiit Sild foto Tiit Sild.JPG","thumb":"./tube-assets/photo-library/p-rnapuu-2a-044.webp","share":"./tube-assets/photo-library/p-rnapuu-2a-044.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhiiv/Droonipildid/P%C3%A4rnapuu%202a%20Martin%20Siplane%20copy/Tube%20t%C3%BC%C3%BCpmaja%20Sport%20O%C3%9C%20Tiit%20Sild%20foto%20Tiit%20Sild.JPG?role=work"},{"group":"Pärnapuu 2a","name":"plan for prefab home tube.jpg","thumb":"./tube-assets/photo-library/p-rnapuu-2a-045.webp","share":"./tube-assets/photo-library/p-rnapuu-2a-045.webp","open":"https://www.dropbox.com/preview/Tiit%20Sild/arhiiv/Droonipildid/P%C3%A4rnapuu%202a%20Martin%20Siplane%20copy/plan%20for%20prefab%20home%20tube.jpg?role=work"}];
-const panel=document.getElementById('tubeEditor');
-if(!panel)return;
-const body=panel.querySelector('.te-body');
-const gallery=document.createElement('div');gallery.className='te-gallery';gallery.id='teGallery';
-gallery.innerHTML='<label class="te-label">Dropboxi TUBE fotopank ('+photoLibrary.length+' fotot)</label><select id="teGalleryGroup"><option value="all">Kõik fotod</option><option>Nõmme</option><option>Saku 1</option><option>Saku 2</option><option>Pärnapuu 2a</option></select><div class="te-gallery-grid" id="teGalleryGrid"></div><p class="te-gallery-help">Vali foto, et asendada aktiivne veebipilt. Dropboxi eelvaated võivad aeguda; kui pilt ei avane, kasuta faili all olevat Dropboxi linki ja laadi originaal iPadi. Seejärel vali „Vali foto iPadist”.</p>';
-const imageArea=panel.querySelector('#teImageArea');imageArea.append(gallery);
-const btn=document.createElement('button');btn.textContent='Vali Dropboxi fotopangast';btn.type='button';btn.style.marginTop='8px';imageArea.insertBefore(btn,imageArea.querySelector('.te-image-preview'));
-const groupSelect=gallery.querySelector('#teGalleryGroup');
-function renderGallery(){
- const grid=gallery.querySelector('#teGalleryGrid');grid.replaceChildren();
- photoLibrary.filter(x=>groupSelect.value==='all'||x.group===groupSelect.value).forEach(photo=>{
- const item=document.createElement('div');item.className='te-gallery-item';
- const im=document.createElement('img');im.loading='lazy';im.src=photo.thumb;im.alt=photo.name;im.onerror=()=>{im.style.display='none'};
- const name=document.createElement('span');name.textContent=photo.group+' · '+photo.name;
- const select=document.createElement('button');select.type='button';select.textContent='Kasuta pilti';select.style.width='100%';
- select.onclick=()=>{const target=document.querySelector('.tube-current');if(!target||target.tagName!=='IMG')return alert('Vali esmalt lehelt pilt, mida soovid asendada');const src=photo.share.replace(/[?&]dl=0/,'&raw=1');target.src=src;panel.querySelector('#teImagePreview').src=src;const id=target.dataset.tubeEditId;try{const key='tube-editor-draft-v1';const d=JSON.parse(localStorage.getItem(key)||'{}');d.images??={};d.images[id]=src;localStorage.setItem(key,JSON.stringify(d));panel.querySelector('#teState').textContent='Dropboxi foto valitud. Ekspordi muudatused, et see veebiprojekti lisada.'}catch(e){alert('Salvestamine ebaõnnestus')}};
- const a=document.createElement('a');a.href=photo.open||photo.share;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Ava Dropboxis';item.append(im,name,select,a);grid.append(item);
- });
-}
-groupSelect.onchange=renderGallery;btn.onclick=()=>{gallery.classList.toggle('open');if(gallery.classList.contains('open'))renderGallery()};
-})();
-</script><style>
-#tubeEditor .te-gallery{border:1px solid #d1cdc5;padding:10px;margin:12px 0;background:#f1eee8}
-#tubeEditor .te-gallery.open{display:block}
-#tubeEditor .te-gallery-grid{max-height:40dvh}
-#tubeEditor #tePhotoBank{background:#d7ebdc;color:#143923;border-color:#729a7d;font-weight:700}
-@media(max-width:800px){#tubeEditor.te-expanded{height:78dvh;max-height:82dvh}#tubeEditor .te-gallery-grid{max-height:35dvh}}
-</style>
-<script>
-(function(){
-const panel=document.getElementById('tubeEditor');if(!panel)return;
-const gallery=panel.querySelector('#teGallery');if(!gallery)return;
-const body=panel.querySelector('.te-body'),quick=panel.querySelector('.te-quick');
-body.insertBefore(gallery,body.querySelector('#teSelected'));
-const b=document.createElement('button');b.id='tePhotoBank';b.type='button';b.textContent='Fotopank (45)';
-quick.prepend(b);
-b.onclick=()=>{panel.classList.add('te-expanded');gallery.classList.toggle('open');if(gallery.classList.contains('open')){const select=gallery.querySelector('#teGalleryGroup');select.dispatchEvent(new Event('change'))}};
-fetch('./tube-assets/photo-library/manifest.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Assets not imported yet');return r.json()}).then(list=>{
- const scripts=[...document.scripts];const source=scripts.find(x=>x.textContent.includes('const photoLibrary='));
- if(!source)return;
- // A permanent local catalog is preferred over expiring Dropbox thumbnails.
- const original=source.textContent;
- const newRecords=list.map(p=>({group:p.group,name:p.name,thumb:p.src,share:p.src,open:p.src}));
- // The library renderer reads its lexical photoLibrary; update via a dedicated event.
- window.tubeLocalPhotoLibrary=newRecords;
- b.textContent='Fotopank ('+list.length+')';
- const grid=gallery.querySelector('#teGalleryGrid');
- function renderLocal(){
-   grid.replaceChildren();
-   const chosen=gallery.querySelector('#teGalleryGroup').value;
-   newRecords.filter(p=>chosen==='all'||p.group===chosen).forEach(photo=>{
-     const card=document.createElement('div');card.className='te-gallery-item';
-     const img=document.createElement('img');img.src=photo.thumb;img.loading='lazy';img.alt=photo.name;
-     const label=document.createElement('span');label.textContent=photo.group+' · '+photo.name;
-     const use=document.createElement('button');use.type='button';use.textContent='Kasuta pilti';use.style.width='100%';
-     use.onclick=()=>{const target=document.querySelector('.tube-current');if(!target||target.tagName!=='IMG'){alert('Vali esmalt veebilehe pilt, mida soovid asendada.');return;}target.src=photo.src||photo.share;panel.querySelector('#teImagePreview').src=target.src;const id=target.dataset.tubeEditId;const key='tube-editor-draft-v1';try{const d=JSON.parse(localStorage.getItem(key)||'{}');d.images??={};d.images[id]=target.src;localStorage.setItem(key,JSON.stringify(d));panel.querySelector('#teState').textContent='Püsiv veebipilt valitud. Ekspordi muudatused.'}catch(e){alert('Mustandi salvestamine ebaõnnestus')}};
-     card.append(img,label,use);grid.append(card);
-   });
- }
- // Capture listener overrides the temporary Dropbox catalog's existing renderer.
- gallery.querySelector('#teGalleryGroup').addEventListener('change',e=>{e.stopImmediatePropagation();renderLocal()},true);
- b.onclick=()=>{panel.classList.add('te-expanded');gallery.classList.toggle('open');if(gallery.classList.contains('open'))renderLocal()};
- if(gallery.classList.contains('open'))renderLocal();
-}).catch(()=>{b.title='Fotod on Dropboxi eelvaadetena; püsivate failide import käib.'});
-})();
-</script><script type="module">
-if(new URLSearchParams(location.search).get('edit')==='1'){
- const panel=document.getElementById('tubeEditor');
- if(panel){
-  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.10');
-  const supabase=createClient('https://xlhtavzsanlikmxrddrb.supabase.co','sb_publishable_qIgkHTONrtkXj1CjDUofWw_erFDQGo3');
-  const key='tube-editor-draft-v1',versionKey='tube-cloud-base-version-v1',bar=document.createElement('div');
-  bar.style.cssText='padding:12px;border:1px solid #bcb8af;margin:10px 0;background:#fff';
-  bar.innerHTML='<strong>Pilvesalvestus</strong><p id="cloudState" style="font-size:12px">Kontrollin sisselogimist…</p><input id="cloudEmail" type="email" placeholder="tiit@sportsport.ee" style="width:100%;padding:10px;margin-bottom:8px"><div style="display:flex;flex-wrap:wrap;gap:5px"><button id="cloudLogin">Saada sisselogimislink</button><button id="cloudLoad">Laadi pilvest</button><button id="cloudSave">Salvesta pilve</button><button id="cloudLogout">Logi välja</button></div>';
-  panel.querySelector('.te-body').prepend(bar);
-  const state=bar.querySelector('#cloudState');
-  let version=Number(localStorage.getItem(versionKey))||null;
-  async function check(){const {data}=await supabase.auth.getUser();state.textContent=data.user?'Sisse logitud: '+data.user.email:'Logi sisse SPORTi e-postiga. Kohalik mustand säilib.';return data.user}
-  async function load(){
-   if(!await check())return;
-   const {data,error}=await supabase.from('tube_editor_drafts').select('content,version,updated_at').eq('id','tube-main').single();
-   if(error){state.textContent='Lugemine ebaõnnestus: '+error.message;return}
-   const local=localStorage.getItem(key);
-   if(local&&!confirm('Pilvemustand asendab selles brauseris oleva mustandi. Kas jätkame?'))return;
-   localStorage.setItem(key,JSON.stringify(data.content));version=data.version;localStorage.setItem(versionKey,String(version));
-   state.textContent='Pilvemustand laaditud. Värskendan…';location.reload();
-  }
-  async function save(){
-   const user=await check();if(!user)return;
-   let content;try{content=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){state.textContent='Vigane kohalik mustand';return}
-   if(!content.text||!content.images||!content.comments){state.textContent='Mustandi vorming vigane';return}
-   const {data:latest,error:readError}=await supabase.from('tube_editor_drafts').select('version').eq('id','tube-main').single();
-   if(readError){state.textContent=readError.message;return}
-   if(version!==null&&latest.version!==version){state.textContent='Teises seadmes on uuem versioon. Ekspordi oma mustand enne pilvest laadimist!';return}
-   if(version===null&&!confirm('Asendad pilves oleva mustandi selle seadme mustandiga. Kas jätkame?'))return;
-   const {data,error}=await supabase.from('tube_editor_drafts').update({content,version:latest.version+1,updated_at:new Date().toISOString(),updated_by:user.id}).eq('id','tube-main').eq('version',latest.version).select('version').single();
-   if(error){state.textContent='Salvestus ebaõnnestus: '+error.message;return}
-   version=data.version;localStorage.setItem(versionKey,String(version));state.textContent='Pilve salvestatud. Versioon '+version;
-  }
-  bar.querySelector('#cloudLogin').onclick=async()=>{
-   const email=bar.querySelector('#cloudEmail').value.trim().toLowerCase();
-   if(!email.endsWith('@sportsport.ee')){state.textContent='Kasuta SPORTi e-posti.';return}
-   const {error}=await supabase.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?edit=1'}});
-   state.textContent=error?'Sisselogimine ebaõnnestus: '+error.message:'Sisselogimislink saadetud. Ava e-kirjas olev link.';
-  };
-  bar.querySelector('#cloudLoad').onclick=load;
-  bar.querySelector('#cloudSave').onclick=save;
-  bar.querySelector('#cloudLogout').onclick=async()=>{await supabase.auth.signOut();version=null;localStorage.removeItem(versionKey);check()};
-  await check();
- }
-}
-</script></body>
+/* Visuaalne redaktor laaditakse ainult ?edit=1 korral; tavakülastaja ei laadi midagi lisa. */
+if(new URLSearchParams(location.search).get('edit')==='1'){const v='2';const l=document.createElement('link');l.rel='stylesheet';l.href='./tube-editor/editor.css?v='+v;document.head.append(l);const s=document.createElement('script');s.type='module';s.src='./tube-editor/editor.js?v='+v;document.body.append(s)}
+</script>
+</body>
 </html>

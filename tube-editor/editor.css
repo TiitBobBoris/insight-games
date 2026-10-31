@@ -1,0 +1,205 @@
+/* TUBE visuaalne redaktor — laaditakse ainult ?edit=1 korral. */
+:root{
+  --te-ink:#171716;--te-paper:#fbfaf7;--te-line:#dcd8cf;--te-muted:#6f6b63;
+  --te-accent:#2f6fde;--te-accent-soft:rgba(47,111,222,.12);
+  --te-ok:#1f7a45;--te-warn:#a15c00;--te-bad:#b42318;
+  --te-bar:52px;--te-radius:10px;--te-shadow:0 10px 40px rgba(20,18,14,.18),0 2px 8px rgba(20,18,14,.08);
+  --te-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Helvetica,sans-serif;
+}
+@media(pointer:coarse){:root{--te-bar:58px}}
+
+/* ---------- lehe olek redaktoris ---------- */
+body.te-on{padding-top:var(--te-bar)}
+body.te-on.te-sheet-open{padding-bottom:var(--te-sheet-h,0px)}
+body.te-on:not(.te-preview) [data-tube-id]{cursor:pointer;transition:outline-color .12s}
+body.te-on:not(.te-preview) [data-tube-id]:hover{outline:2px solid rgba(47,111,222,.55);outline-offset:3px}
+body.te-on.te-filter-text:not(.te-preview) img[data-tube-id],
+body.te-on.te-filter-image:not(.te-preview) [data-tube-id]:not(img){cursor:default;outline:none!important;opacity:.55}
+body.te-on.te-filter-text:not(.te-preview) [data-tube-id]:not(img),
+body.te-on.te-filter-image:not(.te-preview) img[data-tube-id]{outline:1px dashed rgba(47,111,222,.6);outline-offset:3px}
+body.te-on:not(.te-preview) .te-has-note{outline:2px dotted #d08a00;outline-offset:3px}
+body.te-on:not(.te-preview) .te-selected{outline:2px solid var(--te-accent)!important;outline-offset:3px;box-shadow:0 0 0 6px var(--te-accent-soft)}
+body.te-on:not(.te-preview) .te-editing{outline:2px solid var(--te-accent)!important;background:rgba(255,255,255,.08);caret-color:var(--te-accent);cursor:text!important}
+body.te-on:not(.te-preview) .te-editing:focus{outline-offset:4px}
+/* Esipildi peal olev gradient ja tekstikiht ei tohi klõpsu varastada. */
+body.te-on:not(.te-preview) .hero:after{pointer-events:none}
+body.te-on:not(.te-preview) .hero-inner{pointer-events:none}
+body.te-on:not(.te-preview) .hero-inner [data-tube-id]{pointer-events:auto}
+body.te-on:not(.te-preview) .hero-media{z-index:0}
+
+/* ---------- ühine UI ---------- */
+#teRoot,#teRoot *{box-sizing:border-box}
+#teRoot{font:14px/1.4 var(--te-font);color:var(--te-ink);-webkit-text-size-adjust:100%}
+#teRoot button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#teRoot button:disabled{opacity:.38;cursor:default}
+#teRoot :focus-visible{outline:2px solid var(--te-accent);outline-offset:2px}
+#teRoot svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.te-btn{color:var(--te-ink);display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;min-width:36px;padding:0 12px;border:1px solid transparent;border-radius:8px;background:transparent;white-space:nowrap;transition:background .12s,border-color .12s}
+.te-btn:hover:not(:disabled){background:#efece6}
+.te-btn[aria-pressed=true]{background:var(--te-ink);color:#fff}
+.te-btn.te-primary{background:var(--te-ink);color:#fff}
+.te-btn.te-primary:hover:not(:disabled){background:#33322f}
+.te-btn.te-outline{border-color:var(--te-line);background:#fff}
+.te-btn.te-danger{color:var(--te-bad)}
+.te-btn.te-block{width:100%;min-height:44px}
+@media(pointer:coarse){.te-btn{min-height:44px;min-width:44px}}
+.te-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#d08a00;color:#fff;font-size:11px;font-weight:700}
+
+/* ---------- ülemine tööriistariba ---------- */
+.te-bar{position:fixed;inset:0 0 auto 0;height:var(--te-bar);z-index:2147483000;display:flex;align-items:center;gap:6px;padding:0 10px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right));background:rgba(251,250,247,.96);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--te-line);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.te-group{display:flex;align-items:center;gap:2px;min-width:0}
+.te-left{flex:1 1 0;min-width:0}
+.te-center{flex:0 0 auto;padding:3px;border-radius:10px;background:#efece6}
+.te-center .te-btn:hover:not(:disabled):not([aria-pressed=true]){background:#e3dfd7}
+.te-right{flex:0 0 auto;justify-content:flex-end;margin-left:auto}
+.te-bar .te-btn,.te-bar .te-status{flex:none}
+.te-center{margin:0 auto}
+.te-brand{display:flex;align-items:baseline;gap:8px;min-width:0;padding:0 6px}
+.te-brand b{font:300 22px/1 "Arial Narrow","Avenir Next Condensed",Arial,sans-serif;letter-spacing:-.03em}
+.te-brand span{font-size:12px;color:var(--te-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.te-sep{width:1px;height:22px;background:var(--te-line);margin:0 4px;flex:none}
+.te-status{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border:1px solid var(--te-line);border-radius:18px;background:#fff;font-size:12.5px;white-space:nowrap;max-width:190px;color:var(--te-ink)}
+.te-status .te-dot{width:8px;height:8px;border-radius:50%;background:#9a968d;flex:none}
+.te-status .te-status-text{overflow:hidden;text-overflow:ellipsis}
+.te-status[data-state=dirty] .te-dot{background:#e6a700}
+.te-status[data-state=saving] .te-dot{background:var(--te-accent);animation:te-pulse 1s infinite}
+.te-status[data-state=saved] .te-dot{background:var(--te-ok)}
+.te-status[data-state=error] .te-dot,.te-status[data-state=conflict] .te-dot{background:var(--te-bad)}
+.te-status[data-state=conflict]{border-color:#f0b4ae;background:#fff4f2;color:var(--te-bad)}
+@keyframes te-pulse{50%{opacity:.3}}
+
+/* Kitsenevad ekraanid: sildid kaovad, vähem kasutatu liigub menüüsse „Veel”. */
+.te-menu-only{display:none}
+@media(max-width:1340px){.te-center .te-lbl,.te-undo .te-lbl{display:none}}
+@media(max-width:1040px){.te-brand span{display:none}.te-hide-l{display:none}.te-menu-only.te-show-l{display:flex}}
+@media(max-width:860px){.te-status{width:40px;max-width:40px;min-height:40px;padding:0;justify-content:center;border-radius:50%}.te-status .te-dot{width:10px;height:10px}.te-status .te-status-text{display:none}.te-right .te-lbl{display:none}}
+@media(max-width:860px) and (pointer:coarse){.te-status{width:44px;max-width:44px;min-height:44px}}
+@media(max-width:640px){.te-hide-m{display:none}.te-menu-only.te-show-m{display:flex}}
+@media(max-width:560px){.te-hide-s{display:none}.te-menu-only.te-show-s{display:flex}.te-center{display:none}}
+
+/* ---------- rippmenüü / popover ---------- */
+.te-pop{position:fixed;z-index:2147483100;min-width:240px;max-width:min(340px,calc(100vw - 16px));padding:6px;border:1px solid var(--te-line);border-radius:12px;background:#fff;box-shadow:var(--te-shadow)}
+.te-pop[hidden]{display:none}
+.te-pop .te-item{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:0 10px;border:0;border-radius:8px;background:none;text-align:left}
+.te-pop .te-item:hover{background:#f2efe9}
+.te-pop .te-item small{margin-left:auto;color:var(--te-muted);font-size:11px}
+.te-pop hr{border:0;border-top:1px solid var(--te-line);margin:6px 4px}
+.te-pop .te-pop-pad{padding:10px}
+.te-pop h4{margin:0 0 4px;font-size:14px}
+.te-pop p{margin:0 0 10px;color:var(--te-muted);font-size:12.5px}
+.te-pop input[type=email]{width:100%;min-height:42px;padding:0 12px;border:1px solid var(--te-line);border-radius:8px;font:inherit;font-size:16px;margin-bottom:8px}
+.te-pop .te-row{display:flex;gap:6px;flex-wrap:wrap}
+@media(pointer:coarse){.te-pop .te-item{min-height:48px}}
+
+/* ---------- kontekstipaneel ---------- */
+.te-panel{position:fixed;z-index:2147482900;top:calc(var(--te-bar) + 12px);right:12px;width:340px;max-height:calc(100dvh - var(--te-bar) - 24px);display:flex;flex-direction:column;border:1px solid var(--te-line);border-radius:14px;background:var(--te-paper);box-shadow:var(--te-shadow);overflow:hidden;transform:translateX(0);transition:transform .18s ease,opacity .18s ease}
+.te-panel[hidden]{display:flex;opacity:0;pointer-events:none;transform:translateX(16px)}
+.te-panel-head{display:flex;align-items:flex-start;gap:8px;padding:14px 12px 10px 16px;border-bottom:1px solid var(--te-line)}
+.te-panel-head .te-kind{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--te-muted)}
+.te-panel-head .te-name{font-weight:600;font-size:15px;margin-top:2px}
+.te-panel-head .te-btn{margin-left:auto}
+.te-panel-body{padding:14px 16px 16px;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.te-panel-body section+section{margin-top:18px;padding-top:16px;border-top:1px solid var(--te-line)}
+.te-label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--te-muted);margin:0 0 8px}
+.te-hint{color:var(--te-muted);font-size:12.5px;margin:8px 0 0}
+.te-changed{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--te-warn);margin-bottom:8px}
+.te-changed:before{content:"";width:7px;height:7px;border-radius:50%;background:#e6a700}
+.te-thumb{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:8px;background:#e5e2db;display:block}
+.te-actions{display:grid;gap:8px;margin-top:10px}
+.te-actions.te-two{grid-template-columns:1fr 1fr}
+.te-file{position:relative;overflow:hidden}
+.te-file input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:100px}
+.te-kbd{display:inline-block;padding:0 5px;border:1px solid var(--te-line);border-bottom-width:2px;border-radius:4px;font-size:11px;background:#fff}
+.te-notes{display:grid;gap:8px}
+.te-note{position:relative;padding:10px 34px 10px 12px;border-radius:8px;background:#f3efe4;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.te-note button{position:absolute;top:4px;right:4px;min-height:28px!important;min-width:28px!important;padding:0!important}
+.te-textarea{width:100%;min-height:76px;padding:10px 12px;border:1px solid var(--te-line);border-radius:8px;font:inherit;font-size:15px;resize:vertical;background:#fff}
+@media(pointer:coarse){.te-textarea{font-size:16px}}
+
+/* iPad püstiasend ja kitsamad: alumine leht, mis ei kata valitud elementi. */
+@media(max-width:1023px){
+  .te-panel{top:auto;left:0;right:0;bottom:0;width:auto;max-height:min(52dvh,460px);border-radius:16px 16px 0 0;border-bottom:0;padding-bottom:env(safe-area-inset-bottom)}
+  .te-panel[hidden]{transform:translateY(24px)}
+  .te-panel:before{content:"";position:absolute;top:6px;left:50%;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:#cfcac0}
+  .te-panel-head{padding-top:16px}
+  .te-panel.te-compact .te-panel-body{display:none}
+  .te-panel-body{display:grid;grid-template-columns:1fr;gap:0}
+}
+@media(min-width:700px) and (max-width:1023px){
+  .te-panel-body.te-split{grid-template-columns:1.1fr 1fr;column-gap:22px}
+  .te-panel-body.te-split section+section{margin-top:0;padding-top:0;border-top:0;padding-left:22px;border-left:1px solid var(--te-line)}
+}
+
+/* ---------- vihje, kui midagi pole valitud ---------- */
+.te-hintchip{position:fixed;z-index:2147482800;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:22px;background:var(--te-ink);color:#fff;font-size:13px;box-shadow:var(--te-shadow);max-width:calc(100vw - 24px)}
+.te-hintchip[hidden]{display:none}
+.te-hintchip .te-btn{color:#fff;min-height:30px;min-width:30px;padding:0 8px}
+.te-hintchip .te-btn:hover{background:#ffffff22!important}
+
+/* ---------- teated ---------- */
+.te-toasts{position:fixed;z-index:2147483300;left:50%;bottom:calc(18px + var(--te-sheet-h,0px) + env(safe-area-inset-bottom));transform:translateX(-50%);display:grid;gap:8px;width:max-content;max-width:calc(100vw - 24px)}
+.te-toast{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:12px;background:var(--te-ink);color:#fff;box-shadow:var(--te-shadow);font-size:13.5px;animation:te-in .18s ease}
+.te-toast.te-bad{background:var(--te-bad)}
+.te-toast .te-btn{color:#fff;background:transparent;border-color:#ffffff55;min-height:32px}
+.te-toast .te-btn:hover{background:#ffffff1f!important}
+@keyframes te-in{from{opacity:0;transform:translateY(8px)}}
+
+/* ---------- modaalaknad ---------- */
+.te-dialog{border:0;padding:0;border-radius:16px;background:var(--te-paper);color:var(--te-ink);box-shadow:var(--te-shadow);width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 32px);font:14px/1.45 var(--te-font)}
+.te-dialog::backdrop{background:rgba(23,23,22,.55)}
+.te-dialog[open]{display:flex;flex-direction:column}
+.te-dialog .te-dlg-head{display:flex;align-items:center;gap:10px;padding:16px 16px 12px 20px;border-bottom:1px solid var(--te-line)}
+.te-dialog .te-dlg-head h3{margin:0;font-size:17px}
+.te-dialog .te-dlg-head .te-btn:last-child{margin-left:auto}
+.te-dialog .te-dlg-body{padding:16px 20px;overflow:auto;-webkit-overflow-scrolling:touch}
+.te-dialog .te-dlg-foot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 16px 16px;border-top:1px solid var(--te-line)}
+.te-dialog p{margin:0 0 10px}
+.te-dialog ul{margin:0;padding-left:18px}
+.te-dialog .te-list li{margin:3px 0}
+.te-callout{padding:12px 14px;border-radius:10px;background:#f1ede4;margin:0 0 12px}
+.te-callout.te-bad{background:#fff1ef;color:#7a1a12}
+
+/* ---------- fotopank ---------- */
+.te-library{width:min(1180px,calc(100vw - 24px));height:min(860px,calc(100dvh - 24px))}
+.te-lib-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--te-line)}
+.te-chip{min-height:34px;padding:0 12px;border:1px solid var(--te-line);border-radius:17px;background:#fff;font-size:13px}
+.te-chip[aria-pressed=true]{background:var(--te-ink);border-color:var(--te-ink);color:#fff}
+.te-chip small{opacity:.6;margin-left:4px}
+@media(pointer:coarse){.te-chip{min-height:42px;padding:0 15px}}
+.te-lib-target{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--te-muted)}
+.te-lib-target img{width:44px;height:30px;object-fit:cover;border-radius:4px}
+.te-lib-body{flex:1;min-height:0;overflow:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.te-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+@media(max-width:600px){.te-grid{grid-template-columns:repeat(2,1fr);gap:8px}}
+.te-tile{position:relative;padding:0;border:0;border-radius:10px;overflow:hidden;background:#e5e2db;aspect-ratio:3/2}
+.te-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.te-tile:hover img{transform:scale(1.03)}
+.te-tile span{position:absolute;left:8px;bottom:6px;color:#fff;font-size:11px;text-shadow:0 1px 6px #000}
+.te-tile.te-current{box-shadow:0 0 0 3px var(--te-accent)}
+.te-skel{aspect-ratio:3/2;border-radius:10px;background:linear-gradient(90deg,#e8e5de 25%,#f2efe9 50%,#e8e5de 75%);background-size:200% 100%;animation:te-shimmer 1.2s infinite}
+@keyframes te-shimmer{to{background-position:-200% 0}}
+.te-empty{padding:50px 10px;text-align:center;color:var(--te-muted)}
+.te-viewer{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;background:#11110f;color:#fff;border-radius:16px}
+.te-viewer[hidden]{display:none}
+.te-viewer-img{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px 56px;position:relative}
+.te-viewer-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.te-viewer .te-nav{position:absolute;top:50%;transform:translateY(-50%);color:#fff;background:#ffffff14;border-radius:50%;width:44px;height:44px}
+.te-viewer .te-nav.te-prev{left:8px}.te-viewer .te-nav.te-next{right:8px}
+.te-viewer-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #ffffff1f}
+.te-viewer-bar .te-meta{font-size:13px;color:#d8d5ce;margin-right:auto}
+.te-viewer-bar .te-btn{color:#fff}
+.te-viewer-bar .te-btn:hover:not(:disabled){background:#ffffff1a}
+.te-viewer-bar .te-btn.te-primary{background:#fff;color:var(--te-ink)}
+.te-viewer-bar .te-btn.te-primary:hover:not(:disabled){background:#e9e6df}
+.te-viewer-bar .te-btn.te-outline{background:transparent;border-color:#ffffff40}
+
+/* ---------- eelvaade ---------- */
+body.te-preview{padding-top:0}
+body.te-preview .te-bar,body.te-preview .te-panel,body.te-preview .te-hintchip{display:none}
+.te-preview-pill{position:fixed;z-index:2147483000;top:calc(12px + env(safe-area-inset-top));right:12px;display:none;align-items:center;gap:6px;padding:6px 6px 6px 14px;border-radius:24px;background:var(--te-ink);color:#fff;box-shadow:var(--te-shadow);font-size:13px}
+body.te-preview .te-preview-pill{display:flex}
+.te-preview-pill .te-btn{background:#fff;color:var(--te-ink)}
+
+@media(prefers-reduced-motion:reduce){#teRoot *,.te-panel{transition:none!important;animation:none!important}}
+.te-badge[hidden]{display:none}
+@media(max-width:1023px){.te-thumb{max-height:170px}}
