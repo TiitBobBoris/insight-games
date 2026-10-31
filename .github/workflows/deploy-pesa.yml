@@ -18,16 +18,25 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      HAS_SFTP: ${{ secrets.ELKDATA_SFTP_HOST != '' }}
     steps:
+      - name: SFTP andmed puudu -> jäta vahele
+        if: env.HAS_SFTP != 'true'
+        run: echo "::notice::ELKDATA_SFTP_* saladused puuduvad, üleslaadimine jäeti vahele."
+
       - uses: actions/checkout@v4
+        if: env.HAS_SFTP == 'true'
 
       - name: Koosta avalik kaust
+        if: env.HAS_SFTP == 'true'
         run: |
           mkdir -p dist
           cp index.html dist/
           cp -r tube-assets tube-editor dist/
 
       - name: Lae Elkdatasse (SFTP)
+        if: env.HAS_SFTP == 'true'
         env:
           HOST: ${{ secrets.ELKDATA_SFTP_HOST }}
           USER: ${{ secrets.ELKDATA_SFTP_USER }}
@@ -43,6 +52,7 @@ jobs:
             bye"
 
       - name: Kontrolli
+        if: env.HAS_SFTP == 'true'
         run: |
           code=$(curl -s -o /dev/null -w '%{http_code}' https://www.sportsport.ee/pesa/)
           echo "https://www.sportsport.ee/pesa/ -> $code"

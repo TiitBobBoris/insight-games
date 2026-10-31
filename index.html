@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Pesa majad — arhitekti loodud kodu</title>
+<title>Pesa majad – arhitekti loodud kodu sinu krundile</title>
 <link rel="canonical" href="https://www.sportsport.ee/pesa/">
-<meta name="description" content="Vali läbiproovitud Pesa maja. Kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.">
+<meta name="description" content="Vali üks neljast Pesa majast (89,7–123,4 m²). Kohandame selle sinu perele ja krundile ning viime ehitusloa menetluseni. Pakkumine 24 h.">
 <style>
 :root{
   --paper:#f1efe9;--ink:#171716;--muted:#706d66;--line:#c9c5bc;
@@ -96,6 +96,23 @@ button{border-radius:0}
 .conditional.hidden{display:none}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#555;margin:20px 0}
 .status{display:none;margin-top:20px;padding:18px;border:1px solid #8d8a84;background:#f4f2ed;line-height:1.5}
+.hero-facts{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:15px}
+.hero-facts li:before{content:"✓ ";font-weight:700}
+.model-desc{margin:12px 0 0;font-size:16px;line-height:1.45;color:var(--muted)}
+.price-note{margin-top:22px;font-size:17px;line-height:1.55}
+.faq-list{border-top:1px solid var(--line)}
+.faq-list details{border-bottom:1px solid var(--line);padding:20px 0}
+.faq-list summary{cursor:pointer;font-size:21px;list-style:none;display:flex;justify-content:space-between;gap:20px}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:after{content:"+";font-size:26px;line-height:1}
+.faq-list details[open] summary:after{content:"–"}
+.faq-list p{margin:14px 0 0;max-width:760px;line-height:1.6;color:var(--muted)}
+.sticky-cta{display:none}
+@media(max-width:850px){
+  .sticky-cta{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;justify-content:center;box-shadow:0 6px 24px #0005;transition:transform .25s,opacity .25s}
+  .sticky-cta.hide{transform:translateY(140%);opacity:0;pointer-events:none}
+  .hero-facts{font-size:14px;flex-direction:column}
+}
 .status.show{display:block}
 .status.ok{border-color:#3d6b45;background:#eef4ee}
 .status.error{border-color:#9b3b30;background:#f8ecea}
@@ -145,6 +162,7 @@ button{border-radius:0}
       <h1 data-tube-id="hero-title" class="display">Hubane ja valgusküllane<br>oma kodu.</h1>
       <div data-tube-id="hero-subtitle" class="hero-lead display">Ilma nullist alustamata.</div>
       <p data-tube-id="hero-body">Vali läbiproovitud Pesa maja. Meie kohandame selle sinu perele ja krundile ning juhime projekti ehitusloa menetluseni.</p>
+      <ul class="hero-facts" data-tube-id="hero-facts"><li>Ligi 10 valminud Pesa maja Eestis</li><li>Eelprojekt ja ehitusloa projekt alates 4500 € + km</li><li>Pakkumine 24 tunni jooksul</li></ul>
       <a data-tube-id="extra-text-7" class="btn light" href="#offer">Küsi pakkumist →</a>
       <span data-tube-id="extra-text-8" class="response-note">Vastame ööpäeva jooksul.</span>
     </div>
@@ -158,7 +176,7 @@ button{border-radius:0}
         <div data-tube-id="extra-text-9" class="eyebrow">Valminud Pesa majad</div>
         <h2 data-tube-id="built-title" class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2>
       </div>
-      <p data-tube-id="built-description">Pesa majad ei ole ainult arhitektuurne idee. Need majad on Eestis päriselt valmis ehitatud erinevatele kruntidele vastavalt erinevate perede vajadustele.</p>
+      <p data-tube-id="built-description">Pesa majad ei ole ainult arhitektuurne idee. Eestis on valminud ligi 10 Pesa maja – igaüks oma krundile ja oma pere vajadustele kohandatud.</p>
     </div>
     <div class="proof">
       <div class="shot big"><img loading="lazy" decoding="async" data-tube-id="nomme-image" src="./tube-assets/nomme-front.webp" alt="Nõmme Pesa maja"><span data-tube-id="extra-text-10" class="caption">VALGUSKÜLLANE ELAMU NÕMMEL</span></div>
@@ -201,12 +219,12 @@ button{border-radius:0}
     <div data-tube-id="extra-text-25" class="eyebrow">Vali arhitektuur</div>
     <h2 data-tube-id="models-title" class="display">Milline Pesa maja sobib sinu perele?</h2>
     <div class="model-grid">
-      <article class="model" data-model="PESA 01"><img loading="lazy" decoding="async" data-tube-id="model-1-image" src="./tube-assets/model-1.webp" alt="PESA 01"><div class="model-info"><b data-tube-id="model-1-title">PESA 01</b><small data-tube-id="extra-text-26">3 suurust saadaval</small><div data-tube-id="extra-text-27">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-28" class="model-more">Vaata plaane →</button></div></article>
-      <article class="model" data-model="PESA 02"><img loading="lazy" decoding="async" data-tube-id="model-2-image" src="./tube-assets/model-2.webp" alt="PESA 02"><div class="model-info"><b data-tube-id="model-2-title">PESA 02</b><small data-tube-id="extra-text-29">3 suurust saadaval</small><div data-tube-id="extra-text-30">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-31" class="model-more">Vaata plaane →</button></div></article>
-      <article class="model" data-model="PESA 03"><img loading="lazy" decoding="async" data-tube-id="model-3-image" src="./tube-assets/model-3.webp" alt="PESA 03"><div class="model-info"><b data-tube-id="model-3-title">PESA 03</b><small data-tube-id="extra-text-32">3 suurust saadaval</small><div data-tube-id="extra-text-33">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-34" class="model-more">Vaata plaane →</button></div></article>
-      <article class="model" data-model="PESA 04"><img loading="lazy" decoding="async" data-tube-id="model-4-image" src="./tube-assets/model-4.webp" alt="PESA 04"><div class="model-info"><b data-tube-id="model-4-title">PESA 04</b><small data-tube-id="extra-text-35">3 suurust saadaval</small><div data-tube-id="extra-text-36">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-37" class="model-more">Vaata plaane →</button></div></article>
+      <article class="model" data-model="PESA 01"><img loading="lazy" decoding="async" data-tube-id="model-1-image" src="./tube-assets/model-1.webp" alt="PESA 01"><div class="model-info"><b data-tube-id="model-1-title">PESA 01</b><p class="model-desc" data-tube-id="model-1-desc">Ühepoolse kaldega katus, kõrged klaasseinad ja katusealune terrass elutoa ees.</p><small data-tube-id="extra-text-26">2–4 magamistuba · 3 suurust</small><div data-tube-id="extra-text-27">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-28" class="model-more">Vaata plaane →</button></div></article>
+      <article class="model" data-model="PESA 02"><img loading="lazy" decoding="async" data-tube-id="model-2-image" src="./tube-assets/model-2.webp" alt="PESA 02"><div class="model-info"><b data-tube-id="model-2-title">PESA 02</b><p class="model-desc" data-tube-id="model-2-desc">Klassikaline viilkatus ja katusealune terrass kogu aiapoolse fassaadi ulatuses.</p><small data-tube-id="extra-text-29">2–4 magamistuba · 3 suurust</small><div data-tube-id="extra-text-30">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-31" class="model-more">Vaata plaane →</button></div></article>
+      <article class="model" data-model="PESA 03"><img loading="lazy" decoding="async" data-tube-id="model-3-image" src="./tube-assets/model-3.webp" alt="PESA 03"><div class="model-info"><b data-tube-id="model-3-title">PESA 03</b><p class="model-desc" data-tube-id="model-3-desc">Viilkatus ja suur terrass maja otsas – sobib, kui krundi parim vaade avaneb otsast.</p><small data-tube-id="extra-text-32">2–4 magamistuba · 3 suurust</small><div data-tube-id="extra-text-33">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-34" class="model-more">Vaata plaane →</button></div></article>
+      <article class="model" data-model="PESA 04"><img loading="lazy" decoding="async" data-tube-id="model-4-image" src="./tube-assets/model-4.webp" alt="PESA 04"><div class="model-info"><b data-tube-id="model-4-title">PESA 04</b><p class="model-desc" data-tube-id="model-4-desc">Kombineeritud katus: kõrge klaasitud elutoaosa ja madalam magamistubade tiib.</p><small data-tube-id="extra-text-35">2–4 magamistuba · 3 suurust</small><div data-tube-id="extra-text-36">89,7 / 109,7 / 123,4 m²</div><button type="button" data-tube-id="extra-text-37" class="model-more">Vaata plaane →</button></div></article>
     </div>
-    <div class="sizes-note"><strong data-tube-id="sizes-title" class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p data-tube-id="sizes-description">Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div>
+    <div class="sizes-note"><strong data-tube-id="sizes-title" class="display">Üks arhitektuur. Kolm põhisuurust.</strong><p data-tube-id="sizes-description">89,7 m² – 2 magamistuba, 109,7 m² – 3 magamistuba, 123,4 m² – 4 magamistuba. Valime pere vajaduste järgi sobiva lähtekoha ning kohandame lahendust edasi krundi ja sinu soovidega.</p></div>
   </div>
 </section>
 
@@ -219,7 +237,24 @@ button{border-radius:0}
     <div class="process-grid">
       <div class="step"><span data-tube-id="extra-text-39">01</span><h3 data-tube-id="extra-text-40">Vali lähtekoht</h3><p data-tube-id="process-step-1">Vaata Pesa majade lahendusi ja põhisuurusi. Valik ei pea kohe valmis ega lõplik olema.</p></div>
       <div class="step"><span data-tube-id="extra-text-41">02</span><h3 data-tube-id="extra-text-42">Saada päring</h3><p data-tube-id="process-step-2">Anna meile krundi olukord, lähteandmed ja olulisemad erisoovid.</p></div>
-      <div class="step"><span data-tube-id="extra-text-43">03</span><h3 data-tube-id="extra-text-44">Vastame ööpäeva jooksul</h3><p data-tube-id="process-step-3">Saadame konkreetse pakkumise ja lepime Teie soovil vajadusel kokku näost näkku vestluse.</p></div>
+      <div class="step"><span data-tube-id="extra-text-43">03</span><h3 data-tube-id="extra-text-44">Vastame ööpäeva jooksul</h3><p data-tube-id="process-step-3">Saadame konkreetse pakkumise ja lepime sinu soovil kokku näost näkku vestluse.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div data-tube-id="faq-eyebrow" class="eyebrow">Korduma kippuvad küsimused</div><h2 data-tube-id="faq-title" class="display">Enne päringut tasub teada.</h2></div>
+      <p data-tube-id="faq-description">Kui sinu küsimust siin pole, kirjuta see pakkumise vormi – vastame ööpäeva jooksul.</p>
+    </div>
+    <div class="faq-list">
+      <details><summary data-tube-id="faq-q1">Kui palju Pesa maja projekt maksab?</summary><p data-tube-id="faq-a1">Eelprojekt ja ehitusloa projekt maksavad alates 4500 € + km. Täpne hind sõltub kohandustest ja krundist – selle saad pakkumisest 24 tunni jooksul pärast päringut.</p></details>
+      <details><summary data-tube-id="faq-q2">Kas te aitate ehitusloaga?</summary><p data-tube-id="faq-a2">Jah. Koostame eelprojekti ja ehitusloa projekti ning juhime projekti ehitusloa menetluseni.</p></details>
+      <details><summary data-tube-id="faq-q3">Kui palju saab maja kohandada?</summary><p data-tube-id="faq-a3">Lähtekohaks on üks neljast majast ja kolmest suurusest. Plaani ja maja asendit krundil kohandame sinu pere ja krundi järgi. Muudatuste mõju hinnale näed pakkumisest.</p></details>
+      <details><summary data-tube-id="faq-q4">Mitu magamistuba majades on?</summary><p data-tube-id="faq-a4">89,7 m² majas on 2 magamistuba, 109,7 m² majas 3 ja 123,4 m² majas 4. Igas majas on avatud köök-elutuba, vannituba, eraldi WC, tehnoruum ja garderoob.</p></details>
+      <details><summary data-tube-id="faq-q5">Mul pole veel krunti. Kas võin ikka päringu saata?</summary><p data-tube-id="faq-a5">Jah. Vali vormis „Alles otsin krunti“ – aadressi võid lisada hiljem.</p></details>
+      <details><summary data-tube-id="faq-q6">Kas Pesa maju on päriselt ehitatud?</summary><p data-tube-id="faq-a6">Jah. Eestis on valminud ligi 10 Pesa maja. Nõmme maja omanike kogemust näed lehel olevast videost.</p></details>
     </div>
   </div>
 </section>
@@ -231,6 +266,7 @@ button{border-radius:0}
       <h2 data-tube-id="offer-title" class="display">Küsi Pesa maja pakkumist.</h2>
       <p data-tube-id="offer-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle ning saadame sulle konkreetse pakkumise.</p>
       <div class="promise"><strong data-tube-id="extra-text-46">Vastame ööpäeva jooksul.</strong><br><span data-tube-id="promise-note">Päring ei kohusta sind midagi tellima.</span></div>
+      <p class="price-note" data-tube-id="offer-price"><strong>Eelprojekt ja ehitusloa projekt alates 4500 € + km.</strong><br>Täpse hinna sinu krundile ja soovidele saad pakkumisest.</p>
     </div>
 
     <form class="form-card" id="offerForm">
@@ -253,7 +289,7 @@ button{border-radius:0}
       </div>
 
       <div class="field conditional" id="plotAddressField">
-        <label data-tube-id="extra-text-54" for="plot">Krundi aadress või katastritunnus</label>
+        <label data-tube-id="extra-text-54" for="plot">Krundi aadress (valikuline – võid lisada ka hiljem)</label>
         <input id="plot" name="plot" autocomplete="street-address" placeholder="Näiteks Lepiku 3, Tartu">
       </div>
 
@@ -298,6 +334,8 @@ button{border-radius:0}
   </div>
 </section>
 
+<a data-tube-id="sticky-cta" class="btn sticky-cta" href="#offer">Küsi pakkumist · 24 h →</a>
+
 <section class="section final">
   <div class="wrap">
     <div data-tube-id="extra-text-60" class="eyebrow">Pesa by Projektbüroo Sport</div>
@@ -321,7 +359,6 @@ document.querySelectorAll('#plotChoices .choice').forEach(btn=>{
     plotStatus.value=btn.dataset.value;
     const searching=btn.dataset.value==='Alles otsin krunti';
     plotField.classList.toggle('hidden',searching);
-    plotInput.required=!searching;
     if(searching) plotInput.value='';
   });
 });
@@ -333,6 +370,9 @@ document.querySelectorAll('.model').forEach((card,i)=>{const open=()=>{selectedM
 /* Pakkumise lingid: keri vormini ja pane kursor esimesse välja, et saaks kohe kirjutada. */
 function goToOffer(e){if(e)e.preventDefault();const t=document.getElementById('offer');t.scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#offer');setTimeout(()=>document.getElementById('name').focus({preventScroll:true}),600)}
 document.querySelectorAll('a[href="#offer"]').forEach(a=>a.addEventListener('click',goToOffer));
+/* Telefonis kleepuv nupp: peidus esilehel ja siis, kui pakkumise vorm on juba ekraanil. */
+const sticky=document.querySelector('.sticky-cta');
+if(sticky){const hero=document.querySelector('.hero'),offer=document.getElementById('offer');const upd=()=>{const h=hero.getBoundingClientRect(),o=offer.getBoundingClientRect(),vh=innerHeight;sticky.classList.toggle('hide',h.bottom>vh*0.35||(o.top<vh*0.85&&o.bottom>0))};addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd()}
 document.getElementById('tubeOffer').onclick=()=>{document.getElementById('model').value='PESA 0'+(selectedModel+1);document.getElementById('size').value=sizes[selectedSize];dialog.close();goToOffer()};
 /* Pakkumise päring: salvestub Supabase'i tabelisse tube_offer_requests, seejärel saadab
    funktsioon tube-offer-notify Tiidule e-kirja. Kui salvestamine ebaõnnestub, jääb varuks mailto. */
@@ -347,7 +387,7 @@ function offerFields(data){
 function offerMailto(r){
   const body='Pesa maja pakkumise päring\n\n'+
     'Nimi: '+r.name+'\nE-post: '+r.email+'\nTelefon: '+r.phone+'\n'+
-    'Krundi olukord: '+r.plot_status+'\nKrundi aadress / katastritunnus: '+(r.plot||'—')+'\n'+
+    'Krundi olukord: '+r.plot_status+'\nKrundi aadress: '+(r.plot||'—')+'\n'+
     'Detailplaneering / projekteerimistingimused: '+r.planning+'\n'+
     'Pesa maja: '+r.model+'\nSuurus: '+r.size+'\nErisoovid: '+(r.notes||'—');
   return 'mailto:tiit@sportsport.ee?subject='+encodeURIComponent('Pesa maja pakkumise päring — '+r.name)+'&body='+encodeURIComponent(body);
@@ -372,7 +412,7 @@ form.addEventListener('submit',async e=>{
     // Teavitus on eraldi samm: kui see ebaõnnestub, on päring ikkagi salvestatud ja kiri läheb järgmise päringuga.
     fetch(SB_URL+'/functions/v1/tube-offer-notify',{method:'POST',keepalive:true,
       headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:'{}'}).catch(()=>{});
-    form.reset();plotField.classList.remove('hidden');plotInput.required=true;
+    form.reset();plotField.classList.remove('hidden');
     document.querySelectorAll('#plotChoices .choice').forEach((b,i)=>b.classList.toggle('active',i===0));
     plotStatus.value='Krunt on olemas';
     showStatus('ok','<strong>Aitäh, '+esc(r.name)+'! Päring jõudis meieni.</strong><br>Vastame ööpäeva jooksul aadressile '+esc(r.email)+'.');
