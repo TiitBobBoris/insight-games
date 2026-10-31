@@ -1,4 +1,4 @@
-// TUBE pakkumise päringu teavitus.
+// Pesa maja (endine TUBE) pakkumise päringu teavitus.
 // Brauser lisab rea tabelisse tube_offer_requests (anon insert) ja kutsub seejärel seda funktsiooni.
 // Funktsioon saadab e-kirja KÕIGI veel teavitamata ridade kohta (viimased 14 päeva), nii et
 // vahele jäänud kutse saab järgmise päringuga tasa. Sisendit ei usaldata – read loetakse andmebaasist.
@@ -6,7 +6,7 @@
 // Secret'id (Supabase → Edge Functions → Secrets):
 //   RESEND_API_KEY   – kohustuslik
 //   TUBE_OFFER_TO    – vaikimisi tiit@sportsport.ee
-//   TUBE_OFFER_FROM  – vaikimisi "TUBE päringud <onboarding@resend.dev>" (kuni oma domeen on Resendis kinnitatud)
+//   TUBE_OFFER_FROM  – vaikimisi "Pesa majad <onboarding@resend.dev>" (kuni oma domeen on Resendis kinnitatud)
 import { createClient } from 'npm:@supabase/supabase-js@2.49.10';
 
 const cors = {
@@ -26,7 +26,7 @@ type Row = {
 function mailText(r: Row) {
   const when = new Date(r.created_at).toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' });
   return [
-    'Uus TUBE pakkumise päring',
+    'Uus Pesa maja pakkumise päring',
     '',
     `Nimi: ${r.name}`,
     `E-post: ${r.email}`,
@@ -34,7 +34,7 @@ function mailText(r: Row) {
     `Krundi olukord: ${r.plot_status || '—'}`,
     `Krundi aadress / katastritunnus: ${r.plot || '—'}`,
     `Detailplaneering / projekteerimistingimused: ${r.planning || '—'}`,
-    `TUBE variant: ${r.model || '—'}`,
+    `Pesa maja: ${r.model || '—'}`,
     `Suurus: ${r.size || '—'}`,
     `Erisoovid: ${r.notes || '—'}`,
     '',
@@ -51,10 +51,10 @@ async function sendMail(r: Row, key: string) {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: Deno.env.get('TUBE_OFFER_FROM') || 'TUBE päringud <onboarding@resend.dev>',
+      from: Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>',
       to: [Deno.env.get('TUBE_OFFER_TO') || 'tiit@sportsport.ee'],
       reply_to: r.email,
-      subject: `TUBE pakkumise päring — ${r.name}${r.model && r.model !== 'Pole veel otsustanud' ? ' · ' + r.model : ''}`,
+      subject: `Pesa maja pakkumise päring — ${r.name}${r.model && r.model !== 'Pole veel otsustanud' ? ' · ' + r.model : ''}`,
       text: mailText(r),
     }),
   });
