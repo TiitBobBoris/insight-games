@@ -1,0 +1,55 @@
+name: Transfer TUBE plans (encrypted)
+on:
+  push:
+    branches: [tmp/tube-plan-transfer]
+    paths: [.github/workflows/tube-plan-transfer.yml]
+permissions:
+  contents: write
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: tmp/tube-plan-transfer }
+      - name: Download and encrypt (only encrypted data is committed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src
+          curl -L --fail --retry 2 -sS 'https://ucf87e6a712ef46b26274ec8ac34.dl.dropboxusercontent.com/cd/0/get/DLAGQbPxpLo-eAF6rECim2V889kIuKrFBSeoXsK0tLjFm5Xsk0a1mhQ_91U9pu4js-UuwzeWUH2WvdAtFbBpeWLCPiVUzRaC9zbIU39P9gUfh9ybmJW8MbOiVyiks4-_oD67LDRZVgVi77R0T0TIY7uoRsZEEEEAW-MCKkBt3WRwKg/file?c_luid=0bf567ce' -o src/m1-s1.pdf
+          curl -L --fail --retry 2 -sS 'https://ucca0217b08f91ec2bc983c006e7.dl.dropboxusercontent.com/cd/0/get/DLDEnboiFjZ60l6uDemxeheEMkJq2-CW99r8lPgXPNk43y_np0MxSiSG-Zs1mLb4VWprDNebyQ9UVY_EoQ_KBpW16ALcCk9lnfxaWiyUiTGMbu6mVXmU1Ep4SG8nFKf0zCi3xkB0R3owOgQ_5z4Fp_z6dsMhg-oSEnKA1xlyD12oww/file?c_luid=0bf567ce' -o src/m1-s2.pdf
+          curl -L --fail --retry 2 -sS 'https://uc451f7eafe464e3d75a2d6c641d.dl.dropboxusercontent.com/cd/0/get/DLDOhHfzldapGC6y4HLyUxFm8yOSz2YKpvMfH-jDlNO0z1rd6Zb8lCPhmTzpzPQEBk9zVQSRjgubdG9UKfhPWR-gPRcCGUmhaVO9V7QSITPl2V_NvZ905TGBbn4F125jbKAo7zsXuS4suf-5u1A8Bm_37FlJ1veve73LafWyEAR30A/file?c_luid=0bf567ce' -o src/m1-s3.pdf
+          curl -L --fail --retry 2 -sS 'https://ucf2e4d7c789824e15b2931ae36a.dl.dropboxusercontent.com/cd/0/get/DLBEnIdh-Yf1nCeHsFi09Xvwu64giKSPhqLCUQWvmpVlmAC4dYYynL9eyXmkwE4POS72nkHQ6BmglLr2Y2QUiMCihDSHogfiA88IKfflhMn67GCgixEtOaWwON2HsN4nHsO42kR5glu8adUqP0JVThNCKXPbDaHW8rvyHaeE2D2yBQ/file?c_luid=0bf567ce' -o src/m2-s1.pdf
+          curl -L --fail --retry 2 -sS 'https://uc42f3ca6cec0f7fa25e689de7a6.dl.dropboxusercontent.com/cd/0/get/DLAUe3eG5gGSCJWgNrtvDpSbjnMt9pFJE65wqzK7GHJQ0d4E2CPBlGh72p3MKNsgmWZg5BeMYK5gvoLbmQUnWlJ5xxGhwKBlOL1OhQTnPxIy8o-B11KshaCm_EELm1KD_P4cjp6ztAp_3xbFL5t4B2-kmMn1ODaZh9a-aVTJNbsufQ/file?c_luid=0bf567ce' -o src/m2-s2.pdf
+          curl -L --fail --retry 2 -sS 'https://uc396cdcc0994874298bc0998a1e.dl.dropboxusercontent.com/cd/0/get/DLBKp80Y_3wKXoly66sybINF5p4FejHm-WzxiieGvTyIQgC-hVHPEXWDUNyvBrIa3e2iYcO-c3Hll_oc90NBGFKx7l_ZPRJU-hVscSNbFMpfic3dUINokBFmiu9NlduYJ4TZJBD3BF3POIfwYrZH_Kb3sRjbzgM_LqoJXp9kRbQM7g/file?c_luid=0bf567ce' -o src/m2-s3.pdf
+          curl -L --fail --retry 2 -sS 'https://uc4345dfbe188a0e1d9def81eeb8.dl.dropboxusercontent.com/cd/0/get/DLDXHN5plXXdn2n5YEjh-_2mDEMnzm-lIzONXCEng1WdF5MrnmJQmJdnRLAdXT_ZARZm4CvJrig28oqQ44kXMPuBuc4mEmWt2UQd1-L7DRd_oxqMMMSazNt2R3w6Ulfx9utJyAllsFKhY_v2Ny7g_v8lWicey9p0DrG1Z1z4bPqquw/file?c_luid=0bf567ce' -o src/m3-s1.pdf
+          curl -L --fail --retry 2 -sS 'https://uc7af9bab195bb683f0d65cc3923.dl.dropboxusercontent.com/cd/0/get/DLBlq0GnWAcKZ71cbHf9Yw-ftqeKYiFCBaXtHhBbMzD2apvh3vuPXE1r14I574CQDc_aHNz3ruAgNCZUR9CPvZYR29MuG7UpV66o-ukMeAjgaLIWWUxJsQA24yrsaWRK5ByZWP0scFphf1TMguFid-TAJFOShFkGxYj8f3jJWdQBqw/file?c_luid=0bf567ce' -o src/m3-s2.pdf
+          curl -L --fail --retry 2 -sS 'https://uc22a4ce77555d2564e9ea1ed835.dl.dropboxusercontent.com/cd/0/get/DLAAyrpIOytYYZZnn-6YfJtP_ox9hQ2k7yW1T2nxr7qfHPBxIOlyxCE1ndAK2Np1J256Xcspks4U5nVC_NyRtxP6rezLMmazxGitKCg06aGZf7sdjLfcsZIR54ASgrSSLFfu7TmCet5teYYV5TDdChiinYlT9QUUakQRJ1S9ctWTZw/file?c_luid=0bf567ce' -o src/m3-s3.pdf
+          curl -L --fail --retry 2 -sS 'https://ucb0ac86664338aaf8971e9e97bc.dl.dropboxusercontent.com/cd/0/get/DLBCIqamJEHtQlYKkfhnZuyVd-b70T1ZHWOsfdHap0it-U8O15Uzs0qMRx4xLX2UGQIcYQVPLPzhwr3WlP2rLOaFyPUHsBd1UpFNVRYFr__iAS4Gv5aGxth4NNY-pRD8G1JvYv5wx_TSN2p2BwLjrpLZtxJG7nxlV5Ti1CK1B-2zWA/file?c_luid=0bf567ce' -o src/m4-s1.pdf
+          curl -L --fail --retry 2 -sS 'https://uc0c943def03b1f8310e06355da4.dl.dropboxusercontent.com/cd/0/get/DLAYfB7yu0DtTqksfuSVYe4nt_oRfBiB2eJoeopSJprPM8EHYBHy9bBk_XrwfPeR1U1ajsXsmjOg1ZW7rJBOZ1jLXeadGxOP_k6WK0-quJcFmp7W9euG_GMcQqwFpDNU9z0i7p1KSAg_jEezWZ5q1fFxj4hbCBZgBGs27z7xHlMpPA/file?c_luid=0bf567ce' -o src/m4-s2.pdf
+          curl -L --fail --retry 2 -sS 'https://uc5f541babcfbfc4cebb6b695604.dl.dropboxusercontent.com/cd/0/get/DLBTI3fipd_smRlqAuWHLIhfuwFSK3q5_vVSYiHONOMo5PR9r_P48oE-mAd3UpoHj_kOEiFwjc3S-rpjchhpuFWw6qg9RTN2YSmF8RQ5wRq1Glw-tAkd004CZMl8MEdm1VsIV7FGG1ilocoIrm3RZoMEWnuiypfcemj4tU0ewnlb1g/file?c_luid=0bf567ce' -o src/m4-s3.pdf
+          ls -l src
+          cat > pub.pem <<'KEY'
+          -----BEGIN PUBLIC KEY-----
+          MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAw8TIKuCPDykwzuymgBoQ
+          fvDu8+3v2BL3TynihRxMjmtH6o6gCYXKVaxiQi4TrEbJsCpZHgNdvJoXkjnfuJAb
+          fyiZTH/HiENQjJVVpT8whIOT4dwMiskIOK6SGG2z4UIzzVROeaKl64uTPHzr2k3t
+          DiWHLqiMC6eMfc9X3KGoRSvHSOBPhyHI4ZvM/tHs2xoPYoSEE/SjWEYEPZBU+C6V
+          mkNCG67XAc02joRLoK7sGX6Ka1VHtcmXitPoQeMVYioj/scmePU+2bnjwWD6+RU1
+          cIevLKJLm+XjH2v19w+rJhK+rEs5PrMmhwmCY4DLY22aHtrxvvPcGWbENJoDzohJ
+          xMFor2j51dX8IhrKZqXXvlTmlbK+St2scboYUQGORHUb9OX7Z/+v0LNCfPk6LoaU
+          QhFIqlMHm58fqAL5lnZ6QeM5MCDq7jDT8RD8uNUVQfrfOOLAEnvzfbch5aGCIexc
+          RxEDhvnIUKCEaOGELBruFc4pkxzkuvsF0wYsLYOOeZsTAgMBAAE=
+          -----END PUBLIC KEY-----
+          KEY
+          tar czf plans.tgz src
+          openssl rand -hex 32 > k.txt
+          openssl enc -aes-256-cbc -pbkdf2 -salt -in plans.tgz -out plans.tgz.enc -pass file:k.txt
+          openssl pkeyutl -encrypt -pubin -inkey pub.pem -in k.txt -out key.enc
+          mkdir -p transfer && mv plans.tgz.enc key.enc transfer/
+          rm -rf src plans.tgz k.txt pub.pem
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add transfer
+          git commit -m 'encrypted transfer [skip ci]'
+          git push origin HEAD:tmp/tube-plan-transfer
