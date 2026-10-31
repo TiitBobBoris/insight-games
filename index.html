@@ -532,5 +532,53 @@ fetch('./tube-assets/photo-library/manifest.json',{cache:'no-store'}).then(r=>{i
  if(gallery.classList.contains('open'))renderLocal();
 }).catch(()=>{b.title='Fotod on Dropboxi eelvaadetena; püsivate failide import käib.'});
 })();
+</script><script type="module">
+if(new URLSearchParams(location.search).get('edit')==='1'){
+ const panel=document.getElementById('tubeEditor');
+ if(panel){
+  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.10');
+  const supabase=createClient('https://xlhtavzsanlikmxrddrb.supabase.co','sb_publishable_qIgkHTONrtkXj1CjDUofWw_erFDQGo3');
+  const key='tube-editor-draft-v1',bar=document.createElement('div');
+  bar.style.cssText='padding:12px;border:1px solid #bcb8af;margin:10px 0;background:#fff';
+  bar.innerHTML='<strong>Pilvesalvestus</strong><p id="cloudState" style="font-size:12px">Kontrollin sisselogimist…</p><input id="cloudEmail" type="email" placeholder="tiit@sportsport.ee" style="width:100%;padding:10px;margin-bottom:8px"><div style="display:flex;flex-wrap:wrap;gap:5px"><button id="cloudLogin">Saada sisselogimislink</button><button id="cloudLoad">Laadi pilvest</button><button id="cloudSave">Salvesta pilve</button><button id="cloudLogout">Logi välja</button></div>';
+  panel.querySelector('.te-body').prepend(bar);
+  const state=bar.querySelector('#cloudState');
+  let version=null;
+  async function check(){const {data}=await supabase.auth.getUser();state.textContent=data.user?'Sisse logitud: '+data.user.email:'Logi sisse SPORTi e-postiga. Kohalik mustand säilib.';return data.user}
+  async function load(){
+   if(!await check())return;
+   const {data,error}=await supabase.from('tube_editor_drafts').select('content,version,updated_at').eq('id','tube-main').single();
+   if(error){state.textContent='Lugemine ebaõnnestus: '+error.message;return}
+   const local=localStorage.getItem(key);
+   if(local&&!confirm('Pilvemustand asendab selles brauseris oleva mustandi. Kas jätkame?'))return;
+   localStorage.setItem(key,JSON.stringify(data.content));version=data.version;
+   state.textContent='Pilvemustand laaditud. Värskendan…';location.reload();
+  }
+  async function save(){
+   const user=await check();if(!user)return;
+   let content;try{content=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){state.textContent='Vigane kohalik mustand';return}
+   if(!content.text||!content.images||!content.comments){state.textContent='Mustandi vorming vigane';return}
+   const {data:latest,error:readError}=await supabase.from('tube_editor_drafts').select('version').eq('id','tube-main').single();
+   if(readError){state.textContent=readError.message;return}
+   if(version!==null&&latest.version!==version){state.textContent='Teises seadmes on uuem versioon. Ekspordi oma mustand enne pilvest laadimist!';return}
+   if(version===null&&!confirm('Asendad pilves oleva mustandi selle seadme mustandiga. Kas jätkame?'))return;
+   const {data,error}=await supabase.from('tube_editor_drafts').update({content,version:latest.version+1,updated_at:new Date().toISOString(),updated_by:user.id}).eq('id','tube-main').eq('version',latest.version).select('version').single();
+   if(error){state.textContent='Salvestus ebaõnnestus: '+error.message;return}
+   version=data.version;state.textContent='Pilve salvestatud. Versioon '+version;
+  }
+  bar.querySelector('#cloudLogin').onclick=async()=>{
+   const email=bar.querySelector('#cloudEmail').value.trim().toLowerCase();
+   if(!email.endsWith('@sportsport.ee')){state.textContent='Kasuta SPORTi e-posti.';return}
+   const {error}=await supabase.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.origin+location.pathname+'?edit=1'}});
+   state.textContent=error?'Sisselogimine ebaõnnestus: '+error.message:'Sisselogimislink saadetud. Ava e-kirjas olev link.';
+  };
+  bar.querySelector('#cloudLoad').onclick=load;
+  bar.querySelector('#cloudSave').onclick=save;
+  bar.querySelector('#cloudLogout').onclick=async()=>{await supabase.auth.signOut();version=null;check()};
+  await check();
+  const {data}=await supabase.auth.getUser();
+  if(data.user){const {data:cloud}=await supabase.from('tube_editor_drafts').select('version').eq('id','tube-main').single();if(cloud)version=cloud.version}
+ }
+}
 </script></body>
 </html>
