@@ -1,0 +1,49 @@
+# Pesa majade leht -> www.sportsport.ee/pesa/ (Elkdata, SFTP).
+# Käivitub, kui haru tube-main uueneb. Saladused lisab Tiit: repo Settings -> Secrets and variables -> Actions.
+#   ELKDATA_SFTP_HOST      nt cetus.elkdata.ee
+#   ELKDATA_SFTP_USER      SFTP kasutajanimi
+#   ELKDATA_SFTP_PASSWORD  SFTP parool
+#   ELKDATA_SFTP_PATH      sihtkaust serveris, nt public_html/pesa  (või domains/sportsport.ee/public_html/pesa)
+name: Pesa leht -> sportsport.ee/pesa
+
+on:
+  push:
+    branches: [tube-main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-pesa
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Koosta avalik kaust
+        run: |
+          mkdir -p dist
+          cp index.html dist/
+          cp -r tube-assets tube-editor dist/
+
+      - name: Lae Elkdatasse (SFTP)
+        env:
+          HOST: ${{ secrets.ELKDATA_SFTP_HOST }}
+          USER: ${{ secrets.ELKDATA_SFTP_USER }}
+          PASS: ${{ secrets.ELKDATA_SFTP_PASSWORD }}
+          DEST: ${{ secrets.ELKDATA_SFTP_PATH }}
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y lftp
+          lftp -u "$USER","$PASS" "sftp://$HOST" -e "
+            set sftp:auto-confirm yes;
+            set net:max-retries 3;
+            mkdir -p -f $DEST;
+            mirror --reverse --delete --verbose --parallel=4 dist/ $DEST/;
+            bye"
+
+      - name: Kontrolli
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://www.sportsport.ee/pesa/)
+          echo "https://www.sportsport.ee/pesa/ -> $code"
+          test "$code" = "200"
