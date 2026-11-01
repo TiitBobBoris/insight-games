@@ -35,3 +35,8 @@ create index tube_offer_requests_pending_idx on public.tube_offer_requests (crea
 alter table public.tube_offer_requests alter column phone drop not null;
 alter table public.tube_offer_requests drop constraint if exists tube_offer_requests_phone_check;
 alter table public.tube_offer_requests add constraint tube_offer_requests_phone_check check (phone is null or char_length(phone) between 3 and 60);
+
+-- 01.11.2026: Pesa funnel (rakendatud migratsioonidena pesa_funnel_offers ja pesa_settings):
+-- pesa_prices (4480/5080/5680 € + km, piirkonnalisa 1500 €), pesa_regions (EHAK 784, 793, 624, 890),
+-- pesa_settings (auto_send, booking_url, offer_valid_days), tube_offer_requests: region_*, price_quote, status,
+-- offer_sent_at, followup_sent_at, unsubscribed_at, token, utm_*, fbclid, gclid, event_id + trigger pesa_request_sanitize.
