@@ -194,6 +194,13 @@ function pesaParallax() {
   if (!img || !/n-mme-005\.webp$/.test(img.getAttribute('src') || '')) return;
   var conn = navigator.connection || {};
   if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) { pesaParallax(); return; }
+  // Taustakaardil avatud lehel ei luba brauser videot käivitada: oota, kuni kaart on nähtav.
+  if (document.visibilityState === 'hidden') {
+    document.addEventListener('visibilitychange', function go() { if (document.visibilityState === 'visible') { document.removeEventListener('visibilitychange', go); startVideo(img); } });
+  } else startVideo(img);
+})();
+
+function startVideo(img) {
   var small = Math.max(screen.width, screen.height) * Math.min(window.devicePixelRatio || 1, 2) < 1600 || window.innerWidth < 900;
   var v = document.createElement('video');
   v.className = 'hero-media hero-video'; v.setAttribute('aria-hidden', 'true');
@@ -211,4 +218,4 @@ function pesaParallax() {
   var p = v.play(); if (p && p.catch) p.catch(fail);
   // Peata, kui avapilt pole nähtav.
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (!done || !v.isConnected) return; e[0].isIntersecting ? v.play().catch(function () {}) : v.pause(); }).observe(v);
-})();
+}
