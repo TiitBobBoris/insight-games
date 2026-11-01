@@ -129,6 +129,7 @@ input[type=text],input[type=email]{width:100%;font:inherit;font-size:16px;paddin
     $('shop').hidden=true;$('thanks').hidden=false;
     if(q.get('ok')==='pending')$('thanksText').textContent='Makse on töötlemisel. Saadame allalaadimislingi e-postile kohe, kui makse on kinnitatud.';
     if(q.get('o')){$('dlBtn').hidden=false;$('dlBtn').href=FN+'?a=dl&o='+encodeURIComponent(q.get('o'));}
+    else if(q.get('ok')==='1')$('thanksText').textContent='Saatsime litsentsilepingu ja arve sinu e-postile. Allalaadimislingi saadame ühe tööpäeva jooksul.';
     return;
   }
 
