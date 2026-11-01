@@ -1,0 +1,19 @@
+# Pesa funnel: kord päevas saadetakse järelkirjad neile, kellele pakkumine läks vähemalt 7 päeva tagasi
+# (tasuta kohtumine arhitektiga + jooniste ost). Funktsioon ise kontrollib, kellele kiri on juba läinud.
+name: Pesa järelkirjad
+
+on:
+  schedule:
+    - cron: '17 7 * * *'   # iga päev ~9:17 / 10:17 Eesti aja järgi
+  workflow_dispatch:
+
+jobs:
+  followup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Saada järelkirjad
+        run: |
+          res=$(curl -s -m 60 -X POST 'https://xlhtavzsanlikmxrddrb.supabase.co/functions/v1/tube-offer-notify?a=followup' \
+            -H 'apikey: sb_publishable_qIgkHTONrtkXj1CjDUofWw_erFDQGo3' -H 'Content-Type: application/json' -d '{}')
+          echo "$res"
+          echo "$res" | grep -q '"followups"'

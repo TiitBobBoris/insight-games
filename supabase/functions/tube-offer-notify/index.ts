@@ -5,6 +5,7 @@
 //   POST                         → töötle uued päringud
 //   GET ?a=approve&id=…&s=…      → Tiit kinnitab ülevaatust vajava pakkumise (link Tiidu kirjas)
 //   GET ?a=unsubscribe&t=…       → klient loobub edasistest kirjadest
+//   POST ?a=followup             → järelkirjad (GitHub Actions kord päevas): kohtumine + jooniste ost
 //
 // Lülitid tabelis pesa_settings: auto_send (on/off), booking_url, offer_valid_days.
 // Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (vaikimisi tiit@sportsport.ee),
@@ -35,7 +36,7 @@ type Row = {
   region_code: string | null; region_name: string | null; status: string; token: string;
   utm_source: string | null; utm_campaign: string | null;
 };
-type Price = { size: string; base_price: number; region_surcharge: number };
+type Price = { size: string; base_price: number; region_surcharge: number; drawings_price: number | null };
 type Quote = { tier: 'surcharge' | 'standard' | 'unknown'; model: string | null; lines: { size: string; standard: number; surcharge: number }[]; valid_until: string };
 
 const eur = (n: number) => n.toLocaleString('et-EE').replace(/[\u00a0\u202f]/g, ' ') + ' €';
@@ -197,6 +198,35 @@ async function previewAttach(r: Row, q: Quote, booking: string) {
   return { attachments: [...(pdf ? [{ filename: 'Pakkumise-eelvaade.pdf', content: pdf }] : []), { filename: 'Kliendikirja-eelvaade.html', content: btoa(bin) }] };
 }
 
+function followupHtml(r: Row, q: Quote, booking: string, prices: Price[], checkout: string) {
+  const sizes = q.lines.map((l) => l.size);
+  const dp = prices.filter((p) => sizes.includes(p.size) && p.drawings_price);
+  const dRows = dp.map((p) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e8e8ed">${esc(q.model || 'Pesa maja')} · ${esc(p.size)}</td><td style="padding:10px 0;border-bottom:1px solid #e8e8ed;text-align:right;font-weight:600;white-space:nowrap">${eur(p.drawings_price!)} + km</td></tr>`).join('');
+  const meet = booking
+    ? `<a href="${esc(booking)}" style="display:inline-block;background:#1d1d1f;color:#fff;text-decoration:none;border-radius:980px;padding:12px 22px;font-size:16px">Vali kohtumise aeg</a>`
+    : 'Vasta sellele kirjale ja lepime aja kokku.';
+  const buy = checkout
+    ? `<a href="${esc(checkout)}" style="color:#06c">Osta joonised →</a>`
+    : 'Jooniste ostmiseks vasta sellele kirjale „Soovin jooniseid" – saadame arve ja pärast tasumist allalaadimislingi.';
+  return `<!doctype html><html lang="et"><body style="margin:0;background:#f5f5f7">
+<div style="max-width:600px;margin:0 auto;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#1d1d1f">
+  <img src="${SITE}/tube-assets/email/pesa-nomme.jpg" width="600" alt="Pesa maja Nõmmel" style="display:block;width:100%;height:auto">
+  <div style="padding:32px 32px 8px">
+    <h1 style="font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:0 0 16px">Kohtume ja vaatame sinu Pesa maja koos üle?</h1>
+    <p style="font-size:17px;line-height:1.5;margin:0 0 18px">Tere, ${esc(firstName(r.name))}!<br>Saatsime sulle nädal tagasi Pesa maja pakkumise. Kui sul on küsimusi või soovid lahendust oma krundil arutada, kohtume arhitektiga <strong>tasuta</strong> – kohapeal või videokõnes, 30 minutit.</p>
+    <p style="margin:0 0 30px">${meet}</p>
+    <h2 style="font-size:19px;margin:0 0 8px">Soovid projekti ise edasi viia?</h2>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 12px">Võid osta valitud maja joonised (PDF, DWG ja ArchiCAD) ning kohandada need ise või teise arhitekti abiga ehitusloa projektiks. Litsents kehtib ühe hoone ehitamiseks; jooniste edasimüük ei ole lubatud.</p>
+    ${dRows ? `<table width="100%" cellpadding="0" cellspacing="0" style="font-size:16px;border-collapse:collapse;margin:0 0 12px">${dRows}</table>` : ''}
+    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">${buy}</p>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>arhitekt, Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a></p>
+  </div>
+  <div style="padding:18px 32px 28px;border-top:1px solid #e8e8ed;font-size:12px;line-height:1.5;color:#86868b">
+    See on viimane automaatne kiri sinu päringu kohta. <a href="${FN_URL}?a=unsubscribe&t=${r.token}" style="color:#86868b">Ära saada mulle rohkem kirju</a>.
+  </div>
+</div></body></html>`;
+}
+
 function adminText(r: Row, q: Quote | null, state: string, approveUrl?: string) {
   const when = new Date(r.created_at).toLocaleString('et-EE', { timeZone: 'Europe/Tallinn' });
   return [
@@ -230,7 +260,7 @@ Deno.serve(async (req) => {
   const { data: st } = await sb.from('pesa_settings').select('key,value');
   const set = Object.fromEntries((st || []).map((x) => [x.key, x.value]));
   const autoSend = set.auto_send === 'on', booking = set.booking_url || '', validDays = Number(set.offer_valid_days || 30);
-  const { data: prices } = await sb.from('pesa_prices').select('size,base_price,region_surcharge').order('sort');
+  const { data: prices } = await sb.from('pesa_prices').select('size,base_price,region_surcharge,drawings_price').order('sort');
   const { data: regs } = await sb.from('pesa_regions').select('ehak');
   const regions = new Set((regs || []).map((x) => x.ehak));
 
@@ -269,6 +299,33 @@ Deno.serve(async (req) => {
     return page('Pesa majad', 'Siin pole midagi vaadata.', 404);
   }
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
+
+  // --- POST ?a=followup: järelkirjad (kutsub GitHub Actions kord päevas; korduv kutse ei saada topelt)
+  if (new URL(req.url).searchParams.get('a') === 'followup') {
+    if (!key) return json({ error: 'not_configured' }, 500);
+    const days = Number(set.followup_days || 7);
+    const due = new Date(Date.now() - days * 864e5).toISOString();
+    const { data: claimed } = await sb.from('tube_offer_requests')
+      .update({ followup_sent_at: new Date().toISOString() })
+      .eq('status', 'offer_sent').is('followup_sent_at', null).is('unsubscribed_at', null).lte('offer_sent_at', due)
+      .select('*');
+    let n = 0;
+    for (const r of (claimed || []) as (Row & { price_quote: Quote })[]) {
+      try {
+        await resend(key, {
+          from: CLIENT_FROM, to: [r.email], reply_to: TIIT, bcc: [TIIT],
+          subject: 'Kohtume tasuta ja vaatame sinu Pesa maja üle?',
+          html: followupHtml(r, r.price_quote, booking, (prices || []) as Price[], set.drawings_checkout_url || ''),
+          headers: { 'List-Unsubscribe': `<${FN_URL}?a=unsubscribe&t=${r.token}>` },
+        });
+        await sb.from('tube_offer_requests').update({ status: 'followup_sent' }).eq('id', r.id);
+        n++;
+      } catch (e) {
+        await sb.from('tube_offer_requests').update({ followup_sent_at: null, notify_error: 'järelkiri: ' + String((e as Error).message).slice(0, 300) }).eq('id', r.id);
+      }
+    }
+    return json({ followups: n });
+  }
 
   // --- POST: uued päringud
   const since = new Date(Date.now() - 14 * 864e5).toISOString();
