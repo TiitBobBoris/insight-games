@@ -33,7 +33,7 @@ jobs:
         if: env.HAS_SFTP == 'true'
         run: |
           mkdir -p dist
-          cp index.html dist/
+          cp index.html joonised.html dist/
           printf 'DirectoryIndex index.html\nRewriteEngine Off\n' > dist/.htaccess
           # Versioon failiviidetele, et brauserid ei kasutaks vana vahemälu.
           sed -i "s/__BUILD__/${GITHUB_SHA::8}/g" dist/index.html

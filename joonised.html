@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pesa maja joonised | Projektbüroo Sport</title>
+<meta name="description" content="Osta Pesa maja joonised (PDF, DWG, ArchiCAD) ja kohanda need ise või oma arhitektiga ehitusloa projektiks.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="tube-assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="tube-assets/favicon-180.png">
+<style>
+:root{--ink:#1d1d1f;--muted:#6e6e73;--line:#d2d2d7;--soft:#f5f5f7;--blue:#0071e3}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.011em}
+a{color:var(--blue)}
+.top{display:flex;align-items:center;justify-content:space-between;max-width:1080px;margin:0 auto;padding:18px 22px}
+.top a.logo{font-weight:700;font-size:20px;color:var(--ink);text-decoration:none;letter-spacing:-.02em}
+.top a.back{font-size:14px;color:var(--muted);text-decoration:none}
+main{max-width:1080px;margin:0 auto;padding:10px 22px 80px}
+h1{font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-.035em;font-weight:600;margin:24px 0 14px}
+.lead{font-size:clamp(18px,2vw,22px);line-height:1.4;color:var(--muted);max-width:720px;margin:0 0 44px}
+.grid{display:grid;grid-template-columns:1.25fr 1fr;gap:44px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr;gap:30px}}
+h2{font-size:15px;font-weight:600;margin:0 0 12px;color:var(--ink)}
+.step{margin:0 0 32px}
+.opts{display:grid;gap:10px}
+.opts.models{grid-template-columns:repeat(4,1fr)}
+.opts.sizes{grid-template-columns:repeat(3,1fr)}
+@media(max-width:520px){.opts.models{grid-template-columns:repeat(2,1fr)}.opts.sizes{grid-template-columns:1fr}}
+.opt{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:10px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s}
+.opt:hover{border-color:#86868b}
+.opt[aria-pressed=true]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.opt img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--soft);margin-bottom:8px}
+.opt.size img{object-fit:contain;background:#fff}
+.opt b{display:block;font-size:15px;font-weight:600}
+.opt span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.card{background:var(--soft);border-radius:24px;padding:28px;position:sticky;top:20px}
+.card .hero{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;display:block;margin:0 0 18px;background:#e8e8ed}
+.sum{font-size:21px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px}
+.price{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:14px 0 4px;margin-top:14px}
+.price strong{font-size:30px;letter-spacing:-.03em}
+.vat{font-size:13px;color:var(--muted);text-align:right;margin:0 0 18px}
+ul.inc{list-style:none;padding:0;margin:0 0 18px;font-size:15px;line-height:1.5}
+ul.inc li{padding-left:22px;position:relative;margin:4px 0}
+ul.inc li:before{content:"✓";position:absolute;left:0;color:#1d8a3a;font-weight:700}
+label.f{display:block;font-size:13px;color:var(--muted);margin:0 0 4px}
+input[type=text],input[type=email]{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:0 0 12px;color:var(--ink)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;margin:6px 0 18px;color:var(--ink)}
+.chk input{margin-top:3px;width:18px;height:18px;flex:none}
+.btn{display:block;width:100%;border:0;border-radius:980px;background:var(--ink);color:#fff;font:inherit;font-size:17px;font-weight:500;padding:15px 20px;cursor:pointer;text-align:center;text-decoration:none}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.note{font-size:12.5px;color:var(--muted);line-height:1.5;margin:12px 0 0;text-align:center}
+.err{color:#c2001b;font-size:14px;margin:10px 0 0;min-height:1em}
+.terms{max-width:760px;margin:70px 0 0;font-size:15px;line-height:1.6;color:#424245}
+.terms h3{font-size:22px;letter-spacing:-.02em;color:var(--ink);margin:0 0 14px}
+.terms ol{padding-left:20px}
+.terms li{margin:0 0 8px}
+.done{max-width:640px;margin:40px auto;text-align:center}
+.done .btn{display:inline-block;width:auto;padding:15px 30px;margin:10px 0 18px}
+.done p{font-size:18px;line-height:1.5;color:var(--muted)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><a class="logo" href="./">Pesa</a><a class="back" href="./">← Pesa majad</a></header>
+<main>
+  <section id="thanks" class="done" hidden>
+    <h1>Aitäh! Joonised on sinu.</h1>
+    <p id="thanksText">Saatsime allalaadimislingi ja litsentsilepingu sinu e-postile.</p>
+    <a id="dlBtn" class="btn" href="#" hidden>Laadi joonised alla</a>
+    <p>Kui soovid, et kohandame projekti sinu krundile ja taotleme ehitusloa, kirjuta <a href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a> või helista <a href="tel:+37255601425">+372 5560 1425</a>.</p>
+  </section>
+
+  <section id="shop">
+    <h1>Pesa maja joonised</h1>
+    <p class="lead">Vii projekt ise edasi: saad valitud maja joonised PDF-, DWG- ja ArchiCAD-failidena ning võid need ise või oma arhitekti abiga ehitusloa projektiks kohandada.</p>
+    <div class="grid">
+      <div>
+        <div class="step"><h2>1. Vali maja</h2><div class="opts models" id="models"></div></div>
+        <div class="step"><h2>2. Vali suurus</h2><div class="opts sizes" id="sizes"></div></div>
+        <div class="step">
+          <h2>Mida saad</h2>
+          <ul class="inc">
+            <li>Arhitektuursed joonised: plaanid, lõiked ja vaated</li>
+            <li>Failid: PDF, DWG (AutoCAD) ja PLN (ArchiCAD)</li>
+            <li>Litsents ühe hoone ehitamiseks, muutmise ja kohandamise õigusega</li>
+            <li>Allalaadimislink kohe pärast makset, kehtib 30 päeva</li>
+            <li>Arve käibemaksuga (ettevõttele ka KMKR-numbriga)</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="card">
+        <img class="hero" id="pic" src="tube-assets/model-2.webp" alt="">
+        <p class="sum" id="sum">PESA 1 · 109,7 m²</p>
+        <p style="margin:0;color:var(--muted);font-size:14px" id="rooms"></p>
+        <div class="price"><span>Hind</span><strong id="net">–</strong></div>
+        <p class="vat" id="vat"></p>
+        <label class="f" for="name">Nimi</label><input type="text" id="name" autocomplete="name">
+        <label class="f" for="email">E-post</label><input type="email" id="email" autocomplete="email" inputmode="email">
+        <label class="chk"><input type="checkbox" id="consent"><span>Nõustun <a href="#tingimused">litsentsitingimustega</a>. Soovin, et joonised tehtaks kättesaadavaks kohe pärast makset, ja tean, et kaotan sellega 14-päevase taganemisõiguse.</span></label>
+        <button class="btn" id="pay" disabled>Maksma</button>
+        <p class="err" id="err"></p>
+        <p class="note" id="payNote">Turvaline makse Stripe'i kaudu: kaart, Apple Pay, Google Pay.</p>
+      </aside>
+    </div>
+
+    <section class="terms" id="tingimused">
+      <h3>Litsentsitingimused</h3>
+      <ol>
+        <li><b>Lubatud:</b> lihtlitsents ühe (1) hoone projekteerimiseks ja ehitamiseks ühel kinnistul. Jooniseid võib muuta ja kohandada ise või lasta kohandada enda valitud pädeval projekteerijal.</li>
+        <li><b>Keelatud:</b> jooniste edasimüük, jagamine ja avaldamine, kasutamine rohkem kui ühe hoone jaoks ning tüüpprojektina pakkumine. Jooniseid võib anda oma projekteerijale, ehitajale ja ametiasutustele sama hoone tarbeks.</li>
+        <li><b>Autoriõigus</b> jääb Projektbüroo Sport OÜ-le ja autoritele; autori isiklikud õigused säilivad.</li>
+        <li><b>Vastutus:</b> joonised on arhitektuurne lähtematerjal. Ehitusloa projekti, kohanduste, konstruktsioonide ja eriosade eest vastutab sinu valitud pädev projekteerija.</li>
+        <li><b>Taganemisõigus:</b> digitaalne sisu tehakse kättesaadavaks kohe pärast makset. Ostes nõustud sellega ja kaotad 14-päevase taganemisõiguse (VÕS § 53 lg 4 p 13). Kui failid ei avane või on vigased, saadame uued.</li>
+        <li>Hinnad on käibemaksuta, käibemaks lisandub. Müüja: Projektbüroo Sport OÜ, tiit@sportsport.ee, +372 5560 1425. Kohaldub Eesti õigus.</li>
+      </ol>
+    </section>
+  </section>
+</main>
+<script>
+(function(){
+  var FN='https://xlhtavzsanlikmxrddrb.supabase.co/functions/v1/pesa-drawings';
+  var SLUG={'89,7 m²':'89-7','109,7 m²':'109-7','123,4 m²':'123-4'};
+  var q=new URLSearchParams(location.search);
+  var $=function(id){return document.getElementById(id)};
+  var eur=function(n){return n.toLocaleString('et-EE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2}).replace(/[  ]/g,' ')+' €'};
+
+  if(q.get('ok')){
+    $('shop').hidden=true;$('thanks').hidden=false;
+    if(q.get('ok')==='pending')$('thanksText').textContent='Makse on töötlemisel. Saadame allalaadimislingi e-postile kohe, kui makse on kinnitatud.';
+    if(q.get('o')){$('dlBtn').hidden=false;$('dlBtn').href=FN+'?a=dl&o='+encodeURIComponent(q.get('o'));}
+    return;
+  }
+
+  var st={model:q.get('maja')||'PESA 1',size:q.get('suurus')||'109,7 m²',ready:false,vat:24,prices:[]};
+  function idx(m){return Math.max(1,['PESA 1','PESA 2','PESA 3','PESA 4'].indexOf(m)+1)}
+  function render(){
+    [].forEach.call(document.querySelectorAll('[data-model]'),function(b){b.setAttribute('aria-pressed',b.dataset.model===st.model)});
+    [].forEach.call(document.querySelectorAll('[data-size]'),function(b){b.setAttribute('aria-pressed',b.dataset.size===st.size);b.querySelector('img').src='tube-assets/plans/tube-0'+idx(st.model)+'-'+SLUG[b.dataset.size]+'.webp'});
+    var p=st.prices.filter(function(x){return x.size===st.size})[0];
+    $('pic').src='tube-assets/model-'+idx(st.model)+'.webp';$('pic').alt=st.model;
+    $('sum').textContent=st.model+' · '+st.size;
+    $('rooms').textContent=p?p.rooms:'';
+    $('net').textContent=p?eur(p.net)+' + km':'–';
+    $('vat').textContent=p?'Kokku koos käibemaksuga '+eur(Math.round(p.net*(100+st.vat))/100):'';
+    check();
+  }
+  function check(){$('pay').disabled=!$('consent').checked||!st.prices.length}
+  $('consent').addEventListener('change',check);
+
+  ['PESA 1','PESA 2','PESA 3','PESA 4'].forEach(function(m,i){
+    var b=document.createElement('button');b.type='button';b.className='opt';b.dataset.model=m;
+    b.innerHTML='<img src="tube-assets/model-'+(i+1)+'.webp" alt="" loading="lazy"><b>'+m+'</b>';
+    b.onclick=function(){st.model=m;render()};$('models').appendChild(b);
+  });
+
+  fetch(FN+'?a=info').then(function(r){return r.json()}).then(function(d){
+    st.ready=d.ready;st.vat=d.vat;st.prices=d.prices;
+    d.prices.forEach(function(p){
+      var b=document.createElement('button');b.type='button';b.className='opt size';b.dataset.size=p.size;
+      b.innerHTML='<img alt="" loading="lazy"><b>'+p.size+'</b><span>'+p.rooms+' · '+eur(p.net)+' + km</span>';
+      b.onclick=function(){st.size=p.size;render()};$('sizes').appendChild(b);
+    });
+    if(!st.ready){$('pay').textContent='Telli joonised e-postiga';$('payNote').textContent='Saadame arve; pärast tasumist saad allalaadimislingi.';}
+    render();
+  }).catch(function(){$('err').textContent='Hindu ei õnnestunud laadida. Värskenda lehte.'});
+
+  if(q.get('t')){
+    fetch(FN+'?a=lead&t='+encodeURIComponent(q.get('t'))).then(function(r){return r.json()}).then(function(d){
+      if(d.name&&!$('name').value)$('name').value=d.name;
+      if(d.email&&!$('email').value)$('email').value=d.email;
+      if(!q.get('maja')&&/^PESA [1-4]$/.test(d.model||''))st.model=d.model;
+      if(!q.get('suurus')&&SLUG[d.size])st.size=d.size;
+      render();
+    }).catch(function(){});
+  }
+
+  $('pay').onclick=function(){
+    $('err').textContent='';
+    if(!st.ready){
+      var s='Soovin osta '+st.model+' '+st.size+' joonised',b='Nimi: '+$('name').value+'\nE-post: '+$('email').value+'\n\nNõustun litsentsitingimustega ja jooniste kohese kättesaadavaks tegemisega.';
+      location.href='mailto:tiit@sportsport.ee?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b);return;
+    }
+    $('pay').disabled=true;$('pay').textContent='Avan makse…';
+    fetch(FN+'?a=checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:st.model,size:st.size,name:$('name').value,email:$('email').value,consent:$('consent').checked,t:q.get('t')||'',return:location.href
+    })}).then(function(r){return r.json()}).then(function(d){
+      if(d.url){
+        try{if(window.fbq)fbq('track','InitiateCheckout',{content_name:st.model+' '+st.size,currency:'EUR'})}catch(e){}
+        location.href=d.url;return;
+      }
+      throw new Error(d.error||'Makse avamine ebaõnnestus.');
+    }).catch(function(e){$('err').textContent=e.message;$('pay').disabled=false;$('pay').textContent='Maksma'});
+  };
+})();
+</script>
+</body>
+</html>
