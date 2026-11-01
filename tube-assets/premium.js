@@ -108,3 +108,81 @@
     if (img.complete && img.naturalWidth) done(); else { img.addEventListener('load', done); img.addEventListener('error', done); setTimeout(done, 4000); }
   });
 })();
+
+/* Avapildi ruumiline liikumine: foto + sügavuskaart (WebGL). Kaamera liigub aeglaselt külgsuunas,
+ * lähemad objektid nihkuvad rohkem kui kaugemad. Töötab ainult foto jaoks, millel on sügavuskaart. */
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains('premium') || /[?&]edit=1/.test(location.search)) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var DEPTH = { 'n-mme-005.webp': './tube-assets/hero-depth.jpg' };
+  var img = document.querySelector('.hero-media');
+  if (!img) return;
+  var file = (img.getAttribute('src') || '').split('/').pop(), depthSrc = DEPTH[file];
+  if (!depthSrc) return;
+  var canvas = document.createElement('canvas');
+  canvas.className = 'hero-media hero-depth'; canvas.setAttribute('aria-hidden', 'true');
+  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, premultipliedAlpha: false });
+  if (!gl) return;
+
+  var vs = 'attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;v.y=1.-v.y;gl_Position=vec4(p,0.,1.);}';
+  var fs = [
+    'precision mediump float;varying vec2 v;uniform sampler2D img,dep;uniform vec2 scale,off;uniform float focus;',
+    'void main(){',
+    '  vec2 uv=(v-.5)*scale+.5;',
+    '  float d=texture2D(dep,uv).r;',
+    '  vec2 s=uv-off*(d-focus);',
+    '  float d2=texture2D(dep,s).r;',          // toon paremaks: teine samm mööda sügavust
+    '  s=uv-off*(mix(d,d2,.5)-focus);',
+    '  gl_FragColor=texture2D(img,clamp(s,.001,.999));',
+    '}'].join('\n');
+  function sh(t, src) { var s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; }
+  var v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs);
+  if (!v || !f) return;
+  var pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+  gl.useProgram(pr);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  var U = function (n) { return gl.getUniformLocation(pr, n); };
+
+  function tex(unit, im) {
+    var t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, im);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  function load(src) { return new Promise(function (res, rej) { var i = new Image(); i.decoding = 'async'; i.onload = function () { res(i); }; i.onerror = rej; i.src = src; }); }
+
+  Promise.all([load(img.currentSrc || img.src), load(depthSrc)]).then(function (r) {
+    var photo = r[0];
+    tex(0, photo); tex(1, r[1]);
+    gl.uniform1i(U('img'), 0); gl.uniform1i(U('dep'), 1);
+    gl.uniform1f(U('focus'), .38); // maja tasapind püsib peaaegu paigal
+    var ia = photo.naturalWidth / photo.naturalHeight, running = true, visible = true, t0 = performance.now();
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5), w = canvas.clientWidth, h = canvas.clientHeight;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      var ca = w / h, zoom = 1.045; // kerge suurendus, et servad ei paistaks
+      gl.uniform2f(U('scale'), (ca < ia ? ca / ia : 1) / zoom, (ca < ia ? 1 : ia / ca) / zoom);
+    }
+    function frame(now) {
+      if (!running) return;
+      var k = Math.sin((now - t0) / 16000 * Math.PI * 2 - Math.PI / 2); // 16 s edasi-tagasi, algab paigalt
+      gl.uniform2f(U('off'), .028 * (k + 1) / 2, .004 * (k + 1) / 2);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(frame);
+    }
+    img.after(canvas); size();
+    window.addEventListener('resize', size);
+    requestAnimationFrame(function (n) { frame(n); canvas.classList.add('on'); });
+    function toggle() {
+      var go = visible && document.visibilityState === 'visible';
+      if (go && !running) { running = true; requestAnimationFrame(frame); } else if (!go) running = false;
+    }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; toggle(); }).observe(canvas);
+    document.addEventListener('visibilitychange', toggle);
+  }).catch(function () {});
+})();

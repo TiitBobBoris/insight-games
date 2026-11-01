@@ -197,3 +197,5 @@ html.premium .rv.in,html.premium body.te-on .rv{opacity:1;transform:none}
 }
 html.premium .p-nav .btn[hidden]{display:none}
 html.premium body{overflow-x:clip}
+html.premium .hero-depth{opacity:0;transition:opacity 1.2s var(--ease);animation:none}
+html.premium .hero-depth.on{opacity:1}

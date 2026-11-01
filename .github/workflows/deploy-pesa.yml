@@ -1,9 +1,10 @@
-# Pesa majade leht -> www.sportsport.ee/pesa/ (Elkdata, SFTP).
+# Pesa majade leht -> www.sportsport.ee/pesa/ (veebimajutus.ee, SFTP või FTP).
 # Käivitub, kui haru tube-main uueneb. Saladused lisab Tiit: repo Settings -> Secrets and variables -> Actions.
-#   ELKDATA_SFTP_HOST      nt cetus.elkdata.ee
-#   ELKDATA_SFTP_USER      SFTP kasutajanimi
-#   ELKDATA_SFTP_PASSWORD  SFTP parool
+#   ELKDATA_SFTP_HOST      serveri aadress (veebimajutus.ee haldusest, FTP/SSH andmed)
+#   ELKDATA_SFTP_USER      kasutajanimi
+#   ELKDATA_SFTP_PASSWORD  parool
 #   ELKDATA_SFTP_PATH      sihtkaust serveris, nt public_html/pesa  (või domains/sportsport.ee/public_html/pesa)
+#   ELKDATA_PROTOCOL       valikuline: sftp (vaikimisi) või ftp
 name: Pesa leht -> sportsport.ee/pesa
 
 on:
@@ -33,6 +34,7 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/
+          printf 'DirectoryIndex index.html\nRewriteEngine Off\n' > dist/.htaccess
           cp -r tube-assets tube-editor dist/
 
       - name: Lae Elkdatasse (SFTP)
@@ -42,10 +44,12 @@ jobs:
           USER: ${{ secrets.ELKDATA_SFTP_USER }}
           PASS: ${{ secrets.ELKDATA_SFTP_PASSWORD }}
           DEST: ${{ secrets.ELKDATA_SFTP_PATH }}
+          PROTO: ${{ secrets.ELKDATA_PROTOCOL }}
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y lftp
-          lftp -u "$USER","$PASS" "sftp://$HOST" -e "
+          lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "
             set sftp:auto-confirm yes;
+            set ftp:ssl-allow yes;
             set net:max-retries 3;
             mkdir -p -f $DEST;
             mirror --reverse --delete --verbose --parallel=4 dist/ $DEST/;
