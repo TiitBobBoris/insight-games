@@ -201,8 +201,8 @@ button{border-radius:0}
       <a data-tube-id="extra-text-5" class="eyebrow" href="#offer">Küsi pakkumist →</a>
     </header>
     <div class="hero-copy">
-      <div data-tube-id="extra-text-6" class="eyebrow">Pesa Projektbüroo Spordilt</div>
-      <h1 data-tube-id="hero-title" class="display">Valmis läbimõeldud maja.</h1>
+      <div data-tube-id="extra-text-6" class="eyebrow">Pesa Projektbüroolt Sport</div>
+      <h1 data-tube-id="hero-title" class="display">Valgusküllane ja avar kodu.</h1>
       <div data-tube-id="hero-subtitle" class="hero-lead display">Sinu krundile kohandatud.</div>
       <p data-tube-id="hero-body">Vali üks neljast Pesa majast – meie kohandame projekti sinu pere vajadustele vastavalt sinu krundile ning viime selle ehitusloani.</p>
       <ul class="hero-facts" data-tube-id="hero-facts"><li>Üle 10 valminud Pesa maja Eestis</li><li>Projekt ehitusloani alates 4500 € + km</li><li>Päringust ehitusloa taotluseni umbes kuuga</li><li>Aitame leida ehitaja</li></ul>
@@ -256,7 +256,7 @@ button{border-radius:0}
       <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-4" src="./tube-assets/photo-library/n-mme-004.webp" alt="Pesa maja Nõmmel"><span data-tube-id="extra-text-13" class="caption">Pesa Nõmmel</span></div>
       <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-5" src="./tube-assets/photo-library/saku-1-021.webp" alt="Pesa maja Sakus"><span data-tube-id="extra-text-14" class="caption">Saku uuselamurajoonis</span></div>
     </div>
-    <div class="all-built-toggle"><button type="button" class="btn" id="allBuiltBtn" data-tube-id="all-built-button" aria-expanded="false" aria-controls="allBuilt">Näita kõiki valminud Pesa maju ↓</button></div>
+    <div class="all-built-toggle"><button type="button" class="btn" id="allBuiltBtn" data-tube-id="all-built-button" aria-expanded="false" aria-controls="allBuilt">Näita valminud Pesa maju ↓</button></div>
     <div class="all-built" id="allBuilt" data-tube-id="all-built" hidden>
       <div class="built-project"><h3 data-tube-id="all-built-nomme-title">Nõmme, Tallinn</h3><p class="built-meta" data-tube-id="all-built-nomme-meta">12 fotot · Foto: Martin Siplane</p><div class="built-grid">
         <img loading="lazy" decoding="async" data-tube-id="gal-n-mme-003" src="./tube-assets/photo-library/n-mme-003.webp" alt="Pesa maja Nõmmel">
@@ -558,7 +558,7 @@ form.addEventListener('submit',async e=>{
 if(new URLSearchParams(location.search).get('edit')==='1'){const v='__BUILD__';const l=document.createElement('link');l.rel='stylesheet';l.href='./tube-editor/editor.css?v='+v;document.head.append(l);const s=document.createElement('script');s.type='module';s.src='./tube-editor/editor.js?v='+v;document.body.append(s)}
 </script>
 <script>
-(function(){var b=document.getElementById('allBuiltBtn'),a=document.getElementById('allBuilt');if(!b||!a)return;b.addEventListener('click',function(){var open=a.hidden;a.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Peida fotod ↑':'Näita kõiki valminud Pesa maju ↓';(open?a:b).scrollIntoView({behavior:'smooth',block:open?'start':'center'})})})();
+(function(){var b=document.getElementById('allBuiltBtn'),a=document.getElementById('allBuilt');if(!b||!a)return;b.addEventListener('click',function(){var open=a.hidden;a.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Peida fotod ↑':'Näita valminud Pesa maju ↓';(open?a:b).scrollIntoView({behavior:'smooth',block:open?'start':'center'})})})();
 </script>
 <script>
 (function(){document.querySelectorAll('.built-project').forEach(function(p){var b=p.querySelector('.built-more');if(!b)return;var n=p.querySelectorAll('.built-grid img').length;function t(){var o=p.classList.toggle('open');b.setAttribute('aria-expanded',o);b.textContent=o?'Sulge ✕':'Näita kõiki '+n+' fotot ↓';if(!o)p.scrollIntoView({behavior:'smooth',block:'start'})}b.addEventListener('click',t);p.querySelector('.built-grid').addEventListener('click',function(e){if(e.target.tagName==='IMG'&&!document.body.classList.contains('te-on'))t()})})})();
