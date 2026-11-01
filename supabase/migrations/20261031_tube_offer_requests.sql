@@ -30,3 +30,8 @@ create policy "tube offer admin read" on public.tube_offer_requests
 revoke all on public.tube_offer_requests from anon;
 grant insert on public.tube_offer_requests to anon;
 create index tube_offer_requests_pending_idx on public.tube_offer_requests (created_at) where notified_at is null;
+
+-- 01.11.2026: telefon valikuliseks
+alter table public.tube_offer_requests alter column phone drop not null;
+alter table public.tube_offer_requests drop constraint if exists tube_offer_requests_phone_check;
+alter table public.tube_offer_requests add constraint tube_offer_requests_phone_check check (phone is null or char_length(phone) between 3 and 60);
