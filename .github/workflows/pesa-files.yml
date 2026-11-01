@@ -1,0 +1,54 @@
+# Pesa jooniste müügipakid -> www.sportsport.ee/pesa/_joonised/ (otse ligipääs keelatud, allalaadimine joonised-dl.php kaudu).
+# Käivitatakse käsitsi. Sisend "links": JSON {"PESA-1/89-7.zip": "<Dropboxi ühekordne ajutine link>", ...}.
+# Failid ise repo'sse ei satu.
+name: Pesa joonisepakid -> sportsport.ee
+
+on:
+  workflow_dispatch:
+    inputs:
+      links:
+        description: 'JSON: {"PESA-1/89-7.zip": "https://...", ...}'
+        required: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lae pakid alla
+        env:
+          LINKS: ${{ inputs.links }}
+        run: |
+          mkdir -p files
+          echo "$LINKS" | jq -r 'to_entries[] | .value' | while read -r u; do echo "::add-mask::$u"; done
+          echo "$LINKS" | jq -r 'to_entries[] | "\(.key)\t\(.value)"' | while IFS=$'\t' read -r name url; do
+            [[ "$name" =~ ^PESA-[1-4]/(89-7|109-7|123-4)\.zip$ ]] || { echo "vale nimi: $name"; exit 1; }
+            mkdir -p "files/$(dirname "$name")"
+            curl -sSfL -o "files/$name" "$url"
+            unzip -tq "files/$name" >/dev/null
+            echo "$name $(du -h "files/$name" | cut -f1)"
+          done
+          printf 'Require all denied\n<IfModule !mod_authz_core.c>\nDeny from all\n</IfModule>\n' > files/.htaccess
+
+      - name: Lae Elkdatasse
+        env:
+          HOST: ${{ secrets.ELKDATA_SFTP_HOST }}
+          USER: ${{ secrets.ELKDATA_SFTP_USER }}
+          PASS: ${{ secrets.ELKDATA_SFTP_PASSWORD }}
+          DEST: ${{ secrets.ELKDATA_SFTP_PATH }}
+          PROTO: ${{ secrets.ELKDATA_PROTOCOL }}
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y lftp
+          lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "
+            set sftp:auto-confirm yes;
+            set ftp:ssl-allow yes;
+            set net:max-retries 3;
+            mkdir -p -f $DEST/_joonised;
+            put files/.htaccess -o $DEST/_joonised/.htaccess;
+            mirror --reverse --verbose --parallel=3 --exclude-glob .htaccess files/ $DEST/_joonised/;
+            bye"
+
+      - name: Kontrolli, et otse ligi ei pääse
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://www.sportsport.ee/pesa/_joonised/PESA-1/89-7.zip)
+          echo "otse: $code"
+          test "$code" = "403" -o "$code" = "404"

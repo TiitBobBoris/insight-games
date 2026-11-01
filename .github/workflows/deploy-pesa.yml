@@ -33,7 +33,7 @@ jobs:
         if: env.HAS_SFTP == 'true'
         run: |
           mkdir -p dist
-          cp index.html joonised.html dist/
+          cp index.html joonised.html joonised-dl.php dist/
           printf 'DirectoryIndex index.html\nRewriteEngine Off\n' > dist/.htaccess
           # Versioon failiviidetele, et brauserid ei kasutaks vana vahemälu.
           sed -i "s/__BUILD__/${GITHUB_SHA::8}/g" dist/index.html
@@ -54,7 +54,7 @@ jobs:
             set ftp:ssl-allow yes;
             set net:max-retries 3;
             mkdir -p -f $DEST;
-            mirror --reverse --delete --verbose --parallel=4 --exclude-glob index.html dist/ $DEST/;
+            mirror --reverse --delete --verbose --parallel=4 --exclude-glob index.html --exclude ^_joonised/ dist/ $DEST/;
             put dist/index.html -o $DEST/index.html;
             bye"
 

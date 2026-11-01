@@ -5,11 +5,13 @@
 //   POST ?a=checkout {model,size,email,name,t,consent} → Stripe Checkout'i URL
 //   GET  ?a=done&session_id=…            → pärast makset: kontrolli, väljasta, suuna tänulehele
 //   POST ?a=webhook                      → Stripe'i sündmused (varuvariant, kui klient sulges akna)
-//   GET  ?a=dl&o=…                       → allalaadimine (allkirjastatud link privaatsest bucket'ist)
+//   GET  ?a=dl&o=…                       → suunab allalaadimisele (www.sportsport.ee/pesa/joonised-dl.php)
+//   GET  ?a=check&o=… / ?a=consumed&o=…  → joonised-dl.php küsib, kas link kehtib, ja märgib allalaadimise tehtuks
 //
 // Secret: STRIPE_SECRET_KEY (sk_test_… või sk_live_…). Webhooki ja KM-määra loob funktsioon ise
 // esimese makse eel ning hoiab nende id-d tabelis pesa_secrets.
-// Failid: bucket pesa-drawings, tee "<PESA-1>/<89-7>.zip" või "<89-7>.zip" (kõigile mudelitele sama).
+// Failid: sportsport.ee serveris pesa/_joonised/PESA-1/89-7.zip jne (otse ligipääs keelatud).
+// Lülitid pesa_settings: drawings_ready (on = failid üleval), download_max (täielike allalaadimiste arv, vaikimisi 1).
 import { createClient } from 'npm:@supabase/supabase-js@2.49.10';
 import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
 
@@ -111,7 +113,7 @@ async function licensePdf(o: Order) {
     y -= 8;
   };
   para('1. Pooled', `Litsentsiandja: Projektbüroo Sport OÜ (edaspidi Projektbüroo). Litsentsisaaja: ${o.name || o.email}, ${o.email}.`);
-  para('2. Litsentsi objekt', `${o.model} ${o.size} (${ROOMS[o.size] || ''}) arhitektuursed joonised failivormingutes PDF, DWG ja ArchiCAD (PLN). Tasu: ${eur(Number(o.amount_net))} + km (kokku ${eur(Number(o.amount_total))}).`);
+  para('2. Litsentsi objekt', `${o.model} ${o.size} (${ROOMS[o.size] || ''}) eelprojekti mahus arhitektuursed joonised ja pindade tabelid failivormingutes PDF, DWG, ArchiCAD (PLA), SketchUp (SKP) ja XLS. Tasu: ${eur(Number(o.amount_net))} + km (kokku ${eur(Number(o.amount_total))}).`);
   para('3. Lubatud kasutus', 'Lihtlitsents (mitte-ainulitsents) ühe (1) hoone projekteerimiseks ja ehitamiseks ühel kinnistul. Litsentsisaaja võib jooniseid muuta ja kohandada ise või lasta neid kohandada enda valitud pädeval projekteerijal ehitusloa ja ehitusprojekti koostamiseks.');
   para('4. Keelatud', 'Jooniste või nende osade edasimüük, jagamine, avaldamine ja üleandmine kolmandatele isikutele (v.a litsentsisaaja projekteerija, ehitaja ja ametiasutused sama hoone tarbeks), kasutamine rohkem kui ühe hoone jaoks ning tüüpprojektina pakkumine.');
   para('5. Autoriõigus', 'Autoriõigus jääb Projektbüroole ja autoritele. Autori isiklikud õigused, sh õigus nimele, säilivad.');
@@ -129,7 +131,7 @@ function clientHtml(o: Order, dl: string, hasFile: boolean) {
   const until = fmtDate(o.expires_at);
   const btn = hasFile
     ? `<p style="margin:0 0 14px"><a href="${esc(dl)}" style="display:inline-block;background:#1d1d1f;color:#fff;text-decoration:none;border-radius:980px;padding:13px 24px;font-size:16px">Laadi joonised alla</a></p>
-       <p style="font-size:14px;line-height:1.5;color:#6e6e73;margin:0 0 26px">Link kehtib kuni ${until}. Salvesta failid endale.</p>`
+       <p style="font-size:14px;line-height:1.5;color:#6e6e73;margin:0 0 26px">Link on ühekordne ja kehtib kuni ${until}: see sulgub pärast täielikku allalaadimist (katkenud allalaadimist võid korrata). Pakk on umbes 140 MB – salvesta see endale.</p>`
     : `<p style="font-size:16px;line-height:1.55;margin:0 0 26px">Valmistame sinu failid ette ja saadame allalaadimislingi ühe tööpäeva jooksul.</p>`;
   return `<!doctype html><html lang="et"><body style="margin:0;background:#f5f5f7">
 <div style="max-width:600px;margin:0 auto;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#1d1d1f">
@@ -137,7 +139,7 @@ function clientHtml(o: Order, dl: string, hasFile: boolean) {
   <img src="${SITE}/tube-assets/email/tube-0${MODELS.indexOf(o.model) + 1 || 1}-${SLUG[o.size] || '109-7'}.jpg" width="600" alt="${esc(o.model)}" style="display:block;width:100%;height:auto">
   <div style="padding:32px 32px 8px">
     <h1 style="font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:0 0 16px">Sinu ${esc(o.model)} joonised</h1>
-    <p style="font-size:17px;line-height:1.5;margin:0 0 20px">Tere${firstName(o.name || '') ? ', ' + esc(firstName(o.name || '')) : ''}!<br>Aitäh ostu eest. Sinu pakis on ${esc(o.model)} ${esc(o.size)} joonised (PDF, DWG ja ArchiCAD).</p>
+    <p style="font-size:17px;line-height:1.5;margin:0 0 20px">Tere${firstName(o.name || '') ? ', ' + esc(firstName(o.name || '')) : ''}!<br>Aitäh ostu eest. Sinu pakis on ${esc(o.model)} ${esc(o.size)} eelprojekti mahus joonised (PDF, DWG, ArchiCAD ja SketchUp) ning pindade tabelid.</p>
     ${btn}
     <p style="font-size:16px;line-height:1.55;margin:0 0 12px">Litsentsileping on kirja manuses: joonised on ühe hoone ehitamiseks ja võid neid ise või oma arhitekti abiga kohandada. Edasimüük ja jagamine ei ole lubatud.</p>
     ${o.invoice_url ? `<p style="font-size:16px;line-height:1.55;margin:0 0 12px"><a href="${esc(o.invoice_url)}" style="color:#06c">Vaata arvet →</a></p>` : ''}
@@ -186,16 +188,9 @@ Deno.serve(async (req) => {
     await putSecret(k, w.secret);
   }
 
-  async function downloadPath(model: string, size: string) {
-    const slug = SLUG[size];
-    for (const p of [`${model.replace(/\s+/g, '-')}/${slug}.zip`, `${slug}.zip`]) {
-      const dir = p.includes('/') ? p.split('/')[0] : '';
-      const name = p.split('/').pop()!;
-      const { data } = await sb.storage.from('pesa-drawings').list(dir, { search: name });
-      if ((data || []).some((x) => x.name === name)) return p;
-    }
-    return null;
-  }
+  const MAX_DL = Number(set.download_max || 1);
+  const downloadPath = (model: string, size: string) =>
+    set.drawings_ready === 'on' && SLUG[size] && MODELS.includes(model) ? `${model.replace(/\s+/g, '-')}/${SLUG[size]}.zip` : null;
 
   // Makstud sessioonist tellimus + kirjad. Korduv kutse (tänuleht + webhook) ei saada topelt.
   async function fulfill(sessionId: string): Promise<Order | null> {
@@ -211,7 +206,7 @@ Deno.serve(async (req) => {
     const { data: ins } = await sb.from('pesa_drawing_orders').upsert(row, { onConflict: 'stripe_session_id', ignoreDuplicates: true }).select();
     if (!ins?.length) return (await sb.from('pesa_drawing_orders').select('*').eq('stripe_session_id', s.id).single()).data as Order;
     const o = ins[0] as Order;
-    const file = await downloadPath(o.model, o.size);
+    const file = downloadPath(o.model, o.size);
     const dl = `${FN_URL}?a=dl&o=${o.download_token}`;
     let err: string | null = null;
     try {
@@ -313,19 +308,18 @@ Deno.serve(async (req) => {
       return json({ received: true });
     }
 
-    if (a === 'dl') {
+    if (a === 'dl' || a === 'check' || a === 'consumed') {
       const t = u.searchParams.get('o') || '';
-      const { data: o } = await sb.from('pesa_drawing_orders').select('*').eq('download_token', t).maybeSingle();
-      if (!o) return text('Linki ei leitud. Kirjuta tiit@sportsport.ee ja saadame uue.', 404);
-      if (new Date(o.expires_at) < new Date()) return text('Allalaadimislink on aegunud. Kirjuta tiit@sportsport.ee ja saadame uue.', 410);
-      if (o.downloads >= 25) return text('Allalaadimiste arv on täis. Kirjuta tiit@sportsport.ee.', 429);
-      const file = o.file_path || await downloadPath(o.model, o.size);
-      if (!file) return text('Failid on veel ettevalmistamisel. Saadame lingi e-postile ühe tööpäeva jooksul.', 404);
-      const fname = `${o.model.replace(/\s+/g, '-')}_${SLUG[o.size]}_joonised.zip`;
-      const { data: s, error } = await sb.storage.from('pesa-drawings').createSignedUrl(file, 600, { download: fname });
-      if (error || !s) return text('Allalaadimine ebaõnnestus. Proovi uuesti või kirjuta tiit@sportsport.ee.', 500);
-      await sb.from('pesa_drawing_orders').update({ downloads: o.downloads + 1, file_path: file }).eq('id', o.id);
-      return redirect(s.signedUrl);
+      const { data: o } = /^[0-9a-f]{36}$/.test(t) ? await sb.from('pesa_drawing_orders').select('*').eq('download_token', t).maybeSingle() : { data: null };
+      const file = o ? o.file_path || downloadPath(o.model, o.size) : null;
+      const msg = !o ? 'Linki ei leitud. Kirjuta tiit@sportsport.ee ja saadame uue.'
+        : new Date(o.expires_at) < new Date() ? 'Allalaadimislink on aegunud. Kirjuta tiit@sportsport.ee ja saadame uue.'
+        : o.downloads >= MAX_DL ? 'See link on juba kasutatud (joonised on alla laaditud). Uue lingi saamiseks kirjuta tiit@sportsport.ee.'
+        : !file ? 'Failid on veel ettevalmistamisel. Saadame lingi e-postile ühe tööpäeva jooksul.' : '';
+      if (a === 'dl') return msg ? text(msg, 410) : redirect(`${SITE}/joonised-dl.php?o=${t}`);
+      if (a === 'check') return json(msg ? { ok: false, message: msg } : { ok: true, file, name: `${o!.model.replace(/\s+/g, '-')}_${SLUG[o!.size]}_joonised.zip` });
+      if (o && !msg) await sb.from('pesa_drawing_orders').update({ downloads: o.downloads + 1, file_path: file }).eq('id', o.id);
+      return json({ ok: !msg });
     }
 
     return json({ error: 'unknown action' }, 400);
