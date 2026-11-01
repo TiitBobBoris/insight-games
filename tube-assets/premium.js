@@ -199,8 +199,9 @@ function pesaParallax() {
   v.className = 'hero-media hero-video'; v.setAttribute('aria-hidden', 'true');
   v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
   v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'auto';
-  v.poster = './tube-assets/video/pesa-hero-poster.webp';
-  v.src = './tube-assets/video/pesa-hero-' + (small ? '720' : '1080') + '.mp4';
+  var ver = (document.querySelector('script[src*="premium.js"]') || {}).src; ver = ver && ver.split('?v=')[1] ? '?v=' + ver.split('?v=')[1] : '';
+  v.poster = './tube-assets/video/pesa-hero-poster.webp' + ver;
+  v.src = './tube-assets/video/pesa-hero-' + (small ? '720' : '1080') + '.mp4' + ver;
   var done = false;
   function fail() { if (done) return; done = true; v.remove(); pesaParallax(); }
   v.addEventListener('playing', function () { if (done) return; done = true; v.classList.add('on'); }, { once: true });
