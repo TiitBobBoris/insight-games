@@ -221,7 +221,7 @@ Deno.serve(async (req) => {
         from: set.admin_from || 'Pesa majad <pesa@send.sportsport.ee>', to: [TIIT], reply_to: o.email,
         subject: `${s.livemode ? '' : '[TEST] '}Joonised müüdud: ${o.model} ${o.size} – ${o.name || o.email}`,
         text: [`${o.name || ''} <${o.email}>`, `${o.model} · ${o.size}`, `Summa: ${eur(Number(o.amount_total))} (km-ta ${eur(Number(o.amount_net))})`,
-          file ? `Fail: ${file} (link saadetud)` : 'FAIL PUUDUB bucketis pesa-drawings – saada kliendile link käsitsi (klient sai teate „1 tööpäeva jooksul").',
+          file ? `Fail: ${file} (link saadetud)` : 'FAILID POLE VEEL SERVERIS (drawings_ready ≠ on) – saada kliendile link käsitsi (klient sai teate „1 tööpäeva jooksul").',
           o.invoice_url ? `Arve: ${o.invoice_url}` : '', err ? `Kliendikirja viga: ${err}` : ''].filter(Boolean).join('\n'),
       });
     } catch (_) { /* Tiidu teavitus pole kriitiline */ }
@@ -306,6 +306,32 @@ Deno.serve(async (req) => {
       const ev = JSON.parse(raw);
       if (ev.type === 'checkout.session.completed' || ev.type === 'checkout.session.async_payment_succeeded') await fulfill(ev.data.object.id);
       return json({ received: true });
+    }
+
+    // Pakkimistööd sportsport.ee serverile (joonised-dl.php?a=import). Ainult selle serveri IP-lt.
+    if (a === 'import_job' || a === 'import_done') {
+      const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+      const allowed = new Set((set.import_ip || '').split(',').map((x: string) => x.trim()).filter(Boolean));
+      try { for (const r of await Deno.resolveDns('www.sportsport.ee', 'A')) allowed.add(r); } catch (_) { /* ainult import_ip */ }
+      if (!allowed.has(ip)) { console.log('import ip', ip); return json({ error: 'forbidden', ip }, 403); }
+      const now = new Date().toISOString();
+      if (a === 'import_done') {
+        const b = await req.json().catch(() => ({}));
+        await sb.from('pesa_import_jobs').update({ done_at: now, result: String(b.result || '').slice(0, 2000) }).eq('id', Number(b.id));
+        return json({ ok: true });
+      }
+      const { data: job } = await sb.from('pesa_import_jobs').select('id').is('taken_at', null).order('id').limit(1).maybeSingle();
+      if (!job) return json({ job: null });
+      const { data: got } = await sb.from('pesa_import_jobs').update({ taken_at: now }).eq('id', job.id).is('taken_at', null).select('id,zip,files');
+      if (!got?.length) return json({ job: null });
+      const j = got[0], [m, sz] = j.zip.replace('.zip', '').split('/');
+      const readme = [`${m.replace('-', ' ')} · ${Object.keys(SLUG).find((k) => SLUG[k] === sz)} – Pesa maja joonised`, '',
+        'PDF/      prinditavad joonised (vundament, plaan, katus, vaated, lõiked, uste/akende nimekirjad, eksplikatsioonid, 3D)',
+        'DWG/      AutoCAD-failid', 'ArchiCAD/ PLA-arhiiv (raamatukogud kaasas)', 'SketchUp/ 3D-mudel', 'Tabelid/  ruumide ja terrasside pindade tabelid', '',
+        'Joonised on eelprojekti mahus ja ingliskeelsed. Ehitusloa taotlemiseks kohanda need oma krundile ja lisa asendiplaan.',
+        'Litsents: üks hoone, muutmine ja kohandamine lubatud, edasimüük ja jagamine keelatud (vt litsentsileping e-kirjas).', '',
+        'Projektbüroo Sport OÜ · tiit@sportsport.ee · +372 5560 1425 · www.sportsport.ee/pesa'].join('\r\n');
+      return json({ job: { ...j, readme } });
     }
 
     if (a === 'dl' || a === 'check' || a === 'consumed') {
