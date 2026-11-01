@@ -7,7 +7,8 @@
 //   GET ?a=unsubscribe&t=…       → klient loobub edasistest kirjadest
 //   POST ?a=followup             → järelkirjad (GitHub Actions kord päevas): kohtumine + jooniste ost
 //
-// Lülitid tabelis pesa_settings: auto_send (on/off), booking_url, offer_valid_days.
+// Lülitid tabelis pesa_settings: auto_send (on/off), booking_url, offer_valid_days, followup_days,
+//   drawings_checkout_url, client_from / admin_from (saatjad; Resendis on kinnitatud send.sportsport.ee).
 // Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (vaikimisi tiit@sportsport.ee),
 //   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri; vaikimisi Tiit Sild <tiit@sportsport.ee>).
 import { createClient } from 'npm:@supabase/supabase-js@2.49.10';
@@ -254,11 +255,11 @@ Deno.serve(async (req) => {
   const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const key = Deno.env.get('RESEND_API_KEY');
   const TIIT = Deno.env.get('TUBE_OFFER_TO') || 'tiit@sportsport.ee';
-  const ADMIN_FROM = Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>';
-  const CLIENT_FROM = Deno.env.get('PESA_CLIENT_FROM') || 'Tiit Sild | Pesa majad <tiit@sportsport.ee>';
 
   const { data: st } = await sb.from('pesa_settings').select('key,value');
   const set = Object.fromEntries((st || []).map((x) => [x.key, x.value]));
+  const ADMIN_FROM = set.admin_from || Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>';
+  const CLIENT_FROM = set.client_from || Deno.env.get('PESA_CLIENT_FROM') || 'Tiit Sild | Pesa majad <tiit@send.sportsport.ee>';
   const autoSend = set.auto_send === 'on', booking = set.booking_url || '', validDays = Number(set.offer_valid_days || 30);
   const { data: prices } = await sb.from('pesa_prices').select('size,base_price,region_surcharge,drawings_price').order('sort');
   const { data: regs } = await sb.from('pesa_regions').select('ehak');
