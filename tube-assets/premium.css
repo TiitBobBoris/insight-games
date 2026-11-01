@@ -18,13 +18,12 @@ html.premium .btn.light{background:#fff;color:var(--ink)}
 html.premium .btn.light:hover{background:#f5f5f7}
 
 /* menüüriba */
-html.premium .nav{position:fixed;top:0;left:0;right:0;z-index:40;height:52px;padding:0 max(22px,calc((100vw - 1180px)/2 + 22px));border:0;color:#fff;background:rgba(0,0,0,.12);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);transition:background .35s,color .35s,box-shadow .35s}
-html.premium .nav.solid{background:rgba(255,255,255,.78);color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+html.premium .nav{position:relative;z-index:40;height:72px;padding:0;border:0;color:#fff;background:none}
 html.premium .nav .logo{font-size:21px;letter-spacing:-.02em}
+html.premium .nav .logo,html.premium .navlinks{text-shadow:0 1px 12px rgba(0,0,0,.45)}
 html.premium .navlinks{font-size:13px;text-transform:none;gap:30px;letter-spacing:0;opacity:.9}
 html.premium .navlinks a:hover{opacity:.65}
-html.premium .nav>.eyebrow{font-size:13px;font-weight:500;color:inherit;background:var(--ink);color:#fff;border-radius:980px;padding:6px 14px}
-html.premium .nav:not(.solid)>.eyebrow{background:#fff;color:var(--ink)}
+html.premium .nav>.eyebrow{font-size:13px;font-weight:500;background:#fff;color:var(--ink);border-radius:980px;padding:6px 14px}
 
 /* avaekraan */
 html.premium .hero:after{background:linear-gradient(0deg,rgba(0,0,0,.5),rgba(0,0,0,0) 50%)}
@@ -180,7 +179,7 @@ html.premium .rv.in,html.premium body.te-on .rv{opacity:1;transform:none}
 }
 
 @media(max-width:850px){
-  html.premium .nav{padding:0 18px}
+  html.premium .nav{padding:0}
   html.premium .hero-copy{text-align:left}
   html.premium .hero-link{display:inline-block;margin:0 0 0 18px}
   html.premium .facts{grid-template-columns:1fr 1fr;gap:34px 12px}
