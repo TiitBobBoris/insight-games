@@ -203,3 +203,9 @@ body.te-preview .te-preview-pill{display:flex}
 @media(prefers-reduced-motion:reduce){#teRoot *,.te-panel{transition:none!important;animation:none!important}}
 .te-badge[hidden]{display:none}
 @media(max-width:1023px){.te-thumb{max-height:170px}}
+
+/* kustutatud foto */
+body.te-on [data-te-deleted]{position:relative}
+body.te-on:not(.te-preview) [data-te-deleted]{opacity:.28;outline:2px dashed #b3261e;outline-offset:-2px}
+body.te-on:not(.te-preview) .shot[data-te-deleted]::after{content:"Kustutatud";position:absolute;top:10px;right:10px;background:#b3261e;color:#fff;font:600 11px/1 system-ui;padding:6px 8px;letter-spacing:.04em}
+body.te-preview [data-te-deleted]{display:none!important}

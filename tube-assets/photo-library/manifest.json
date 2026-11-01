@@ -358,5 +358,85 @@
     "width": 1800,
     "height": 1038,
     "dropbox": "https://www.dropbox.com/preview/Tiit%20Sild/arhiiv/Droonipildid/P%C3%A4rnapuu%202a%20Martin%20Siplane%20copy/plan%20for%20prefab%20home%20tube.jpg?role=work"
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 1",
+    "src": "./tube-assets/photo-library/maardu-001.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 2",
+    "src": "./tube-assets/photo-library/maardu-002.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 3",
+    "src": "./tube-assets/photo-library/maardu-003.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 4",
+    "src": "./tube-assets/photo-library/maardu-004.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 5",
+    "src": "./tube-assets/photo-library/maardu-005.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 6",
+    "src": "./tube-assets/photo-library/maardu-006.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 7",
+    "src": "./tube-assets/photo-library/maardu-007.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 8",
+    "src": "./tube-assets/photo-library/maardu-008.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 9",
+    "src": "./tube-assets/photo-library/maardu-009.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
+  },
+  {
+    "group": "Maardu",
+    "name": "Mere tee 10",
+    "src": "./tube-assets/photo-library/maardu-010.webp",
+    "width": 1280,
+    "height": 960,
+    "dropbox": ""
   }
 ]

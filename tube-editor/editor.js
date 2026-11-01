@@ -143,13 +143,19 @@ function registerItems() {
     const id = el.dataset.tubeId;
     if (items.has(id)) { console.warn('TUBE redaktor: korduv data-tube-id', id); return; }
     const kind = el.tagName === 'IMG' ? 'image' : 'text';
-    items.set(id, { el, kind, original: kind === 'image' ? el.getAttribute('src') : readText(el), label: labelOf(id, el), section: sectionOf(el) });
+    const box = kind === 'image' ? el.closest('.shot') || (el.closest('.built-grid') && el) : null;
+    items.set(id, { el, kind, box, original: kind === 'image' ? el.getAttribute('src') : readText(el), label: labelOf(id, el), section: sectionOf(el) });
   });
 }
-function currentValue(id) { const it = items.get(id); return it.kind === 'image' ? it.el.getAttribute('src') : readText(it.el); }
+// Kustutatud foto: mustandis images[id] = DELETED, lehel jääb element alles (märgituna), avaldamisel eemaldatakse.
+const DELETED = 'deleted';
+function markDeleted(it, on) { it.box?.toggleAttribute('data-te-deleted', on); }
+function currentValue(id) { const it = items.get(id); return it.kind === 'image' ? (draft.images[id] === DELETED ? DELETED : it.el.getAttribute('src')) : readText(it.el); }
 function setValue(id, value) {
   const it = items.get(id); if (!it) return;
   if (it.kind === 'image') {
+    markDeleted(it, value === DELETED);
+    if (value === DELETED) { draft.images[id] = DELETED; return; }
     if (it.el.getAttribute('src') !== value) it.el.setAttribute('src', value);
     it.el.removeAttribute('srcset');
     if (value === it.original) delete draft.images[id]; else draft.images[id] = value;
@@ -162,7 +168,7 @@ function applyDraftToDom() {
   for (const [id, it] of items) {
     const v = it.kind === 'image' ? draft.images[id] : draft.text[id];
     const target = v ?? it.original;
-    if (it.kind === 'image') { if (it.el.getAttribute('src') !== target) it.el.setAttribute('src', target); }
+    if (it.kind === 'image') { markDeleted(it, target === DELETED); if (target !== DELETED && it.el.getAttribute('src') !== target) it.el.setAttribute('src', target); }
     else if (readText(it.el) !== target) writeText(it.el, target);
   }
   refreshNoteMarks();
@@ -543,15 +549,17 @@ function renderPanel({ mainOnly = false } = {}) {
     if (changed) add(main, h('p', { class: 'te-hint' }, 'Algne: ', h('i', {}, `„${it.original.replace(/\n/g, ' ')}”`)));
   } else {
     const photo = library.byPath(it.el.getAttribute('src'));
+    const deleted = draft.images[selectedId] === DELETED;
     add(main,
-      changed ? h('div', { class: 'te-changed' }, 'Vahetatud') : null,
+      changed ? h('div', { class: 'te-changed' }, deleted ? 'Kustutatud' : 'Vahetatud') : null,
       h('img', { class: 'te-thumb', src: it.el.currentSrc || it.el.src, alt: '' }),
       photo && h('p', { class: 'te-hint' }, `${photo.group} · ${photo.name}`),
       h('div', { class: 'te-actions' },
         h('button', { type: 'button', class: 'te-btn te-primary te-block', onclick: () => library.open() }, icon('library'), 'Vali fotopangast'),
         h('div', { class: 'te-actions te-two', style: 'margin:0' },
           h('label', { class: 'te-btn te-outline te-block te-file' }, icon('upload'), 'Laadi seadmest', h('input', { type: 'file', accept: 'image/*', onchange: e => uploadImage(e.target) })),
-          h('button', { type: 'button', class: 'te-btn te-outline te-block', disabled: !changed, onclick: () => resetItem(selectedId) }, icon('reset'), 'Taasta algne'))),
+          h('button', { type: 'button', class: 'te-btn te-outline te-block', disabled: !changed, onclick: () => resetItem(selectedId) }, icon('reset'), deleted ? 'Taasta foto' : 'Taasta algne')),
+        it.box && !deleted && h('button', { type: 'button', class: 'te-btn te-outline te-block te-danger', onclick: () => replaceImage(selectedId, DELETED, 'Foto kustutatud. Avaldamisel eemaldatakse see lehelt.') }, icon('trash'), 'Kustuta foto')),
       photo?.dropbox && h('a', { class: 'te-hint', style: 'display:inline-flex;gap:6px;align-items:center;color:inherit', href: photo.dropbox, target: '_blank', rel: 'noopener noreferrer' }, icon('external'), 'Ava originaal Dropboxis'),
     );
   }
@@ -1026,6 +1034,7 @@ function migrateDraft() {
   }
   for (const [id, v] of Object.entries(draft.images)) {
     const it = items.get(id); if (!it || typeof v !== 'string') continue;
+    if (v === DELETED) continue;
     if (PUBLISHED_2026_10_31[id]?.(v) || v === it.original) { delete draft.images[id]; changed = true; continue; }
     const m = v.match(/dropbox(?:usercontent)?\.com\/.*\/([^/?#]+\.(?:jpe?g|png|webp))/i);
     const photo = m && library.photos?.find(p => p.name.toLowerCase() === decodeURIComponent(m[1]).toLowerCase());
@@ -1035,6 +1044,7 @@ function migrateDraft() {
 }
 
 async function boot() {
+  document.getElementById('allBuilt')?.removeAttribute('hidden'); // kogu fotogalerii nähtavaks, et seda saaks muuta
   registerItems();
   buildUI();
   document.body.classList.add('te-on');
