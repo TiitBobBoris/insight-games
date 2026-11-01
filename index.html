@@ -37,7 +37,8 @@ button{border-radius:0}
 .response-note{display:inline-block;margin-left:18px;font-size:13px}
 .hero{min-height:100svh;position:relative;color:#fff;overflow:hidden;background:#2b2b28}
 .hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.68),rgba(0,0,0,.12) 72%)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.42),rgba(0,0,0,0) 45%),linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 18%)}
+.hero-copy{text-shadow:0 1px 14px rgba(0,0,0,.55)}
 .hero-inner{position:relative;z-index:1;min-height:100svh;display:flex;flex-direction:column}
 .nav{height:84px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff55}
 .logo{font-size:30px}
@@ -50,9 +51,9 @@ button{border-radius:0}
 .section-head{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:50px}
 .section-head h2,.models h2,.offer h2,.final h2{font-size:clamp(54px,6vw,94px);margin:10px 0}
 .section-head p{font-size:19px;line-height:1.55}
-.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.proof{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .shot{position:relative;overflow:hidden;background:#d1cec6}
-.shot{height:clamp(150px,16vw,240px)}
+.shot{height:clamp(220px,30vw,460px)}
 .shot.big{grid-column:1/-1;height:clamp(320px,52vw,680px)}
 .shot img,.story-image img,.model img{width:100%;height:100%;object-fit:cover;display:block}
 .caption{position:absolute;left:16px;bottom:14px;color:#fff;font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 8px #000}
@@ -176,11 +177,11 @@ button{border-radius:0}
   .section{padding:90px 0}
 }
 </style>
-<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}.tube-views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.tube-views figure{margin:0}.tube-views img{display:block;width:100%;height:auto;max-height:none;aspect-ratio:16/9;object-fit:cover;background:#d1cec6}.tube-views figcaption{font-size:12px;color:#706d66;margin-top:6px}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-views{grid-template-columns:1fr}.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-img{margin:0;background:#fff;padding:clamp(10px,2vw,24px)}.tube-plan-img a{display:block;cursor:zoom-in}.tube-plan-img img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;aspect-ratio:auto}.tube-plan-img figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:12px;font-size:13px;color:#706d66}.tube-plan-img figcaption span:first-child{color:#171716;font-weight:700}.model-more{background:none;border:0;padding:0;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:inherit;margin-top:15px;display:inline-block}</style></head>
+<style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}.tube-views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.tube-views figure{margin:0}.tube-views img{display:block;width:100%;height:auto;max-height:none;aspect-ratio:16/9;object-fit:cover;background:#d1cec6}.tube-views figcaption{font-size:12px;color:#706d66;margin-top:6px}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-views{grid-template-columns:1fr}.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-img{margin:0;background:#fff;padding:clamp(10px,2vw,24px)}.tube-plan-img a{display:block;cursor:zoom-in}.tube-plan-img img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;aspect-ratio:auto}.tube-plan-img figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:12px;font-size:13px;color:#706d66}.tube-plan-img figcaption span:first-child{color:#171716;font-weight:700}.model-more{background:none;border:0;padding:0;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:inherit;margin-top:15px;display:inline-block}</style><style>.all-built-toggle{text-align:center;margin-top:34px}.all-built{margin-top:50px;display:grid;gap:56px}.built-project h3{font-size:clamp(26px,2.6vw,38px);margin:0 0 18px;font-weight:400}.built-project h3 span{font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.6}.built-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.built-grid img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#d1cec6}@media(max-width:850px){.built-grid{grid-template-columns:1fr 1fr}}</style></head>
 <body>
 
 <section class="hero">
-  <img data-tube-id="hero-image" class="hero-media" src="./tube-assets/photo-library/n-mme-013.webp" alt="Pesa maja Nõmmel – aiapoolne vaade" fetchpriority="high">
+  <img data-tube-id="hero-image" class="hero-media" src="./tube-assets/photo-library/n-mme-009.webp" alt="Pesa maja Nõmmel – aiapoolne vaade" fetchpriority="high">
   <div class="wrap hero-inner">
     <header class="nav">
       <div class="logo display">PESA</div>
@@ -228,14 +229,73 @@ button{border-radius:0}
         <div data-tube-id="extra-text-9" class="eyebrow">Valminud Pesa majad</div>
         <h2 data-tube-id="built-title" class="display">Päriselt valmis ehitatud majad räägivad enda eest ise.</h2>
       </div>
-      <p data-tube-id="built-description">Pesa majad ei ole ainult arhitektuurne idee. Eestis on valminud ligi 10 Pesa maja – igaüks oma krundile ja oma pere vajadustele kohandatud.</p>
+      <p data-tube-id="built-description">Pesa majad ei ole ainult arhitektuurne idee. Eestis on valminud üle 10 Pesa maja – igaüks lahendatud vastavalt krundile ja pere vajadustele.</p>
     </div>
     <div class="proof">
       <div class="shot big"><img loading="lazy" decoding="async" data-tube-id="nomme-image" src="./tube-assets/photo-library/n-mme-005.webp" alt="Pesa maja Nõmmel"><span data-tube-id="extra-text-10" class="caption">VALGUSKÜLLANE ELAMU NÕMMEL</span></div>
       <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-2" src="./tube-assets/mere-aares.webp" alt="Valminud Pesa maja"><span data-tube-id="extra-text-11" class="caption">Pesa maja mere ääres</span></div>
-      <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-3" src="./tube-assets/photo-library/n-mme-001.webp" alt="Pesa maja Nõmme metsade vahel"><span data-tube-id="extra-text-12" class="caption">NÕMME METSADE VAHEL</span></div>
+      <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-3" src="./tube-assets/photo-library/saku-2-043.webp" alt="Pesa maja Sakus"><span data-tube-id="extra-text-12" class="caption">Pesa maja Sakus</span></div>
       <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-4" src="./tube-assets/photo-library/n-mme-004.webp" alt="Pesa maja Nõmmel"><span data-tube-id="extra-text-13" class="caption">Pesa Nõmmel</span></div>
       <div class="shot"><img loading="lazy" decoding="async" data-tube-id="proof-5" src="./tube-assets/photo-library/saku-1-021.webp" alt="Pesa maja Sakus"><span data-tube-id="extra-text-14" class="caption">SAKU UUSELAMURAJOONIS</span></div>
+    </div>
+    <div class="all-built-toggle"><button type="button" class="btn" id="allBuiltBtn" data-tube-id="all-built-button" aria-expanded="false" aria-controls="allBuilt">Näita kõiki valminud Pesa maju ↓</button></div>
+    <div class="all-built" id="allBuilt" data-tube-id="all-built" hidden>
+      <div class="built-project"><h3 data-tube-id="all-built-nomme-title">Nõmme, Tallinn <span>· 16 fotot · Foto: Martin Siplane</span></h3><div class="built-grid">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-001.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-002.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-003.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-004.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-005.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-006.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-007.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-008.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-009.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-010.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-011.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-012.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-013.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-014.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-015.webp" alt="Pesa maja Nõmmel">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/n-mme-016.webp" alt="Pesa maja Nõmmel">
+      </div></div>
+      <div class="built-project"><h3 data-tube-id="all-built-saku-1-title">Saku, maja 1 <span>· 17 fotot</span></h3><div class="built-grid">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-017.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-018.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-019.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-020.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-021.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-022.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-023.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-024.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-025.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-026.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-027.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-028.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-029.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-030.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-031.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-032.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-1-033.webp" alt="Pesa maja Sakus">
+      </div></div>
+      <div class="built-project"><h3 data-tube-id="all-built-saku-2-title">Saku, maja 2 <span>· 10 fotot</span></h3><div class="built-grid">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-034.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-035.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-036.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-037.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-038.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-039.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-040.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-041.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-042.webp" alt="Pesa maja Sakus">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/saku-2-043.webp" alt="Pesa maja Sakus">
+      </div></div>
+      <div class="built-project"><h3 data-tube-id="all-built-parnapuu-2a-title">Pärnapuu <span>· 2 fotot</span></h3><div class="built-grid">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/p-rnapuu-2a-044.webp" alt="Pesa maja Pärnapuu tänaval">
+        <img loading="lazy" decoding="async" src="./tube-assets/photo-library/p-rnapuu-2a-045.webp" alt="Pesa maja Pärnapuu tänaval">
+      </div></div>
+      <div class="built-project"><h3 data-tube-id="all-built-mere-aares-title">Mere ääres <span>· 1 foto</span></h3><div class="built-grid">
+        <img loading="lazy" decoding="async" src="./tube-assets/mere-aares.webp" alt="Pesa maja mere ääres">
+      </div></div>
     </div>
   </div>
 </section>
@@ -269,11 +329,11 @@ button{border-radius:0}
     <table class="compare" data-tube-id="compare-table">
       <thead><tr><th></th><th>Tüüpprojekt</th><th class="mid">Pesa maja</th><th>Individuaalprojekt</th></tr></thead>
       <tbody>
-        <tr><th>Lähtekoht</th><td>Kataloogiprojekt</td><td class="mid">Läbiproovitud maja – ligi 10 valminud</td><td>Tühi leht</td></tr>
+        <tr><th>Lähtekoht</th><td>Kataloogiprojekt</td><td class="mid">Läbiproovitud maja – üle 10 valminud Eestis</td><td>Tühi leht</td></tr>
         <tr><th>Kohandamine perele ja krundile</th><td>Piiratud, muudatused eraldi tasu eest</td><td class="mid">Arhitekt kohandab plaani ja asendi krundil – hinna sees</td><td>Täielik vabadus</td></tr>
-        <tr><th>Projekt ehitusloani</th><td>Sõltub muudatuste mahust</td><td class="mid">Alates 4500 € + km</td><td>Tavaliselt mitu korda kallim</td></tr>
-        <tr><th>Aeg ehitusloa taotluseni</th><td>Sõltub muudatuste mahust</td><td class="mid">Umbes kuu</td><td>Tavaliselt mitu kuud</td></tr>
-        <tr><th>Ehitaja leidmine</th><td>Ise</td><td class="mid">Aitame leida ja soovitame</td><td>Kokkuleppel</td></tr>
+        <tr><th>Projekt ehitusloani</th><td>Sõltub muudatuste mahust</td><td class="mid">Projekti hind alates 4500 € + km</td><td>Tavaliselt mitu korda kallim</td></tr>
+        <tr><th>Aeg ehitusloa taotluseni</th><td>Sõltub muudatuste mahust</td><td class="mid">Umbes kuu</td><td>Tavaliselt vähemalt pool aastat</td></tr>
+        <tr><th>Ehitaja leidmine</th><td>Ise</td><td class="mid">Aitame leida ja soovitame</td><td>Kokkuleppel arhitektiga või ise</td></tr>
       </tbody>
     </table>
   </div>
@@ -283,7 +343,7 @@ button{border-radius:0}
   <div class="wrap">
     <div class="section-head">
       <div><div data-tube-id="extra-text-38" class="eyebrow">Kuidas see töötab?</div><h2 data-tube-id="process-title" class="display">Lihtne tee ideest ehitusloani.</h2></div>
-      <p data-tube-id="process-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle, vajadusel täpsustame ning saadame sulle konkreetse pakkumise 24 tunni jooksul. Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu; ehitusloa menetluse kiirus sõltub omavalitsusest.</p>
+      <p data-tube-id="process-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle, vajadusel täpsustame küsimusi ning saadame sulle konkreetse pakkumise 24 tunni jooksul. Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu; ehitusloa menetluse kiirus sõltub omavalitsusest.</p>
     </div>
     <div class="process-grid">
       <div class="step"><span data-tube-id="extra-text-39">01</span><h3 data-tube-id="extra-text-40">Vali lähtekoht</h3><p data-tube-id="process-step-1">Vaata Pesa majade lahendusi ja põhisuurusi. Valik ei pea kohe valmis ega lõplik olema.</p></div>
@@ -318,7 +378,7 @@ button{border-radius:0}
       <h2 data-tube-id="offer-title" class="display">Küsi Pesa maja pakkumist.</h2>
       <p data-tube-id="offer-description">Kirjelda lühidalt oma krunti ja soove. Vaatame info üle ning saadame sulle konkreetse pakkumise.</p>
       <div class="promise"><strong data-tube-id="extra-text-46">Vastame ööpäeva jooksul.</strong><br><span data-tube-id="promise-note">Päring ei kohusta sind midagi tellima.</span></div>
-      <p class="price-note" data-tube-id="offer-price"><strong>Projekt ehitusloani alates 4500 € + km</strong> (eelprojekt + ehitusloa projekt).<br>Hinnas on hoone arhitektuurne projekt koos ehitusloa taotlusega ning vajalike muudatuste ja kohandustega. Maja ehitus ei ole hinnas – aitame leida ehitaja.</p>
+      <p class="price-note" data-tube-id="offer-price"><strong>Projekt ehitusloani alates 4500 € + km</strong> (eelprojekt + ehitusloa projekt).<br>Hinnas on hoone arhitektuurne projekt koos ehitusloa taotlusega ning vajalike muudatuste ja kohandustega. Maja ehitus ja eriosade projektid ei ole hinnas – aitame leida ehitaja.</p>
       <div class="architect" data-tube-id="architect-block"><strong>Sinu päringule vastab arhitekt Tiit Sild</strong><br>Projektbüroo Sport<br><a href="tel:+37255601425">+372 5560 1425</a> · <a href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a></div>
     </div>
 
@@ -393,7 +453,7 @@ button{border-radius:0}
 <section class="section final">
   <div class="wrap">
     <div data-tube-id="extra-text-60" class="eyebrow">Pesa by Projektbüroo Sport</div>
-    <h2 data-tube-id="final-title" class="display">Vali maja täna. Pakkumine sinu krundile homme.</h2>
+    <h2 data-tube-id="final-title" class="display">Vali juba täna oma lemmikmaja välja. Saadame pakkumise sinu krundile homme.</h2>
     <p data-tube-id="final-description">Päring võtab paar minutit ega kohusta sind millekski.</p>
     <a data-tube-id="extra-text-61" class="btn" href="#offer">Küsi pakkumist →</a>
   </div>
@@ -402,7 +462,7 @@ button{border-radius:0}
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <div><strong data-tube-id="footer-company">Projektbüroo Sport OÜ</strong><br><span data-tube-id="footer-tagline">Pesa majad – arhitekti loodud kodud</span></div>
-    <div><a data-tube-id="footer-phone" href="tel:+37255601425">+372 5560 1425</a><br><a data-tube-id="footer-email" href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a><br><a data-tube-id="footer-site" href="https://www.sportsport.ee/">www.sportsport.ee</a></div>
+    <div><a data-tube-id="footer-phone" href="tel:+37255601425">+372 5560 1425</a><br><a data-tube-id="footer-email" href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a><br><a data-tube-id="footer-site" href="https://www.sportsport.ee/pesa/">www.sportsport.ee/pesa</a></div>
   </div>
 </footer>
 
@@ -490,6 +550,9 @@ form.addEventListener('submit',async e=>{
 <script>
 /* Visuaalne redaktor laaditakse ainult ?edit=1 korral; tavakülastaja ei laadi midagi lisa. */
 if(new URLSearchParams(location.search).get('edit')==='1'){const v='2';const l=document.createElement('link');l.rel='stylesheet';l.href='./tube-editor/editor.css?v='+v;document.head.append(l);const s=document.createElement('script');s.type='module';s.src='./tube-editor/editor.js?v='+v;document.body.append(s)}
+</script>
+<script>
+(function(){var b=document.getElementById('allBuiltBtn'),a=document.getElementById('allBuilt');if(!b||!a)return;b.addEventListener('click',function(){var open=a.hidden;a.hidden=!open;b.setAttribute('aria-expanded',open);b.textContent=open?'Peida fotod ↑':'Näita kõiki valminud Pesa maju ↓';(open?a:b).scrollIntoView({behavior:'smooth',block:open?'start':'center'})})})();
 </script>
 </body>
 </html>
