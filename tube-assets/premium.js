@@ -22,7 +22,11 @@
     sw.className = 'p-switch'; sw.setAttribute('role', 'tablist'); sw.setAttribute('aria-label', 'Vali maja');
     models.forEach(function (m, i) {
       var b = document.createElement('button');
-      b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = m.dataset.model || ('PESA ' + (i + 1));
+      b.type = 'button'; b.setAttribute('role', 'tab');
+      var src = m.querySelector('img'), th = document.createElement('img');
+      th.src = src ? src.getAttribute('src') : ''; th.alt = ''; th.loading = 'lazy'; th.decoding = 'async';
+      var t = document.createElement('span'); t.textContent = m.dataset.model || ('PESA ' + (i + 1));
+      b.appendChild(th); b.appendChild(t);
       b.addEventListener('click', function () { show(i); });
       sw.appendChild(b);
     });
