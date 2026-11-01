@@ -80,7 +80,12 @@ html.premium .sizes-note{border-top:0;margin-top:56px;text-align:center;grid-tem
 html.premium .sizes-note strong{font-size:28px;font-weight:600}
 html.premium .sizes-note p{max-width:720px;margin:0 auto}
 html.premium .tube-dialog.model-detail{border:0;border-radius:var(--r-lg);overflow:hidden;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.06)}
-html.premium .tube-tabs button{border-radius:980px;border-color:var(--line)}
+html.premium .tube-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,190px));gap:14px}
+html.premium .tube-tabs button{border:0;background:transparent;padding:0;border-radius:0;color:var(--muted);font-size:15px;font-weight:500}
+html.premium .tube-tabs button[aria-selected=true]{background:transparent;color:var(--ink);font-weight:600}
+html.premium .tab-thumb{width:100%;border:0;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--line);opacity:.6;outline:2px solid transparent;outline-offset:3px;transition:opacity .25s,outline-color .25s}
+html.premium .tube-tabs button:hover .tab-thumb{opacity:.85}
+html.premium .tube-tabs button[aria-selected=true] .tab-thumb{opacity:1;outline-color:var(--ink)}
 html.premium .tube-views img,html.premium .tube-plan-img{border-radius:var(--r-md)}
 @keyframes pFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
