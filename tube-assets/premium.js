@@ -111,10 +111,7 @@
 
 /* Avapildi ruumiline liikumine: foto + sügavuskaart (WebGL). Kaamera liigub aeglaselt külgsuunas,
  * lähemad objektid nihkuvad rohkem kui kaugemad. Töötab ainult foto jaoks, millel on sügavuskaart. */
-(function () {
-  var root = document.documentElement;
-  if (!root.classList.contains('premium') || /[?&]edit=1/.test(location.search)) return;
-  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+function pesaParallax() {
   var DEPTH = { 'n-mme-005.webp': './tube-assets/hero-depth.jpg' };
   var img = document.querySelector('.hero-media');
   if (!img) return;
@@ -185,4 +182,32 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; toggle(); }).observe(canvas);
     document.addEventListener('visibilitychange', toggle);
   }).catch(function () {});
+}
+
+/* Avavideo: kaamera liigub aeglaselt vasakule (Higgsfield, Nõmme foto põhjal). Kui video ei käivitu
+ * (nt säästurežiim või aeglane ühendus), jääb foto ja selle sügavusliikumine. */
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains('premium') || /[?&]edit=1/.test(location.search)) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var img = document.querySelector('.hero-media');
+  if (!img || !/n-mme-005\.webp$/.test(img.getAttribute('src') || '')) return;
+  var conn = navigator.connection || {};
+  if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) { pesaParallax(); return; }
+  var small = Math.max(screen.width, screen.height) * Math.min(window.devicePixelRatio || 1, 2) < 1600 || window.innerWidth < 900;
+  var v = document.createElement('video');
+  v.className = 'hero-media hero-video'; v.setAttribute('aria-hidden', 'true');
+  v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'auto';
+  v.poster = './tube-assets/video/pesa-hero-poster.webp';
+  v.src = './tube-assets/video/pesa-hero-' + (small ? '720' : '1080') + '.mp4';
+  var done = false;
+  function fail() { if (done) return; done = true; v.remove(); pesaParallax(); }
+  v.addEventListener('playing', function () { if (done) return; done = true; v.classList.add('on'); }, { once: true });
+  v.addEventListener('error', fail, { once: true });
+  setTimeout(function () { if (!done && v.readyState < 3) fail(); }, 8000);
+  img.after(v);
+  var p = v.play(); if (p && p.catch) p.catch(fail);
+  // Peata, kui avapilt pole nähtav.
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (!done || !v.isConnected) return; e[0].isIntersecting ? v.play().catch(function () {}) : v.pause(); }).observe(v);
 })();
