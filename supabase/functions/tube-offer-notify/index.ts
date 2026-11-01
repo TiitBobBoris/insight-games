@@ -16,6 +16,7 @@ import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
 
 const SITE = 'https://www.sportsport.ee/pesa';
 const FN_URL = 'https://xlhtavzsanlikmxrddrb.supabase.co/functions/v1/tube-offer-notify';
+const LOGO = `${SITE}/tube-assets/email/projektbyroo-sport-logo.png`;
 const SLUG: Record<string, string> = { '89,7 m²': '89-7', '109,7 m²': '109-7', '123,4 m²': '123-4' };
 const ROOMS: Record<string, string> = { '89,7 m²': '2 magamistuba', '109,7 m²': '3 magamistuba', '123,4 m²': '4 magamistuba' };
 
@@ -102,6 +103,7 @@ function offerHtml(r: Row, q: Quote, booking: string) {
     : 'Kui soovid enne arutada, vasta sellele kirjale – kohtumine arhitektiga on tasuta.';
   return `<!doctype html><html lang="et"><body style="margin:0;background:#f5f5f7">
 <div style="max-width:600px;margin:0 auto;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#1d1d1f">
+  <div style="padding:26px 32px 20px"><img src="${LOGO}" width="132" alt="Projektbüroo Sport" style="display:block;width:132px;height:auto;border:0"></div>
   <img src="${img}" width="600" alt="${esc(q.model || 'Pesa maja')}" style="display:block;width:100%;height:auto">
   <div style="padding:32px 32px 8px">
     <p style="font-size:14px;color:#6e6e73;margin:0">Pesa majad · Projektbüroo Sport</p>
@@ -144,6 +146,11 @@ function offerText(r: Row, q: Quote, booking: string) {
 async function offerPdf(r: Row, q: Quote): Promise<string | null> {
   try { return await offerPdfInner(r, q); } catch (_) { return null; }
 }
+let logoBytes: Uint8Array | null = null;
+async function getLogo() {
+  if (!logoBytes) { try { const res = await fetch(LOGO); if (res.ok) logoBytes = new Uint8Array(await res.arrayBuffer()); } catch (_) { /* ilma logota */ } }
+  return logoBytes;
+}
 async function offerPdfInner(r: Row, q: Quote) {
   const doc = await PDFDocument.create();
   const pg = doc.addPage([595, 842]);
@@ -153,7 +160,9 @@ async function offerPdfInner(r: Row, q: Quote) {
   // Standardfont toetab ainult WinAnsi märke; muud asendatakse, et PDF ei kukuks.
   const safe = (s: string) => s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
   const t = (s: string, x: number, size = 11, font = f, color = ink) => pg.drawText(safe(s), { x, y, size, font, color });
-  t('Pesa majad · Projektbüroo Sport OÜ', 56, 10, f, mute); y -= 34;
+  const lb = await getLogo();
+  if (lb) { const img = await doc.embedPng(lb); const w = 118, h = w * img.height / img.width; pg.drawImage(img, { x: 56, y: 790 - h, width: w, height: h }); y = 790 - h - 34; }
+  t('Pesa majad', 56, 10, f, mute); y -= 30;
   t('Pakkumine: Pesa maja projekt ehitusloani', 56, 20, b); y -= 26;
   t(`Klient: ${r.name}`, 56); y -= 16;
   t(`Krunt: ${r.plot || r.region_name || 'otsimisel'}`, 56); y -= 16;
@@ -211,6 +220,7 @@ function followupHtml(r: Row, q: Quote, booking: string, prices: Price[], checko
     : 'Jooniste ostmiseks vasta sellele kirjale „Soovin jooniseid" – saadame arve ja pärast tasumist allalaadimislingi.';
   return `<!doctype html><html lang="et"><body style="margin:0;background:#f5f5f7">
 <div style="max-width:600px;margin:0 auto;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#1d1d1f">
+  <div style="padding:26px 32px 20px"><img src="${LOGO}" width="132" alt="Projektbüroo Sport" style="display:block;width:132px;height:auto;border:0"></div>
   <img src="${SITE}/tube-assets/email/pesa-nomme.jpg" width="600" alt="Pesa maja Nõmmel" style="display:block;width:100%;height:auto">
   <div style="padding:32px 32px 8px">
     <h1 style="font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:0 0 16px">Kohtume ja vaatame sinu Pesa maja koos üle?</h1>
