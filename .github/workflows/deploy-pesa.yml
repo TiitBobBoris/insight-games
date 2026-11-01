@@ -54,7 +54,8 @@ jobs:
             set ftp:ssl-allow yes;
             set net:max-retries 3;
             mkdir -p -f $DEST;
-            mirror --reverse --delete --verbose --parallel=4 dist/ $DEST/;
+            mirror --reverse --delete --verbose --parallel=4 --exclude-glob index.html dist/ $DEST/;
+            put dist/index.html -o $DEST/index.html;
             bye"
 
       - name: Kontrolli
