@@ -153,7 +153,7 @@ function offerHtml(r: Row, q: Quote, booking: string) {
       <p style="font-size:17px;font-weight:600;margin:0 0 6px">Järgmine samm</p>
       <p style="font-size:16px;line-height:1.55;margin:0">Vasta sellele kirjale „Sobib" või helista <a href="tel:+37255601425" style="color:#06c">+372 5560 1425</a> – saadame lepingu ja alustame.<br>${meet}</p>
     </div>
-    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>arhitekt, Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a> · <a href="mailto:tiit@sportsport.ee" style="color:#1d1d1f">tiit@sportsport.ee</a></p>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>volitatud arhitekt, tase 8 · Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a> · <a href="mailto:tiit@sportsport.ee" style="color:#1d1d1f">tiit@sportsport.ee</a></p>
   </div>
   <div style="padding:18px 32px 28px;border-top:1px solid #e8e8ed;font-size:12px;line-height:1.5;color:#86868b">
     Said selle kirja, sest saatsid päringu lehel ${SITE.replace('https://', '')}. Pakkumine on lisatud ka PDF-ina.
@@ -172,7 +172,7 @@ function offerText(r: Row, q: Quote, booking: string) {
     `Ei ole hinnas: ${NOT_INCLUDED}`,
     'Ajakava: päringust ehitusloa taotluseni tavaliselt umbes kuu.', '',
     'Järgmine samm: vasta „Sobib" või helista +372 5560 1425.', booking ? `Tasuta kohtumine arhitektiga: ${booking}` : 'Kohtumine arhitektiga on tasuta – vasta sellele kirjale.', '',
-    'Tiit Sild, arhitekt, Projektbüroo Sport OÜ', '', `Loobu kirjadest: ${FN_URL}?a=unsubscribe&t=${r.token}`].join('\n');
+    'Tiit Sild, volitatud arhitekt, tase 8, Projektbüroo Sport OÜ', '', `Loobu kirjadest: ${FN_URL}?a=unsubscribe&t=${r.token}`].join('\n');
 }
 
 async function offerPdf(r: Row, q: Quote): Promise<string | null> {
@@ -208,7 +208,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   const f = custom ? await doc.embedFont(fr!, { subset: true }) : await doc.embedFont(StandardFonts.Helvetica);
   const b = custom ? await doc.embedFont(fb!, { subset: true }) : await doc.embedFont(StandardFonts.HelveticaBold);
   const lt = custom ? await doc.embedFont(fl!, { subset: true }) : f;
-  const safe = (s: string) => custom ? s.replace(/[^\x20-\x7E\xA0-ɏ€–—‘’“”„•…·²]/g, '') : s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
+  const safe = (s: string) => custom ? s.replace(/[^\x20-\x7E\xA0-\u024F€–—‘’“”„•…·²]/g, '') : s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
 
   const ink = rgb(0.11, 0.11, 0.12), mute = rgb(0.42, 0.42, 0.44), rule = rgb(0.87, 0.86, 0.84);
   const sand = rgb(0.957, 0.945, 0.925), accent = rgb(0.6, 0.47, 0.3), white = rgb(1, 1, 1);
@@ -358,7 +358,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   const half = (R - L - 30) / 2;
   const blocks: [string, string][] = [
     ['Ei ole hinnas', NOT_INCLUDED],
-    ['Ajakava', 'Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest. Tasume ainult tehtud töö eest etappide kaupa.'],
+    ['Ajakava', 'Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest.'],
   ];
   const wrapped = blocks.map(([, txt]) => wrap(txt, half, 9));
   const bh = 22 + Math.max(...wrapped.map((w) => w.length)) * 13;
@@ -429,7 +429,7 @@ function followupHtml(r: Row, q: Quote, booking: string, prices: Price[], checko
     <p style="font-size:16px;line-height:1.55;margin:0 0 12px">Võid osta valitud maja joonised (PDF, DWG ja ArchiCAD) ning kohandada need ise või teise arhitekti abiga ehitusloa projektiks. Litsents kehtib ühe hoone ehitamiseks; jooniste edasimüük ei ole lubatud.</p>
     ${dRows ? `<table width="100%" cellpadding="0" cellspacing="0" style="font-size:16px;border-collapse:collapse;margin:0 0 12px">${dRows}</table>` : ''}
     <p style="font-size:16px;line-height:1.55;margin:0 0 28px">${buy}</p>
-    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>arhitekt, Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a></p>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>volitatud arhitekt, tase 8 · Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a></p>
   </div>
   <div style="padding:18px 32px 28px;border-top:1px solid #e8e8ed;font-size:12px;line-height:1.5;color:#86868b">
     See on viimane automaatne kiri sinu päringu kohta. <a href="${FN_URL}?a=unsubscribe&t=${r.token}" style="color:#86868b">Ära saada mulle rohkem kirju</a>.
