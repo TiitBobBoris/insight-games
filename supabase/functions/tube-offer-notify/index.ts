@@ -48,7 +48,7 @@ const DEFAULT_ITEMS: Item[] = [
   { title: 'Eskiisprojekti kohandused koostöös sinuga', amount: 890, detail: 'Ruumide, akende ja uste, materjalide ja viimistluse kohandamine sinu pere soovide järgi: kuni 2 kohtumist ja 2 parandusringi.' },
   { title: 'Asendiplaan ja hoone sidumine krundiga', amount: 590, detail: 'Hoone paigutus krundil, kõrgused, juurdepääs ja liitumised geodeetilise alusplaani põhjal.' },
   { title: 'Ehitusloa projekt, arhitektuurne osa', amount: 'rest', detail: 'Korruse- ja katuseplaan, lõiked, vaated, seletuskiri ja tehnilised näitajad ehitusprojekti nõuete järgi.' },
-  { title: 'Ehitusloa taotlus ja menetlus', amount: 390, detail: 'Taotluse esitamine ehitisregistris, suhtlus omavalitsusega ja menetluse käigus küsitud parandused.' },
+  { title: 'Ehitusloa taotlus ja menetlus', amount: 850, detail: 'Taotluse esitamine ehitisregistris, suhtlus omavalitsusega ja menetluse käigus küsitud parandused.' },
 ];
 let ITEMS: Item[] = DEFAULT_ITEMS;
 const SURCHARGE_TITLE = 'Lisatasu: Tallinn, Tartu, Pärnu ja Viimsi';
