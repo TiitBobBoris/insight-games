@@ -382,7 +382,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   y = top2 - 24; caps('Järgmine samm', L + 20, 6.5, accent, 1.2); y -= 18;
   for (const l of stepTxt) { t(l, L + 20, 9.5); y -= 13.5; }
   y = top2 - 10; t('Lugupidamisega', sigX, 9, f, mute);
-  if (SIG_B64) { try { const im = await doc.embedPng(Uint8Array.from(atob(SIG_B64), (c) => c.charCodeAt(0))); const h = 48, w = h * im.width / im.height; pg.drawImage(im, { x: sigX - 2, y: top2 - boxH + 44, width: w, height: h }); } catch (_) { /* vigane pilt */ } }
+  if (SIG_B64) { try { const im = await doc.embedPng(Uint8Array.from(atob(SIG_B64), (c) => c.charCodeAt(0))); const h = 44, w = h * im.width / im.height; pg.drawImage(im, { x: sigX - 2, y: top2 - boxH + 44, width: w, height: h }); } catch (_) { /* vigane pilt */ } }
   y = top2 - boxH + 40; hr(sigX, R, ink, 0.5); y -= 14;
   t('Tiit Sild', sigX, 10.5, b); y -= 12;
   t('Volitatud arhitekt, tase 8', sigX, 8.5, f, mute); y -= 11;
