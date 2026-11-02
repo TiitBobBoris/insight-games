@@ -39,7 +39,21 @@ type Row = {
   utm_source: string | null; utm_campaign: string | null;
 };
 type Price = { size: string; base_price: number; region_surcharge: number; drawings_price: number | null };
-type Quote = { tier: 'surcharge' | 'standard' | 'unknown'; model: string | null; lines: { size: string; standard: number; surcharge: number }[]; valid_until: string };
+type Quote = { tier: 'surcharge' | 'standard' | 'unknown'; model: string | null; lines: { size: string; standard: number; surcharge: number; drawings?: number | null }[]; valid_until: string };
+// Pakkumise read. amount: kindel summa; 'drawings' = jooniste hind (pesa_prices); 'rest' = ülejäänu standardhinnast.
+// Üle kirjutatav pesa_settings võtmega offer_items (JSON samas kujus).
+type Item = { title: string; detail: string; amount: number | 'drawings' | 'rest' };
+const DEFAULT_ITEMS: Item[] = [
+  { title: 'Pesa maja standardprojekt', amount: 'drawings', detail: 'Valitud maja eelprojekti mahus joonised (plaanid, lõiked, vaated, 3D) ja kasutusõigus ühe hoone ehitamiseks.' },
+  { title: 'Eskiisprojekti kohandused koostöös sinuga', amount: 900, detail: 'Ruumide, akende ja uste, materjalide ja viimistluse kohandamine sinu pere soovide järgi: kuni 2 kohtumist ja 2 parandusringi.' },
+  { title: 'Asendiplaan ja hoone sidumine krundiga', amount: 600, detail: 'Hoone paigutus krundil, kõrgused, juurdepääs ja liitumised geodeetilise alusplaani põhjal.' },
+  { title: 'Ehitusloa projekt, arhitektuurne osa', amount: 'rest', detail: 'Korruse- ja katuseplaan, lõiked, vaated, seletuskiri ja tehnilised näitajad ehitusprojekti nõuete järgi.' },
+  { title: 'Ehitusloa taotlus ja menetlus', amount: 400, detail: 'Taotluse esitamine ehitisregistris, suhtlus omavalitsusega ja menetluse käigus küsitud parandused.' },
+];
+let ITEMS: Item[] = DEFAULT_ITEMS;
+const SURCHARGE_TITLE = 'Lisatasu: Tallinn, Tartu, Pärnu ja Viimsi';
+const SURCHARGE_DETAIL = 'Nendes omavalitsustes on ehitusloa menetlus mahukam ja nõudeid rohkem.';
+const NOT_INCLUDED = 'Geodeetiline alusplaan, ehitusgeoloogia, konstruktsioonide ja tehnosüsteemide (eriosade) projektid, riigilõiv ning maja ehitus. Aitame leida ehitaja ja soovitame sobivaid partnereid.';
 
 const eur = (n: number) => n.toLocaleString('et-EE').replace(/[\u00a0\u202f]/g, ' ') + ' €';
 const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
@@ -65,7 +79,7 @@ function buildQuote(r: Row, tier: Quote['tier'], prices: Price[], validDays: num
   const until = new Date(Date.now() + validDays * 864e5).toISOString().slice(0, 10);
   return {
     tier, model: decided(r.model) ? r.model : null, valid_until: until,
-    lines: chosen.map((p) => ({ size: p.size, standard: p.base_price, surcharge: p.base_price + p.region_surcharge })),
+    lines: chosen.map((p) => ({ size: p.size, standard: p.base_price, surcharge: p.base_price + p.region_surcharge, drawings: p.drawings_price })),
   };
 }
 
@@ -80,23 +94,41 @@ function reviewReasons(r: Row, q: Quote): string[] {
 
 const fmtDate = (iso: string) => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
 
+// Hind: piirkonna järgi; kui piirkond pole teada, väiksem hind (lisatasu on märkusena all).
+const total = (q: Quote, l: Quote['lines'][0]) => (q.tier === 'surcharge' ? l.surcharge : l.standard);
 function priceRows(q: Quote) {
-  return q.lines.map((l) => {
-    const p = q.tier === 'surcharge' ? eur(l.surcharge) : q.tier === 'standard' ? eur(l.standard) : `${eur(l.standard)} / ${eur(l.surcharge)}`;
-    return { size: l.size, rooms: ROOMS[l.size], price: p };
-  });
+  return q.lines.map((l) => ({ size: l.size, rooms: ROOMS[l.size], price: eur(total(q, l)) }));
 }
+// Read iga suuruse kohta: [pealkiri, selgitus, summad suuruste kaupa].
+function breakdown(q: Quote) {
+  const rows = ITEMS.map((it) => ({ title: it.title, detail: it.detail, amounts: [] as number[] }));
+  for (const l of q.lines) {
+    const draw = Number(l.drawings || 0);
+    let used = 0;
+    ITEMS.forEach((it, i) => { if (it.amount !== 'rest') { const v = it.amount === 'drawings' ? draw : Number(it.amount); rows[i].amounts.push(v); used += v; } });
+    ITEMS.forEach((it, i) => { if (it.amount === 'rest') rows[i].amounts.push(l.standard - used); });
+  }
+  const out = rows.filter((r) => r.amounts.some((v) => v > 0));
+  if (q.tier === 'surcharge') out.push({ title: SURCHARGE_TITLE, detail: SURCHARGE_DETAIL, amounts: q.lines.map((l) => l.surcharge - l.standard) });
+  return out;
+}
+const surchargeNote = (q: Quote) => {
+  const d = q.lines[0] ? q.lines[0].surcharge - q.lines[0].standard : 0;
+  return q.tier === 'unknown' && d > 0 ? `Hind kehtib krundile väljaspool Tallinnat, Tartut, Pärnut ja Viimsit. Nendes omavalitsustes on hind ${eur(d)} kõrgem.` : '';
+};
 
 function offerHtml(r: Row, q: Quote, booking: string) {
   const m = q.model ? Number(q.model.replace(/\D/g, '')) || 1 : 1;
   const sz = q.lines.length === 1 ? q.lines[0].size : '109,7 m²';
   const img = q.model ? `${SITE}/tube-assets/email/tube-0${m}-${SLUG[sz]}.jpg` : `${SITE}/tube-assets/email/pesa-nomme.jpg`;
-  const rows = priceRows(q).map((p) =>
-    `<tr><td style="padding:14px 0;border-bottom:1px solid #e8e8ed">${esc(q.model || 'Pesa maja')} · ${esc(p.size)}<br><span style="color:#6e6e73;font-size:14px">${esc(p.rooms)}</span></td>
-     <td style="padding:14px 0;border-bottom:1px solid #e8e8ed;text-align:right;font-weight:600;white-space:nowrap">${esc(p.price)} + km</td></tr>`).join('');
-  const tierNote = q.tier === 'unknown'
-    ? '<p style="font-size:14px;color:#6e6e73;margin:8px 0 0">Esimene hind kehtib krundile väljaspool Tallinnat, Tartut, Pärnut ja Viimsit, teine nendes omavalitsustes.</p>'
-    : '';
+  const bd = breakdown(q), multi = q.lines.length > 1;
+  const td = 'padding:12px 0;border-bottom:1px solid #e8e8ed;vertical-align:top';
+  const num = (v: number) => `<td style="${td};padding-left:12px;text-align:right;white-space:nowrap">${eur(v)}</td>`;
+  const head = multi ? `<tr><td style="${td};color:#6e6e73;font-size:14px">Töö</td>${q.lines.map((l) => `<td style="${td};padding-left:12px;text-align:right;color:#6e6e73;font-size:14px;white-space:nowrap">${esc(l.size)}<br>${esc(ROOMS[l.size])}</td>`).join('')}</tr>` : '';
+  const rows = head + bd.map((b) => `<tr><td style="${td}">${esc(b.title)}<br><span style="color:#6e6e73;font-size:14px;line-height:1.45">${esc(b.detail)}</span></td>${b.amounts.map(num).join('')}</tr>`).join('')
+    + `<tr><td style="padding:14px 0;font-weight:600">Kokku${multi ? '' : ` · ${esc(q.model || 'Pesa maja')} ${esc(q.lines[0]?.size || '')}`}</td>${q.lines.map((l) => `<td style="padding:14px 0 14px 12px;text-align:right;font-weight:600;white-space:nowrap">${eur(total(q, l))} + km</td>`).join('')}</tr>`;
+  const note = surchargeNote(q);
+  const tierNote = note ? `<p style="font-size:14px;color:#6e6e73;margin:8px 0 0">${esc(note)}</p>` : '';
   const where = r.plot ? esc(r.plot) : r.region_name ? esc(r.region_name) : 'krunt on alles otsimisel';
   const meet = booking
     ? `<a href="${esc(booking)}" style="color:#06c">Broneeri tasuta kohtumine arhitektiga →</a>`
@@ -109,13 +141,11 @@ function offerHtml(r: Row, q: Quote, booking: string) {
     <p style="font-size:14px;color:#6e6e73;margin:0">Pesa majad · Projektbüroo Sport</p>
     <h1 style="font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:8px 0 18px">Sinu Pesa maja pakkumine</h1>
     <p style="font-size:17px;line-height:1.5;margin:0 0 18px">Tere, ${esc(firstName(r.name))}!<br>Aitäh päringu eest. Siin on projekteerimise pakkumine – projekt ehitusloani.</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:17px;border-collapse:collapse">${rows}</table>
+    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:16px;line-height:1.4;border-collapse:collapse">${rows}</table>
     ${tierNote}
     <p style="font-size:14px;color:#6e6e73;margin:10px 0 24px">Krunt: ${where}. Pakkumine kehtib kuni ${fmtDate(q.valid_until)}.</p>
-    <h2 style="font-size:19px;margin:0 0 8px">Mis on hinnas</h2>
-    <p style="font-size:16px;line-height:1.55;margin:0 0 18px">Hoone arhitektuurne projekt (eelprojekt ja ehitusloa projekt) koos ehitusloa taotlusega ning vajalike muudatuste ja kohandustega sinu pere ja krundi järgi.</p>
     <h2 style="font-size:19px;margin:0 0 8px">Mis ei ole hinnas</h2>
-    <p style="font-size:16px;line-height:1.55;margin:0 0 18px">Maja ehitus ja eriosade projektid. Aitame leida ehitaja ja soovitame sobivaid partnereid.</p>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 18px">${NOT_INCLUDED}</p>
     <h2 style="font-size:19px;margin:0 0 8px">Ajakava</h2>
     <p style="font-size:16px;line-height:1.55;margin:0 0 24px">Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest.</p>
     <div style="background:#f5f5f7;border-radius:14px;padding:20px 22px;margin:0 0 24px">
@@ -132,12 +162,13 @@ function offerHtml(r: Row, q: Quote, booking: string) {
 }
 
 function offerText(r: Row, q: Quote, booking: string) {
-  const lines = priceRows(q).map((p) => `- ${q.model || 'Pesa maja'} · ${p.size} (${p.rooms}): ${p.price} + km`).join('\n');
-  return [`Tere, ${firstName(r.name)}!`, '', 'Aitäh päringu eest. Siin on Pesa maja projekteerimise pakkumine – projekt ehitusloani.', '', lines,
-    q.tier === 'unknown' ? '(Esimene hind väljaspool Tallinnat, Tartut, Pärnut ja Viimsit, teine nendes omavalitsustes.)' : '',
+  const multi = q.lines.length > 1;
+  const items = breakdown(q).map((b) => `- ${b.title}: ${b.amounts.map(eur).join(' / ')}`).join('\n');
+  const totals = q.lines.map((l) => `${q.model || 'Pesa maja'} · ${l.size} (${ROOMS[l.size]}): ${eur(total(q, l))} + km`).join('\n');
+  return [`Tere, ${firstName(r.name)}!`, '', 'Aitäh päringu eest. Siin on Pesa maja projekteerimise pakkumine – projekt ehitusloani.', '',
+    multi ? `Töö (${q.lines.map((l) => l.size).join(' / ')}):` : 'Töö:', items, '', 'Kokku:', totals, surchargeNote(q),
     `Pakkumine kehtib kuni ${fmtDate(q.valid_until)}.`, '',
-    'Hinnas: hoone arhitektuurne projekt (eelprojekt ja ehitusloa projekt) koos ehitusloa taotlusega ning vajalike muudatuste ja kohandustega.',
-    'Ei ole hinnas: maja ehitus ja eriosade projektid. Aitame leida ehitaja.',
+    `Ei ole hinnas: ${NOT_INCLUDED}`,
     'Ajakava: päringust ehitusloa taotluseni tavaliselt umbes kuu.', '',
     'Järgmine samm: vasta „Sobib" või helista +372 5560 1425.', booking ? `Tasuta kohtumine arhitektiga: ${booking}` : 'Kohtumine arhitektiga on tasuta – vasta sellele kirjale.', '',
     'Tiit Sild, arhitekt, Projektbüroo Sport OÜ', '', `Loobu kirjadest: ${FN_URL}?a=unsubscribe&t=${r.token}`].join('\n');
@@ -153,43 +184,67 @@ async function getLogo() {
 }
 async function offerPdfInner(r: Row, q: Quote) {
   const doc = await PDFDocument.create();
-  const pg = doc.addPage([595, 842]);
+  let pg = doc.addPage([595, 842]);
   const f = await doc.embedFont(StandardFonts.Helvetica), b = await doc.embedFont(StandardFonts.HelveticaBold);
-  const ink = rgb(0.11, 0.11, 0.12), mute = rgb(0.43, 0.43, 0.45);
+  const ink = rgb(0.11, 0.11, 0.12), mute = rgb(0.43, 0.43, 0.45), rule = rgb(0.85, 0.85, 0.87);
+  const L = 56, R = 539;
   let y = 780;
   // Standardfont toetab ainult WinAnsi märke; muud asendatakse, et PDF ei kukuks.
   const safe = (s: string) => s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
   const t = (s: string, x: number, size = 11, font = f, color = ink) => pg.drawText(safe(s), { x, y, size, font, color });
-  const lb = await getLogo();
-  if (lb) { const img = await doc.embedPng(lb); const w = 118, h = w * img.height / img.width; pg.drawImage(img, { x: 56, y: 790 - h, width: w, height: h }); y = 790 - h - 34; }
-  t('Pesa majad', 56, 10, f, mute); y -= 30;
-  t('Pakkumine: Pesa maja projekt ehitusloani', 56, 20, b); y -= 26;
-  t(`Klient: ${r.name}`, 56); y -= 16;
-  t(`Krunt: ${r.plot || r.region_name || 'otsimisel'}`, 56); y -= 16;
-  t(`Kuupäev: ${fmtDate(new Date().toISOString().slice(0, 10))}   ·   Kehtib kuni: ${fmtDate(q.valid_until)}`, 56); y -= 34;
-  for (const p of priceRows(q)) {
-    t(`${q.model || 'Pesa maja'} · ${p.size} (${p.rooms})`, 56, 12);
-    const s = safe(`${p.price} + km`); pg.drawText(s, { x: 539 - b.widthOfTextAtSize(s, 12), y, size: 12, font: b, color: ink }); y -= 8;
-    pg.drawLine({ start: { x: 56, y }, end: { x: 539, y }, thickness: 0.5, color: rgb(0.85, 0.85, 0.87) }); y -= 18;
-  }
-  if (q.tier === 'unknown') { t('Esimene hind väljaspool Tallinnat, Tartut, Pärnut ja Viimsit, teine nendes omavalitsustes.', 56, 9, f, mute); y -= 16; }
-  y -= 12;
-  const para = (h: string, txt: string) => {
-    t(h, 56, 12, b); y -= 16;
-    const words = txt.split(' '); let line = '';
-    for (const w of words) {
-      if (f.widthOfTextAtSize(line + ' ' + w, 11) > 480) { t(line.trim(), 56); y -= 15; line = ''; }
-      line += ' ' + w;
+  const tr = (s: string, xr: number, size = 11, font = f, color = ink) => { const v = safe(s); pg.drawText(v, { x: xr - font.widthOfTextAtSize(v, size), y, size, font, color }); };
+  const wrap = (txt: string, width: number, size: number, font = f) => {
+    const out: string[] = []; let line = '';
+    for (const w of safe(txt).split(' ')) {
+      if (line && font.widthOfTextAtSize(line + ' ' + w, size) > width) { out.push(line); line = w; } else line = line ? line + ' ' + w : w;
     }
-    if (line.trim()) { t(line.trim(), 56); y -= 15; }
+    if (line) out.push(line);
+    return out;
+  };
+  const footer = () => { const yy = y; y = 40; t('Tiit Sild, arhitekt · Projektbüroo Sport OÜ · +372 5560 1425 · tiit@sportsport.ee · www.sportsport.ee/pesa', L, 8.5, f, mute); y = yy; };
+  const room = (need: number) => { if (y - need < 70) { footer(); pg = doc.addPage([595, 842]); y = 790; } };
+
+  const lb = await getLogo();
+  if (lb) { const img = await doc.embedPng(lb); const w = 120, h = w * img.height / img.width; pg.drawImage(img, { x: L, y: 800 - h, width: w, height: h }); y = 800 - h - 36; }
+  t('Pakkumine: Pesa maja projekt ehitusloani', L, 19, b); y -= 24;
+  t(`Klient: ${r.name}`, L, 10.5); tr(`Kuupäev: ${fmtDate(new Date().toISOString().slice(0, 10))}`, R, 10.5); y -= 15;
+  t(`Krunt: ${r.plot || r.region_name || 'otsimisel'}`, L, 10.5); tr(`Kehtib kuni: ${fmtDate(q.valid_until)}`, R, 10.5); y -= 15;
+  t(`Maja: ${q.model || 'Pesa maja (mudel valimata)'}${q.lines.length === 1 ? ` · ${q.lines[0].size} · ${ROOMS[q.lines[0].size]}` : ''}`, L, 10.5); y -= 30;
+
+  // Tabel: töö | summa(d)
+  const n = q.lines.length, colW = n > 1 ? 78 : 90, labelW = R - L - n * colW - 12;
+  const colX = (i: number) => R - (n - 1 - i) * colW;
+  if (n > 1) {
+    t('Töö', L, 9.5, f, mute);
+    q.lines.forEach((l, i) => tr(l.size, colX(i), 9.5, b, mute));
+    y -= 11; q.lines.forEach((l, i) => tr(ROOMS[l.size], colX(i), 8.5, f, mute)); y -= 8;
+  } else { t('Töö', L, 9.5, f, mute); tr('Hind', R, 9.5, f, mute); y -= 8; }
+  pg.drawLine({ start: { x: L, y }, end: { x: R, y }, thickness: 0.8, color: ink }); y -= 16;
+  for (const row of breakdown(q)) {
+    const det = wrap(row.detail, labelW, 9);
+    room(16 + det.length * 11.5 + 14);
+    t(row.title, L, 11, b); row.amounts.forEach((v, i) => tr(eur(v), colX(i), 11)); y -= 14;
+    for (const d of det) { t(d, L, 9, f, mute); y -= 11.5; }
+    y -= 4; pg.drawLine({ start: { x: L, y }, end: { x: R, y }, thickness: 0.5, color: rule }); y -= 16;
+  }
+  room(40);
+  t('Kokku', L, 12, b); q.lines.forEach((l, i) => tr(`${eur(total(q, l))} + km`, colX(i), 12, b)); y -= 15;
+  const vat = q.lines.map((l) => eur(Math.round(total(q, l) * 1.24))).join(' / ');
+  t(`Koos käibemaksuga (24%): ${vat}`, L, 9, f, mute); y -= 14;
+  const note = surchargeNote(q);
+  if (note) { for (const d of wrap(note, R - L, 9)) { t(d, L, 9, f, mute); y -= 11.5; } }
+  y -= 18;
+  const para = (h: string, txt: string) => {
+    const lines = wrap(txt, R - L, 10.5);
+    room(18 + lines.length * 14.5);
+    t(h, L, 12, b); y -= 16;
+    for (const l of lines) { t(l, L, 10.5); y -= 14.5; }
     y -= 10;
   };
-  para('Hinnas', 'Hoone arhitektuurne projekt (eelprojekt ja ehitusloa projekt) koos ehitusloa taotlusega ning vajalike muudatuste ja kohandustega pere ja krundi järgi.');
-  para('Ei ole hinnas', 'Maja ehitus ja eriosade projektid. Aitame leida ehitaja ja soovitame sobivaid partnereid.');
+  para('Ei ole hinnas', NOT_INCLUDED);
   para('Ajakava', 'Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest.');
   para('Järgmine samm', 'Kinnita pakkumine vastuskirjaga või helista +372 5560 1425 – saadame lepingu. Kohtumine arhitektiga on tasuta.');
-  y = 70;
-  t('Tiit Sild, arhitekt · Projektbüroo Sport OÜ · +372 5560 1425 · tiit@sportsport.ee · www.sportsport.ee/pesa', 56, 9, f, mute);
+  footer();
   const bytes = await doc.save();
   let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(bin);
@@ -270,12 +325,15 @@ Deno.serve(async (req) => {
   const set = Object.fromEntries((st || []).map((x) => [x.key, x.value]));
   const ADMIN_FROM = set.admin_from || Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>';
   const CLIENT_FROM = set.client_from || Deno.env.get('PESA_CLIENT_FROM') || 'Tiit Sild | Pesa majad <tiit@send.sportsport.ee>';
+  try { ITEMS = set.offer_items ? JSON.parse(set.offer_items) : DEFAULT_ITEMS; } catch (_) { ITEMS = DEFAULT_ITEMS; }
   const autoSend = set.auto_send === 'on', booking = set.booking_url || '', validDays = Number(set.offer_valid_days || 30);
   const { data: prices } = await sb.from('pesa_prices').select('size,base_price,region_surcharge,drawings_price').order('sort');
   const { data: regs } = await sb.from('pesa_regions').select('ehak');
   const regions = new Set((regs || []).map((x) => x.ehak));
 
   async function sendOffer(r: Row, q: Quote) {
+    // Vanemates pakkumistes pole jooniste hinda – võta see hinnatabelist.
+    q = { ...q, lines: q.lines.map((l) => ({ ...l, drawings: l.drawings ?? (prices || []).find((p) => p.size === l.size)?.drawings_price ?? 0 })) };
     const subject = `Sinu Pesa maja pakkumine${q.model ? ' – ' + q.model : ''}${q.lines.length === 1 ? ', ' + q.lines[0].size : ''}`;
     await resend(key!, {
       from: CLIENT_FROM, to: [r.email], reply_to: TIIT, bcc: [TIIT], subject,
@@ -295,6 +353,16 @@ Deno.serve(async (req) => {
       await sb.from('tube_offer_requests').update({ unsubscribed_at: new Date().toISOString(), status: 'unsubscribed' })
         .eq('token', t).not('status', 'in', '(ordered,drawings_bought)');
       return page('Oled loobunud', 'Me ei saada sulle enam Pesa majade kirju. Kui soovid siiski pakkumist arutada, kirjuta tiit@sportsport.ee.');
+    }
+    // Pakkumise PDF-i eelvaade (sama allkiri mis kinnituslingil).
+    if (a === 'pdf') {
+      const id = u.searchParams.get('id') || '', s = u.searchParams.get('s') || '';
+      if (!/^[0-9a-f-]{36}$/i.test(id) || s !== await sign(id)) return page('Link ei kehti', 'Link on vigane.', 403);
+      const { data: r } = await sb.from('tube_offer_requests').select('*').eq('id', id).single();
+      if (!r) return page('Päringut ei leitud', id, 404);
+      const q = buildQuote(r as Row, tierOf(r as Row, regions), (prices || []) as Price[], validDays);
+      const pdf = await offerPdfInner(r as Row, q);
+      return new Response(Uint8Array.from(atob(pdf), (c) => c.charCodeAt(0)), { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': 'inline; filename="pakkumine.pdf"' } });
     }
     if (a === 'approve') {
       const id = u.searchParams.get('id') || '', s = u.searchParams.get('s') || '';
