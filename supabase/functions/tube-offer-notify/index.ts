@@ -5,9 +5,12 @@
 //   POST                         → töötle uued päringud
 //   GET ?a=approve&id=…&s=…      → Tiit kinnitab ülevaatust vajava pakkumise (link Tiidu kirjas)
 //   GET ?a=unsubscribe&t=…       → klient loobub edasistest kirjadest
-//   POST ?a=followup             → järelkirjad (GitHub Actions kord päevas): kohtumine + jooniste ost
+//   POST ?a=followup             → järelkirjad (pg_cron kord päevas): kohtumine + jooniste ost
+//   POST ?a=send_due             → saada ajastatud pakkumised (pg_cron iga 10 min)
+//   GET ?a=hold&id=…&s=…         → Tiit peatab ajastatud pakkumise (link Tiidu kirjas)
 //
 // Lülitid tabelis pesa_settings: auto_send (on/off), booking_url, offer_valid_days, followup_days,
+//   offer_delay_hours (nt 2-4: pakkumine läheb juhusliku viivitusega), offer_quiet_hours (nt 21-8: öösel ei saada),
 //   drawings_checkout_url, client_from / admin_from (saatjad; Resendis on kinnitatud send.sportsport.ee).
 // Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (vaikimisi tiit@sportsport.ee),
 //   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri; vaikimisi Tiit Sild <tiit@sportsport.ee>).
@@ -94,6 +97,21 @@ function reviewReasons(r: Row, q: Quote): string[] {
 }
 
 const fmtDate = (iso: string) => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
+const tallinnHour = (d: Date) => Number(d.toLocaleString('en-GB', { timeZone: 'Europe/Tallinn', hour: '2-digit', hour12: false })) % 24;
+const tallinnTime = (d: Date) => d.toLocaleString('et-EE', { timeZone: 'Europe/Tallinn', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+
+// Saatmise aeg: juhuslik viivitus (nt 2-4 h), vaikse aja (nt 21-8) sisse jääv aeg lükkub hommikusse.
+function sendTime(delay: string, quiet: string) {
+  const [lo, hi] = (delay || '2-4').split('-').map(Number);
+  const [qFrom, qTo] = (quiet || '21-8').split('-').map(Number);
+  const t = new Date(Date.now() + (lo + Math.random() * ((hi || lo) - lo)) * 36e5);
+  const isQuiet = (h: number) => (qFrom > qTo ? h >= qFrom || h < qTo : h >= qFrom && h < qTo);
+  if (isQuiet(tallinnHour(t))) {
+    while (isQuiet(tallinnHour(t))) t.setTime(t.getTime() + 15 * 60e3);
+    t.setTime(t.getTime() + Math.random() * 60 * 60e3);
+  }
+  return t;
+}
 
 // Hind: piirkonna järgi; kui piirkond pole teada, väiksem hind (lisatasu on märkusena all).
 const total = (q: Quote, l: Quote['lines'][0]) => (q.tier === 'surcharge' ? l.surcharge : l.standard);
@@ -511,6 +529,14 @@ Deno.serve(async (req) => {
       const pdf = await offerPdfInner(r as Row, q);
       return new Response(Uint8Array.from(atob(pdf), (c) => c.charCodeAt(0)), { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': 'inline; filename="pakkumine.pdf"' } });
     }
+    if (a === 'hold') {
+      const id = u.searchParams.get('id') || '', s = u.searchParams.get('s') || '';
+      if (!/^[0-9a-f-]{36}$/i.test(id) || s !== await sign(id)) return page('Link ei kehti', 'Link on vigane.', 403);
+      const { data: r } = await sb.from('tube_offer_requests').update({ status: 'needs_review', send_after: null, review_reason: 'Tiit peatas saatmise' })
+        .eq('id', id).eq('status', 'scheduled').select('id').maybeSingle();
+      if (!r) return page('Ei saa peatada', 'Pakkumine on juba saadetud või ei olnud ajastatud.');
+      return page('Pakkumine peatatud', `Pakkumist kliendile ei saadeta. Kui soovid selle hiljem saata, kasuta kinnituslinki:<br>${FN_URL}?a=approve&id=${id}&s=${s}`);
+    }
     if (a === 'approve') {
       const id = u.searchParams.get('id') || '', s = u.searchParams.get('s') || '';
       if (!/^[0-9a-f-]{36}$/i.test(id) || s !== await sign(id)) return page('Link ei kehti', 'Kinnituslink on vigane.', 403);
@@ -525,6 +551,23 @@ Deno.serve(async (req) => {
     return page('Pesa majad', 'Siin pole midagi vaadata.', 404);
   }
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
+
+  // --- POST ?a=send_due: ajastatud pakkumised, mille aeg on käes (pg_cron iga 10 min)
+  if (new URL(req.url).searchParams.get('a') === 'send_due') {
+    if (!key) return json({ error: 'not_configured' }, 500);
+    const { data: due } = await sb.from('tube_offer_requests').update({ status: 'sending' })
+      .eq('status', 'scheduled').lte('send_after', new Date().toISOString()).select('*');
+    let n = 0;
+    for (const r of (due || []) as (Row & { price_quote: Quote })[]) {
+      try { await sendOffer(r, r.price_quote); n++; }
+      catch (e) {
+        const msg = String((e as Error).message).slice(0, 200);
+        await sb.from('tube_offer_requests').update({ status: 'needs_review', review_reason: 'ajastatud saatmine ebaõnnestus: ' + msg }).eq('id', r.id);
+        try { await resend(key, { from: ADMIN_FROM, to: [TIIT], subject: `Kinnita pakkumine: saatmine ebaõnnestus — ${r.name}`, text: `Ajastatud pakkumist ei õnnestunud saata (${msg}).\n\nKINNITA JA SAADA: ${FN_URL}?a=approve&id=${r.id}&s=${await sign(r.id)}` }); } catch (_) { /* teade ei õnnestunud */ }
+      }
+    }
+    return json({ sent: n });
+  }
 
   // --- POST ?a=followup: järelkirjad (kutsub GitHub Actions kord päevas; korduv kutse ei saada topelt)
   if (new URL(req.url).searchParams.get('a') === 'followup') {
@@ -580,21 +623,20 @@ Deno.serve(async (req) => {
         await sb.from('tube_offer_requests').update({ status: 'needs_review', review_reason: reasons.join('; ') }).eq('id', r.id);
         state = `PAKKUMINE OOTAB SINU KINNITUST\nPõhjus: ${reasons.join('; ')}.`; subj = 'Kinnita pakkumine';
       } else if (autoSend) {
-        try { await sendOffer(r, q); state = 'Automaatne pakkumine saadeti kliendile (koopia sinu postkastis).'; subj = 'Pakkumine saadetud'; }
-        catch (e) {
-          await sb.from('tube_offer_requests').update({ status: 'needs_review', review_reason: 'automaatne saatmine ebaõnnestus: ' + String((e as Error).message).slice(0, 200) }).eq('id', r.id);
-          state = 'AUTOMAATNE SAATMINE EBAÕNNESTUS – kinnita käsitsi.'; subj = 'Kinnita pakkumine';
-        }
+        const at = sendTime(set.offer_delay_hours, set.offer_quiet_hours);
+        await sb.from('tube_offer_requests').update({ status: 'scheduled', send_after: at.toISOString() }).eq('id', r.id);
+        state = `Pakkumine läheb kliendile automaatselt ${tallinnTime(at)}.\nSAADA KOHE: ${approveUrl}\nPEATA (saadad hiljem ise): ${FN_URL}?a=hold&id=${r.id}&s=${await sign(r.id)}`;
+        subj = `Pakkumine ajastatud (${tallinnTime(at)})`;
       } else {
         await sb.from('tube_offer_requests').update({ status: 'needs_review', review_reason: 'testrežiim (auto_send = off)' }).eq('id', r.id);
         state = 'TESTREŽIIM: pakkumist kliendile ei saadetud. Eelvaade on lisatud PDF-ina; kinnituslingiga saadad selle kliendile.'; subj = 'Kinnita pakkumine';
       }
-      const needsApprove = !state.startsWith('Automaatne');
+      const needsApprove = !state.startsWith('Pakkumine läheb');
       await resend(key, {
         from: ADMIN_FROM, to: [TIIT], reply_to: r.email,
         subject: `${subj}: Pesa päring — ${r.name}${decided(r.model) ? ' · ' + r.model : ''}`,
         text: adminText(r, q, state, needsApprove ? approveUrl : undefined),
-        ...(needsApprove ? await previewAttach(r, q, booking) : {}),
+        ...(await previewAttach(r, q, booking)),
       });
       sent++;
     } catch (e) {
