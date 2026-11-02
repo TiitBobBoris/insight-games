@@ -264,7 +264,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   caps(`Pakkumine  ·  ${offerNo}`, L);
   y -= 44; t(house, L, 40, lt);
   y -= 30; t('Projekt ehitusloani', L, 22, lt, mute);
-  y -= 22; t('Kohandatud Sinu krundile', L, 13, lt, accent);
+  y -= 22; t('Valgusküllane ja avar kodu. Kohandatud Sinu perele.', L, 13, lt, accent);
 
   // Andmed kahes veerus
   y -= 34;
