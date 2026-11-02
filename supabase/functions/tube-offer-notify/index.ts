@@ -202,8 +202,8 @@ async function offerPdfInner(r: Row, q: Quote) {
   doc.setTitle(`Pakkumine – ${q.model || 'Pesa maja'} projekt ehitusloani`);
   doc.setAuthor('Projektbüroo Sport OÜ');
   doc.registerFontkit(fontkit);
-  // Fondid: Inter (tekst) ja Jost Light (pealkirjad, sobib logoga). Kui ei saa, Helvetica.
-  const [fr, fb, fl] = await Promise.all(['Inter-Regular', 'Inter-SemiBold', 'Jost-Light'].map((n) => asset(`${FONTS}/${n}.ttf`)));
+  // Font Jost (sobib logoga): Light pealkirjad, Regular tekst, Medium rõhutus. Kui ei saa, Helvetica.
+  const [fr, fb, fl] = await Promise.all(['Jost-Regular', 'Jost-Medium', 'Jost-Light'].map((n) => asset(`${FONTS}/${n}.ttf`)));
   const custom = !!(fr && fb && fl);
   const f = custom ? await doc.embedFont(fr!, { subset: true }) : await doc.embedFont(StandardFonts.Helvetica);
   const b = custom ? await doc.embedFont(fb!, { subset: true }) : await doc.embedFont(StandardFonts.HelveticaBold);
@@ -249,7 +249,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   // ---------- 1. leht: kaas ----------
   const m = q.model ? Number(q.model.replace(/\D/g, '')) || 1 : 1;
   const sz = q.lines.length === 1 ? q.lines[0].size : '109,7 m²';
-  const heroUrl = q.model ? `${SITE}/tube-assets/email/tube-0${m}-${SLUG[sz]}.jpg` : `${SITE}/tube-assets/email/pesa-nomme.jpg`;
+  const heroUrl = q.model ? `${SITE}/tube-assets/offer/tube-0${m}-${SLUG[sz]}.jpg` : `${SITE}/tube-assets/email/pesa-nomme.jpg`;
   const hb = await asset(heroUrl);
   const heroH = 372;
   if (hb) {
@@ -313,13 +313,13 @@ async function offerPdfInner(r: Row, q: Quote) {
     pg = doc.addPage([W, H]);
     drawLogo(L, H - 44, 72);
     y = H - 64; tr(`${house}  ·  lk ${pageNo++}`, R, 7.5, f, mute);
-    y = H - 118;
+    y = H - 104;
   };
   const room = (need: number) => { if (y - need < 70) { footer(); newPage(); } };
   newPage();
 
-  caps('Mis on hinnas', L); y -= 30;
-  t('Töö sisu ja hind', L, 24, lt); y -= 30;
+  caps('Mis on hinnas', L); y -= 28;
+  t('Töö sisu ja hind', L, 24, lt); y -= 26;
 
   const n = q.lines.length, colW = multi ? 76 : 90, numW = 30, labelW = R - L - numW - n * colW - 10;
   const colX = (i: number) => R - (n - 1 - i) * colW;
@@ -330,13 +330,13 @@ async function offerPdfInner(r: Row, q: Quote) {
   hr(L, R, ink, 0.8); y -= 22;
   breakdown(q).forEach((row, i) => {
     const det = wrap(row.detail, labelW, 8.6);
-    room(20 + det.length * 11 + 18);
+    room(20 + det.length * 11 + 14);
     t(String(i + 1).padStart(2, '0'), L, 13, lt, accent);
     t(row.title, L + numW, 10.5, b);
     row.amounts.forEach((v, j) => tr(eur(v), colX(j), 10.5));
     y -= 14;
     for (const d of det) { t(d, L + numW, 8.6, f, mute); y -= 11; }
-    y -= 8; hr(); y -= 20;
+    y -= 7; hr(); y -= 16;
   });
 
   // Kokku: tume riba
@@ -352,7 +352,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   q.lines.forEach((l, i) => tr(eur(Math.round(total(q, l) * 1.24)), colX(i) - (i === n - 1 ? 14 : 0), 8.5, f, mute));
   y -= 13;
   if (note) { for (const d of wrap(note, R - L - 32, 8)) { t(d, L + 16, 8, f, mute); y -= 10.5; } }
-  y -= 26;
+  y -= 20;
 
   // Tingimused kahes veerus
   const half = (R - L - 30) / 2;
@@ -369,24 +369,24 @@ async function offerPdfInner(r: Row, q: Quote) {
     caps(h, x, 6.5, ink, 1.2); y -= 18;
     for (const l of wrapped[i]) { t(l, x, 9, f, mute); y -= 13; }
   });
-  y = top - bh - 14;
+  y = top - bh - 8;
 
-  // Järgmine samm: liivakarva kast
-  const stepTxt = wrap('Kinnita pakkumine vastuskirjaga „Sobib" või helista +372 5560 1425 – saadame lepingu ja alustame. Esimene kohtumine arhitektiga on tasuta.', R - L - 40, 9.5);
-  const boxH = 34 + stepTxt.length * 13.5;
-  room(boxH + 120);
-  pg.drawRectangle({ x: L, y: y - boxH, width: R - L, height: boxH, color: sand });
-  y -= 22; caps('Järgmine samm', L + 20, 6.5, accent, 1.2); y -= 17;
+  // Järgmine samm (liivakarva kast) ja allkiri kõrvuti
+  const boxW = Math.round((R - L) * 0.56), sigX = L + boxW + 34;
+  const stepTxt = wrap('Kinnita pakkumine vastuskirjaga „Sobib" või helista +372 5560 1425 – saadame lepingu ja alustame. Esimene kohtumine arhitektiga on tasuta.', boxW - 40, 9.5);
+  const boxH = Math.max(108, 36 + stepTxt.length * 13.5);
+  room(boxH + 6);
+  const top2 = y;
+  pg.drawRectangle({ x: L, y: top2 - boxH, width: boxW, height: boxH, color: sand });
+  y = top2 - 24; caps('Järgmine samm', L + 20, 6.5, accent, 1.2); y -= 18;
   for (const l of stepTxt) { t(l, L + 20, 9.5); y -= 13.5; }
-  y -= 34;
-
-  // Allkiri
-  t('Lugupidamisega', L, 9.5, f, mute); y -= 10;
+  y = top2 - 10; t('Lugupidamisega', sigX, 9, f, mute);
   const sig = await asset(SIGNATURE);
-  if (sig) { try { const im = await doc.embedPng(sig); const h = 38, w = h * im.width / im.height; pg.drawImage(im, { x: L, y: y - h, width: w, height: h }); } catch (_) { /* vigane pilt */ } }
-  y -= 46; hr(L, L + 170, ink, 0.5); y -= 14;
-  t('Tiit Sild', L, 10.5, b); y -= 13;
-  t('Volitatud arhitekt, tase 8  ·  Projektbüroo Sport OÜ', L, 8.5, f, mute);
+  if (sig) { try { const im = await doc.embedPng(sig); const h = 40, w = Math.min(150, h * im.width / im.height); pg.drawImage(im, { x: sigX - 4, y: y - 48, width: w, height: w * im.height / im.width }); } catch (_) { /* vigane pilt */ } }
+  y = top2 - boxH + 40; hr(sigX, R, ink, 0.5); y -= 14;
+  t('Tiit Sild', sigX, 10.5, b); y -= 12;
+  t('Volitatud arhitekt, tase 8', sigX, 8.5, f, mute); y -= 11;
+  t('Projektbüroo Sport OÜ', sigX, 8.5, f, mute);
   footer();
 
   const bytes = await doc.save();
