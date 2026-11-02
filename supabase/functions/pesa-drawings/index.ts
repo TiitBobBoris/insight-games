@@ -8,7 +8,7 @@
 //   GET  ?a=dl&o=…                       → suunab allalaadimisele (www.sportsport.ee/pesa/joonised-dl.php)
 //   GET  ?a=check&o=… / ?a=consumed&o=…  → joonised-dl.php küsib, kas link kehtib, ja märgib allalaadimise tehtuks
 //
-// Secret: STRIPE_SECRET_KEY (sk_test_… või sk_live_…). Webhooki ja KM-määra loob funktsioon ise
+// Secret: STRIPE_SECRET_KEY (sk_test_… või sk_live_…); live-võti võib olla ka nime Pesa-joonised all (eelistatud). Webhooki ja KM-määra loob funktsioon ise
 // esimese makse eel ning hoiab nende id-d tabelis pesa_secrets.
 // Failid: sportsport.ee serveris pesa/_joonised/PESA-1/89-7.zip jne (otse ligipääs keelatud).
 // Lülitid pesa_settings: drawings_ready (on = failid üleval), download_max (täielike allalaadimiste arv, vaikimisi 1).
@@ -59,17 +59,18 @@ function form(obj: Record<string, unknown>, prefix = '', out = new URLSearchPara
   }
   return out;
 }
+const stripeKey = () => (Deno.env.get('Pesa-joonised') || Deno.env.get('STRIPE_SECRET_KEY') || '').trim();
 async function stripe(path: string, method = 'GET', body?: Record<string, unknown>) {
   const res = await fetch(`https://api.stripe.com/v1/${path}`, {
     method,
-    headers: { Authorization: `Bearer ${Deno.env.get('STRIPE_SECRET_KEY')}`, 'Content-Type': 'application/x-www-form-urlencoded', 'Stripe-Version': '2024-06-20' },
+    headers: { Authorization: `Bearer ${stripeKey()}`, 'Content-Type': 'application/x-www-form-urlencoded', 'Stripe-Version': '2024-06-20' },
     body: body ? form(body) : undefined,
   });
   const data = await res.json();
   if (!res.ok) throw new Error(`Stripe ${res.status}: ${data?.error?.message || ''}`.slice(0, 300));
   return data;
 }
-const stripeMode = () => (/^(sk|rk)_live_/.test(Deno.env.get('STRIPE_SECRET_KEY') || '') ? 'live' : 'test');
+const stripeMode = () => (/^(sk|rk)_live_/.test(stripeKey()) ? 'live' : 'test');
 
 async function hmacHex(secret: string, msg: string) {
   const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
@@ -160,7 +161,7 @@ Deno.serve(async (req) => {
   const VAT = Number(set.vat_percent || 24);
   const { data: prices } = await sb.from('pesa_prices').select('size,drawings_price').order('sort');
   const priceOf = (size: string) => Number((prices || []).find((p) => p.size === size)?.drawings_price || 0);
-  const ready = !!Deno.env.get('STRIPE_SECRET_KEY');
+  const ready = !!stripeKey();
 
   const secret = async (k: string) => (await sb.from('pesa_secrets').select('value').eq('key', k).maybeSingle()).data?.value as string | undefined;
   const putSecret = (k: string, v: string) => sb.from('pesa_secrets').upsert({ key: k, value: v, updated_at: new Date().toISOString() });
