@@ -264,9 +264,10 @@ async function offerPdfInner(r: Row, q: Quote) {
   caps(`Pakkumine  ·  ${offerNo}`, L);
   y -= 44; t(house, L, 40, lt);
   y -= 30; t('Projekt ehitusloani', L, 22, lt, mute);
+  y -= 22; t('Kohandatud Sinu krundile', L, 13, lt, accent);
 
   // Andmed kahes veerus
-  y -= 40;
+  y -= 34;
   const meta: [string, string][] = [
     ['Klient', r.name],
     ['Krunt', r.plot || r.region_name || 'otsimisel'],
