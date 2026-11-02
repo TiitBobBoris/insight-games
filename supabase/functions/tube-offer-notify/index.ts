@@ -194,7 +194,8 @@ async function asset(url: string) {
   return assetCache.get(url)!;
 }
 const FONTS = `${SITE}/tube-assets/fonts`;
-const SIGNATURE = `${SITE}/tube-assets/email/allkiri.png`;
+// Allkiri (PNG, base64) on tabelis pesa_secrets võtmega signature_png – mitte avalikus repos.
+let SIG_B64 = '';
 
 async function offerPdfInner(r: Row, q: Quote) {
   const W = 595, H = 842, L = 56, R = 539;
@@ -373,7 +374,7 @@ async function offerPdfInner(r: Row, q: Quote) {
 
   // Järgmine samm (liivakarva kast) ja allkiri kõrvuti
   const boxW = Math.round((R - L) * 0.56), sigX = L + boxW + 34;
-  const stepTxt = wrap('Kinnita pakkumine vastuskirjaga „Sobib" või helista +372 5560 1425 – saadame lepingu ja alustame. Esimene kohtumine arhitektiga on tasuta.', boxW - 40, 9.5);
+  const stepTxt = wrap('Kinnita pakkumine vastuskirjaga „Sobib" või helista +372\u00a05560\u00a01425 – saadame lepingu ja alustame. Esimene kohtumine arhitektiga on tasuta.', boxW - 40, 9.5);
   const boxH = Math.max(108, 36 + stepTxt.length * 13.5);
   room(boxH + 6);
   const top2 = y;
@@ -381,8 +382,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   y = top2 - 24; caps('Järgmine samm', L + 20, 6.5, accent, 1.2); y -= 18;
   for (const l of stepTxt) { t(l, L + 20, 9.5); y -= 13.5; }
   y = top2 - 10; t('Lugupidamisega', sigX, 9, f, mute);
-  const sig = await asset(SIGNATURE);
-  if (sig) { try { const im = await doc.embedPng(sig); const h = 40, w = Math.min(150, h * im.width / im.height); pg.drawImage(im, { x: sigX - 4, y: y - 48, width: w, height: w * im.height / im.width }); } catch (_) { /* vigane pilt */ } }
+  if (SIG_B64) { try { const im = await doc.embedPng(Uint8Array.from(atob(SIG_B64), (c) => c.charCodeAt(0))); const h = 48, w = h * im.width / im.height; pg.drawImage(im, { x: sigX - 2, y: top2 - boxH + 44, width: w, height: h }); } catch (_) { /* vigane pilt */ } }
   y = top2 - boxH + 40; hr(sigX, R, ink, 0.5); y -= 14;
   t('Tiit Sild', sigX, 10.5, b); y -= 12;
   t('Volitatud arhitekt, tase 8', sigX, 8.5, f, mute); y -= 11;
@@ -470,6 +470,8 @@ Deno.serve(async (req) => {
   const ADMIN_FROM = set.admin_from || Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>';
   const CLIENT_FROM = set.client_from || Deno.env.get('PESA_CLIENT_FROM') || 'Tiit Sild | Pesa majad <tiit@send.sportsport.ee>';
   try { ITEMS = set.offer_items ? JSON.parse(set.offer_items) : DEFAULT_ITEMS; } catch (_) { ITEMS = DEFAULT_ITEMS; }
+  const { data: sg } = await sb.from('pesa_secrets').select('value').eq('key', 'signature_png').maybeSingle();
+  SIG_B64 = sg?.value || '';
   const autoSend = set.auto_send === 'on', booking = set.booking_url || '', validDays = Number(set.offer_valid_days || 30);
   const { data: prices } = await sb.from('pesa_prices').select('size,base_price,region_surcharge,drawings_price').order('sort');
   const { data: regs } = await sb.from('pesa_regions').select('ehak');
