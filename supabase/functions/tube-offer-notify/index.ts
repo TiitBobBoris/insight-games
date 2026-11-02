@@ -272,7 +272,7 @@ async function offerPdfInner(r: Row, q: Quote) {
     ['Maja', multi ? `${house}, suurus valimata` : `${house} · ${q.lines[0].size} · ${ROOMS[q.lines[0].size]}`],
     ['Kuupäev', today],
     ['Kehtib kuni', fmtDate(q.valid_until)],
-    ['Arhitekt', 'Tiit Sild, volitatud arhitekt, tase 8'],
+    ['Arhitekt', 'Tiit Sild, volitatud arhitekt'],
   ];
   const colA = L, colB = 330, metaTop = y;
   meta.forEach(([k, v], i) => {
