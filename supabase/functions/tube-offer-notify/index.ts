@@ -13,6 +13,7 @@
 //   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri; vaikimisi Tiit Sild <tiit@sportsport.ee>).
 import { createClient } from 'npm:@supabase/supabase-js@2.49.10';
 import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
+import fontkit from 'npm:@pdf-lib/fontkit@1.1.1';
 
 const SITE = 'https://www.sportsport.ee/pesa';
 const FN_URL = 'https://xlhtavzsanlikmxrddrb.supabase.co/functions/v1/tube-offer-notify';
@@ -182,17 +183,44 @@ async function getLogo() {
   if (!logoBytes) { try { const res = await fetch(LOGO); if (res.ok) logoBytes = new Uint8Array(await res.arrayBuffer()); } catch (_) { /* ilma logota */ } }
   return logoBytes;
 }
+// Pildid ja fondid tulevad meie serverist (tube-assets) ja jäävad funktsiooni mällu.
+const assetCache = new Map<string, Uint8Array | null>();
+async function asset(url: string) {
+  if (!assetCache.has(url)) {
+    let v: Uint8Array | null = null;
+    try { const res = await fetch(url); if (res.ok) v = new Uint8Array(await res.arrayBuffer()); } catch (_) { /* ilma */ }
+    if (v) assetCache.set(url, v); else return null;
+  }
+  return assetCache.get(url)!;
+}
+const FONTS = `${SITE}/tube-assets/fonts`;
+const SIGNATURE = `${SITE}/tube-assets/email/allkiri.png`;
+
 async function offerPdfInner(r: Row, q: Quote) {
+  const W = 595, H = 842, L = 56, R = 539;
   const doc = await PDFDocument.create();
-  let pg = doc.addPage([595, 842]);
-  const f = await doc.embedFont(StandardFonts.Helvetica), b = await doc.embedFont(StandardFonts.HelveticaBold);
-  const ink = rgb(0.11, 0.11, 0.12), mute = rgb(0.43, 0.43, 0.45), rule = rgb(0.85, 0.85, 0.87);
-  const L = 56, R = 539;
-  let y = 780;
-  // Standardfont toetab ainult WinAnsi märke; muud asendatakse, et PDF ei kukuks.
-  const safe = (s: string) => s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
-  const t = (s: string, x: number, size = 11, font = f, color = ink) => pg.drawText(safe(s), { x, y, size, font, color });
-  const tr = (s: string, xr: number, size = 11, font = f, color = ink) => { const v = safe(s); pg.drawText(v, { x: xr - font.widthOfTextAtSize(v, size), y, size, font, color }); };
+  doc.setTitle(`Pakkumine – ${q.model || 'Pesa maja'} projekt ehitusloani`);
+  doc.setAuthor('Projektbüroo Sport OÜ');
+  doc.registerFontkit(fontkit);
+  // Fondid: Inter (tekst) ja Jost Light (pealkirjad, sobib logoga). Kui ei saa, Helvetica.
+  const [fr, fb, fl] = await Promise.all(['Inter-Regular', 'Inter-SemiBold', 'Jost-Light'].map((n) => asset(`${FONTS}/${n}.ttf`)));
+  const custom = !!(fr && fb && fl);
+  const f = custom ? await doc.embedFont(fr!, { subset: true }) : await doc.embedFont(StandardFonts.Helvetica);
+  const b = custom ? await doc.embedFont(fb!, { subset: true }) : await doc.embedFont(StandardFonts.HelveticaBold);
+  const lt = custom ? await doc.embedFont(fl!, { subset: true }) : f;
+  const safe = (s: string) => custom ? s.replace(/[^\x20-\x7E\xA0-ɏ€–—‘’“”„•…·²]/g, '') : s.replace(/[^\x20-\x7E\xA0-\xFF€–—‘’“”„•…šžŠŽ]/g, '?');
+
+  const ink = rgb(0.11, 0.11, 0.12), mute = rgb(0.42, 0.42, 0.44), rule = rgb(0.87, 0.86, 0.84);
+  const sand = rgb(0.957, 0.945, 0.925), accent = rgb(0.6, 0.47, 0.3), white = rgb(1, 1, 1);
+  let pg = doc.addPage([W, H]);
+  let y = 0;
+  const t = (s: string, x: number, size = 10, font = f, color = ink) => pg.drawText(safe(s), { x, y, size, font, color });
+  const tr = (s: string, xr: number, size = 10, font = f, color = ink) => { const v = safe(s); pg.drawText(v, { x: xr - font.widthOfTextAtSize(v, size), y, size, font, color }); };
+  // Hõredas suurtähtedes silt (pdf-lib ei toeta tähevahet, joonistame tähthaaval).
+  const caps = (s: string, x: number, size = 7.5, color = accent, track = 1.6) => {
+    for (const ch of safe(s.toUpperCase())) { pg.drawText(ch, { x, y, size, font: b, color }); x += b.widthOfTextAtSize(ch, size) + track; }
+    return x;
+  };
   const wrap = (txt: string, width: number, size: number, font = f) => {
     const out: string[] = []; let line = '';
     for (const w of safe(txt).split(' ')) {
@@ -201,50 +229,166 @@ async function offerPdfInner(r: Row, q: Quote) {
     if (line) out.push(line);
     return out;
   };
-  const footer = () => { const yy = y; y = 40; t('Tiit Sild, arhitekt · Projektbüroo Sport OÜ · +372 5560 1425 · tiit@sportsport.ee · www.sportsport.ee/pesa', L, 8.5, f, mute); y = yy; };
-  const room = (need: number) => { if (y - need < 70) { footer(); pg = doc.addPage([595, 842]); y = 790; } };
+  const hr = (x1 = L, x2 = R, color = rule, th = 0.6) => pg.drawLine({ start: { x: x1, y }, end: { x: x2, y }, thickness: th, color });
 
   const lb = await getLogo();
-  if (lb) { const img = await doc.embedPng(lb); const w = 120, h = w * img.height / img.width; pg.drawImage(img, { x: L, y: 800 - h, width: w, height: h }); y = 800 - h - 36; }
-  t('Pakkumine: Pesa maja projekt ehitusloani', L, 19, b); y -= 24;
-  t(`Klient: ${r.name}`, L, 10.5); tr(`Kuupäev: ${fmtDate(new Date().toISOString().slice(0, 10))}`, R, 10.5); y -= 15;
-  t(`Krunt: ${r.plot || r.region_name || 'otsimisel'}`, L, 10.5); tr(`Kehtib kuni: ${fmtDate(q.valid_until)}`, R, 10.5); y -= 15;
-  t(`Maja: ${q.model || 'Pesa maja (mudel valimata)'}${q.lines.length === 1 ? ` · ${q.lines[0].size} · ${ROOMS[q.lines[0].size]}` : ''}`, L, 10.5); y -= 30;
-
-  // Tabel: töö | summa(d)
-  const n = q.lines.length, colW = n > 1 ? 78 : 90, labelW = R - L - n * colW - 12;
-  const colX = (i: number) => R - (n - 1 - i) * colW;
-  if (n > 1) {
-    t('Töö', L, 9.5, f, mute);
-    q.lines.forEach((l, i) => tr(l.size, colX(i), 9.5, b, mute));
-    y -= 11; q.lines.forEach((l, i) => tr(ROOMS[l.size], colX(i), 8.5, f, mute)); y -= 8;
-  } else { t('Töö', L, 9.5, f, mute); tr('Hind', R, 9.5, f, mute); y -= 8; }
-  pg.drawLine({ start: { x: L, y }, end: { x: R, y }, thickness: 0.8, color: ink }); y -= 16;
-  for (const row of breakdown(q)) {
-    const det = wrap(row.detail, labelW, 9);
-    room(16 + det.length * 11.5 + 14);
-    t(row.title, L, 11, b); row.amounts.forEach((v, i) => tr(eur(v), colX(i), 11)); y -= 14;
-    for (const d of det) { t(d, L, 9, f, mute); y -= 11.5; }
-    y -= 4; pg.drawLine({ start: { x: L, y }, end: { x: R, y }, thickness: 0.5, color: rule }); y -= 16;
-  }
-  room(40);
-  t('Kokku', L, 12, b); q.lines.forEach((l, i) => tr(`${eur(total(q, l))} + km`, colX(i), 12, b)); y -= 15;
-  const vat = q.lines.map((l) => eur(Math.round(total(q, l) * 1.24))).join(' / ');
-  t(`Koos käibemaksuga (24%): ${vat}`, L, 9, f, mute); y -= 14;
-  const note = surchargeNote(q);
-  if (note) { for (const d of wrap(note, R - L, 9)) { t(d, L, 9, f, mute); y -= 11.5; } }
-  y -= 18;
-  const para = (h: string, txt: string) => {
-    const lines = wrap(txt, R - L, 10.5);
-    room(18 + lines.length * 14.5);
-    t(h, L, 12, b); y -= 16;
-    for (const l of lines) { t(l, L, 10.5); y -= 14.5; }
-    y -= 10;
+  const logo = lb ? await doc.embedPng(lb) : null;
+  const drawLogo = (x: number, top: number, w: number) => { if (logo) pg.drawImage(logo, { x, y: top - w * logo.height / logo.width, width: w, height: w * logo.height / logo.width }); };
+  const today = fmtDate(new Date().toISOString().slice(0, 10));
+  const offerNo = `P-${new Date().getFullYear()}-${r.id.slice(0, 4).toUpperCase()}`;
+  const house = q.model || 'Pesa maja';
+  const multi = q.lines.length > 1;
+  const footer = () => {
+    const yy = y; y = 34;
+    hr(L, R, rule, 0.5); y = 22;
+    t('Projektbüroo Sport OÜ  ·  +372 5560 1425  ·  tiit@sportsport.ee  ·  sportsport.ee/pesa', L, 7.5, f, mute);
+    tr(`Pakkumine ${offerNo}`, R, 7.5, f, mute);
+    y = yy;
   };
-  para('Ei ole hinnas', NOT_INCLUDED);
-  para('Ajakava', 'Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest.');
-  para('Järgmine samm', 'Kinnita pakkumine vastuskirjaga või helista +372 5560 1425 – saadame lepingu. Kohtumine arhitektiga on tasuta.');
+
+  // ---------- 1. leht: kaas ----------
+  const m = q.model ? Number(q.model.replace(/\D/g, '')) || 1 : 1;
+  const sz = q.lines.length === 1 ? q.lines[0].size : '109,7 m²';
+  const heroUrl = q.model ? `${SITE}/tube-assets/email/tube-0${m}-${SLUG[sz]}.jpg` : `${SITE}/tube-assets/email/pesa-nomme.jpg`;
+  const hb = await asset(heroUrl);
+  const heroH = 372;
+  if (hb) {
+    const img = await doc.embedJpg(hb);
+    const s = Math.max(W / img.width, heroH / img.height), iw = img.width * s, ih = img.height * s;
+    pg.drawImage(img, { x: (W - iw) / 2, y: H - heroH - (ih - heroH) / 2, width: iw, height: ih });
+    pg.drawRectangle({ x: 0, y: 0, width: W, height: H - heroH, color: white });
+  } else pg.drawRectangle({ x: 0, y: H - heroH, width: W, height: heroH, color: sand });
+
+  y = H - heroH - 46;
+  caps(`Pakkumine  ·  ${offerNo}`, L);
+  y -= 44; t(house, L, 40, lt);
+  y -= 30; t('Projekt ehitusloani', L, 22, lt, mute);
+
+  // Andmed kahes veerus
+  y -= 40;
+  const meta: [string, string][] = [
+    ['Klient', r.name],
+    ['Krunt', r.plot || r.region_name || 'otsimisel'],
+    ['Maja', multi ? `${house}, suurus valimata` : `${house} · ${q.lines[0].size} · ${ROOMS[q.lines[0].size]}`],
+    ['Kuupäev', today],
+    ['Kehtib kuni', fmtDate(q.valid_until)],
+    ['Arhitekt', 'Tiit Sild, volitatud arhitekt, tase 8'],
+  ];
+  const colA = L, colB = 330, metaTop = y;
+  meta.forEach(([k, v], i) => {
+    const x = i < 3 ? colA : colB; y = metaTop - (i % 3) * 34;
+    caps(k, x, 6.5, mute, 1.2);
+    y -= 13; const vv = wrap(v, i < 3 ? 250 : 200, 10.5)[0] || ''; t(vv, x, 10.5);
+  });
+  y = metaTop - 3 * 34 - 4;
+
+  // Hind
+  y -= 10; hr(L, R, ink, 0.8); y -= 22;
+  caps('Projekteerimise hind', L, 6.5, mute, 1.2);
+  if (!multi) {
+    const p = eur(total(q, q.lines[0]));
+    y -= 36; t(p, L, 34, lt);
+    t('+ km', L + lt.widthOfTextAtSize(safe(p), 34) + 8, 11, f, mute);
+    tr(`koos km ${eur(Math.round(total(q, q.lines[0]) * 1.24))}`, R, 9, f, mute);
+  } else {
+    y -= 30;
+    const cw = (R - L) / q.lines.length;
+    q.lines.forEach((l, i) => {
+      const x = L + i * cw;
+      const p = eur(total(q, l)); t(p, x, 24, lt);
+      t('+ km', x + lt.widthOfTextAtSize(safe(p), 24) + 5, 8.5, f, mute);
+    });
+    y -= 15; q.lines.forEach((l, i) => t(`${l.size} · ${ROOMS[l.size]}`, L + i * cw, 8.5, f, mute));
+  }
+  const note = surchargeNote(q);
+  if (note) { y -= 18; for (const d of wrap(note, R - L, 8)) { t(d, L, 8, f, mute); y -= 10.5; } }
+
+  drawLogo(L, 80, 96);
+  y = 54; tr('tiit@sportsport.ee  ·  +372 5560 1425', R, 8, f, mute);
+  y = 42; tr('www.sportsport.ee/pesa', R, 8, f, mute);
+
+  // ---------- 2. leht: hinna sisu ----------
+  let pageNo = 2;
+  const newPage = () => {
+    pg = doc.addPage([W, H]);
+    drawLogo(L, H - 44, 72);
+    y = H - 64; tr(`${house}  ·  lk ${pageNo++}`, R, 7.5, f, mute);
+    y = H - 118;
+  };
+  const room = (need: number) => { if (y - need < 70) { footer(); newPage(); } };
+  newPage();
+
+  caps('Mis on hinnas', L); y -= 30;
+  t('Töö sisu ja hind', L, 24, lt); y -= 30;
+
+  const n = q.lines.length, colW = multi ? 76 : 90, numW = 30, labelW = R - L - numW - n * colW - 10;
+  const colX = (i: number) => R - (n - 1 - i) * colW;
+  if (multi) {
+    q.lines.forEach((l, i) => tr(l.size, colX(i), 8.5, b, mute)); y -= 11;
+    q.lines.forEach((l, i) => tr(ROOMS[l.size], colX(i), 7.5, f, mute)); y -= 9;
+  }
+  hr(L, R, ink, 0.8); y -= 22;
+  breakdown(q).forEach((row, i) => {
+    const det = wrap(row.detail, labelW, 8.6);
+    room(20 + det.length * 11 + 18);
+    t(String(i + 1).padStart(2, '0'), L, 13, lt, accent);
+    t(row.title, L + numW, 10.5, b);
+    row.amounts.forEach((v, j) => tr(eur(v), colX(j), 10.5));
+    y -= 14;
+    for (const d of det) { t(d, L + numW, 8.6, f, mute); y -= 11; }
+    y -= 8; hr(); y -= 20;
+  });
+
+  // Kokku: tume riba
+  room(80);
+  y += 4;
+  const band = 40;
+  pg.drawRectangle({ x: L, y: y - band + 12, width: R - L, height: band, color: ink });
+  y -= 13;
+  t('Kokku', L + 16, 12, b, white);
+  q.lines.forEach((l, i) => tr(eur(total(q, l)) + ' + km', colX(i) - (i === n - 1 ? 14 : 0), 12, b, white));
+  y -= 30;
+  t('Koos käibemaksuga (24%)', L + 16, 8.5, f, mute);
+  q.lines.forEach((l, i) => tr(eur(Math.round(total(q, l) * 1.24)), colX(i) - (i === n - 1 ? 14 : 0), 8.5, f, mute));
+  y -= 13;
+  if (note) { for (const d of wrap(note, R - L - 32, 8)) { t(d, L + 16, 8, f, mute); y -= 10.5; } }
+  y -= 26;
+
+  // Tingimused kahes veerus
+  const half = (R - L - 30) / 2;
+  const blocks: [string, string][] = [
+    ['Ei ole hinnas', NOT_INCLUDED],
+    ['Ajakava', 'Päringust ehitusloa taotluseni kulub tavaliselt umbes kuu. Ehitusloa menetluse kiirus sõltub omavalitsusest. Tasume ainult tehtud töö eest etappide kaupa.'],
+  ];
+  const wrapped = blocks.map(([, txt]) => wrap(txt, half, 9));
+  const bh = 22 + Math.max(...wrapped.map((w) => w.length)) * 13;
+  room(bh + 10);
+  const top = y;
+  blocks.forEach(([h], i) => {
+    const x = L + i * (half + 30); y = top;
+    caps(h, x, 6.5, ink, 1.2); y -= 18;
+    for (const l of wrapped[i]) { t(l, x, 9, f, mute); y -= 13; }
+  });
+  y = top - bh - 14;
+
+  // Järgmine samm: liivakarva kast
+  const stepTxt = wrap('Kinnita pakkumine vastuskirjaga „Sobib" või helista +372 5560 1425 – saadame lepingu ja alustame. Esimene kohtumine arhitektiga on tasuta.', R - L - 40, 9.5);
+  const boxH = 34 + stepTxt.length * 13.5;
+  room(boxH + 120);
+  pg.drawRectangle({ x: L, y: y - boxH, width: R - L, height: boxH, color: sand });
+  y -= 22; caps('Järgmine samm', L + 20, 6.5, accent, 1.2); y -= 17;
+  for (const l of stepTxt) { t(l, L + 20, 9.5); y -= 13.5; }
+  y -= 34;
+
+  // Allkiri
+  t('Lugupidamisega', L, 9.5, f, mute); y -= 10;
+  const sig = await asset(SIGNATURE);
+  if (sig) { try { const im = await doc.embedPng(sig); const h = 38, w = h * im.width / im.height; pg.drawImage(im, { x: L, y: y - h, width: w, height: h }); } catch (_) { /* vigane pilt */ } }
+  y -= 46; hr(L, L + 170, ink, 0.5); y -= 14;
+  t('Tiit Sild', L, 10.5, b); y -= 13;
+  t('Volitatud arhitekt, tase 8  ·  Projektbüroo Sport OÜ', L, 8.5, f, mute);
   footer();
+
   const bytes = await doc.save();
   let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(bin);
