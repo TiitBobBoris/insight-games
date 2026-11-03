@@ -9,7 +9,7 @@ name: Pesa leht -> sportsport.ee/pesa
 
 on:
   push:
-    branches: [tube-main]
+    branches: [tube-main, tube-preview]
   workflow_dispatch:
 
 concurrency:
@@ -41,6 +41,8 @@ jobs:
             '<IfModule mod_headers.c>' 'Header append Vary Accept env=avif' 'Header append Vary Accept env=REDIRECT_avif' '</IfModule>' > dist/.htaccess
           # Versioon failiviidetele, et brauserid ei kasutaks vana vahemälu.
           sed -i "s/__BUILD__/${GITHUB_SHA::8}/g" dist/index.html
+          # Eelvaade (haru tube-preview -> /pesa/eelvaade/): otsingumootorid ei indekseeri.
+          if [ "$GITHUB_REF_NAME" = tube-preview ]; then sed -i 's#<head>#<head><meta name="robots" content="noindex,nofollow">#' dist/index.html; fi
           cp -r tube-assets tube-editor dist/
 
       - name: Lae Elkdatasse (SFTP)
@@ -49,16 +51,17 @@ jobs:
           HOST: ${{ secrets.ELKDATA_SFTP_HOST }}
           USER: ${{ secrets.ELKDATA_SFTP_USER }}
           PASS: ${{ secrets.ELKDATA_SFTP_PASSWORD }}
-          DEST: ${{ secrets.ELKDATA_SFTP_PATH }}
+          DEST_ROOT: ${{ secrets.ELKDATA_SFTP_PATH }}
           PROTO: ${{ secrets.ELKDATA_PROTOCOL }}
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y lftp
+          if [ "$GITHUB_REF_NAME" = tube-preview ]; then DEST="$DEST_ROOT/eelvaade"; else DEST="$DEST_ROOT"; fi
           lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "
             set sftp:auto-confirm yes;
             set ftp:ssl-allow yes;
             set net:max-retries 3;
             mkdir -p -f $DEST;
-            mirror --reverse --delete --verbose --parallel=4 --exclude-glob index.html --exclude ^_joonised/ dist/ $DEST/;
+            mirror --reverse --delete --verbose --parallel=4 --exclude-glob index.html --exclude ^_joonised/ --exclude ^eelvaade/ dist/ $DEST/;
             put dist/index.html -o $DEST/index.html;
             bye"
 

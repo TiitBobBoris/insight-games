@@ -158,6 +158,8 @@ function setValue(id, value) {
     if (value === DELETED) { draft.images[id] = DELETED; return; }
     if (it.el.getAttribute('src') !== value) it.el.setAttribute('src', value);
     it.el.removeAttribute('srcset');
+    // <picture> sees: <source> kirjutaks uue pildi üle, seega vahetatud pildi puhul need ajutiselt välja.
+    if (it.el.parentElement?.tagName === 'PICTURE') it.el.parentElement.querySelectorAll('source').forEach(src => { if (value === it.original) { if (src.dataset.teSrcset) src.setAttribute('srcset', src.dataset.teSrcset); } else { src.dataset.teSrcset ??= src.getAttribute('srcset'); src.removeAttribute('srcset'); } });
     if (value === it.original) delete draft.images[id]; else draft.images[id] = value;
   } else {
     if (readText(it.el) !== value) writeText(it.el, value);
