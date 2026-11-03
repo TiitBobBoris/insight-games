@@ -207,3 +207,57 @@ html.premium .nav>.eyebrow{font-size:15px;font-weight:600;padding:9px 18px}
 html.premium .hero:after{background:radial-gradient(ellipse 70% 55% at 50% 74%,rgba(0,0,0,.5),rgba(0,0,0,.18) 60%,rgba(0,0,0,0) 85%),linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,0) 40%)}
 html.premium .hero-copy{text-shadow:0 2px 30px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.35)}
 html.premium .hero-copy .eyebrow{color:#fff;font-weight:600}
+
+/* Võrdle Pesa maju */
+.pcompare{margin-top:72px}
+.pcompare h3{text-align:center;font-size:clamp(28px,3vw,40px);font-weight:600;letter-spacing:-.03em;margin:0 0 28px}
+.pcompare-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border-radius:var(--r-lg,22px);box-shadow:0 10px 40px rgba(0,0,0,.06)}
+.pcompare table{width:100%;min-width:760px;table-layout:fixed;border-collapse:collapse;font-size:15px;line-height:1.45}
+.pcompare th,.pcompare td{padding:16px 18px;text-align:left;vertical-align:top;border-top:1px solid #ececf0}
+.pcompare thead th{border-top:0;padding-top:24px;font-weight:600}
+.pcompare thead img{display:block;width:100%!important;height:auto!important;aspect-ratio:16/9!important;object-fit:cover;border-radius:12px;margin-bottom:10px}
+.pcompare thead b{font-size:19px;letter-spacing:-.02em}
+.pcompare tbody th{color:var(--muted,#6e6e73);font-weight:500;white-space:nowrap;width:120px}
+.pcompare td{color:var(--ink,#1d1d1f)}
+.pcompare .cmp-actions td{border-top:0;padding-bottom:24px}
+.cmp-open{background:none;border:0;padding:0;color:#06c;font-size:16px;cursor:pointer}
+.cmp-open:hover{text-decoration:underline}
+
+/* Täislaiuses foto */
+.bleed{position:relative;height:min(88vh,860px);min-height:460px;overflow:hidden;background:#111}
+.bleed picture,.bleed-img{position:absolute;inset:0;width:100%;height:100%}
+.bleed-img{object-fit:cover;object-position:50% 55%}
+.bleed::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.18) 32%,rgba(0,0,0,0) 50%)}
+.bleed-text{position:absolute;inset:0 0 auto;z-index:1;padding-top:clamp(56px,8vw,110px)}
+.bleed-text h2{color:#fff;font-size:clamp(38px,5.6vw,80px);font-weight:600;letter-spacing:-.035em;line-height:1.04;max-width:13ch;margin:0}
+
+/* Mis teeb Pesa eriliseks */
+.highlights{overflow:hidden}
+.hl-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px}
+.hl-head h2{margin:6px 0 0;font-size:clamp(40px,5.2vw,76px);font-weight:600;letter-spacing:-.035em;line-height:1.05}
+.hl-nav{display:flex;gap:10px}
+.hl-nav button{width:44px;height:44px;border-radius:50%;border:0;background:#e8e8ed;color:#1d1d1f;font-size:24px;line-height:1;cursor:pointer;transition:background .2s,opacity .2s}
+.hl-nav button:hover{background:#d2d2d7}
+.hl-nav button:disabled{opacity:.35;cursor:default}
+.hl-track{list-style:none;margin:0;padding:0 max(clamp(22px,4.2vw,72px),calc((100vw - 1180px)/2 + clamp(22px,4.2vw,72px))) 8px;display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 max(clamp(22px,4.2vw,72px),calc((100vw - 1180px)/2 + clamp(22px,4.2vw,72px)));scrollbar-width:none;outline:0}
+.hl-track::-webkit-scrollbar{display:none}
+.hl-card{position:relative;flex:0 0 min(78vw,360px);aspect-ratio:4/5;border-radius:var(--r-lg,22px);overflow:hidden;scroll-snap-align:start;background:#f5f5f7}
+.hl-card picture,.hl-card img{display:block;width:100%;height:100%;object-fit:cover}
+.hl-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 45%);pointer-events:none}
+.hl-luba::after{display:none}
+.hl-text{position:absolute;inset:0 0 auto;z-index:1;padding:26px 26px 0;color:#fff}
+.hl-luba .hl-text{color:#1d1d1f}
+.hl-text h3{margin:0 0 6px;font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.1}
+.hl-text p{margin:0;font-size:16px;line-height:1.4;opacity:.92}
+
+/* Osta valmisjoonised */
+.tube-actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.tube-buy{color:#06c;font-size:17px;text-decoration:none}
+.tube-buy:hover{text-decoration:underline}
+
+@media(max-width:700px){
+  .pcompare{margin-top:56px}
+  .hl-nav{display:none}
+  .bleed{height:72vh}
+  .bleed-img{object-position:38% 55%}
+}

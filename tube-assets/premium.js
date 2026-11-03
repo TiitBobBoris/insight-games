@@ -82,7 +82,7 @@
   }
 
   // Ilmumine kerimisel.
-  var targets = $$('.section-head, .models h2, .models-lead, .p-switch, .model-grid, .proof .shot, .all-built-toggle, .story-top, .video, .spectrum > div, .compare, .step, .faq-list, .offer-intro, .form-card, .final .wrap > *, .facts > div, .facts-band p');
+  var targets = $$('.section-head, .models h2, .models-lead, .p-switch, .model-grid, .proof .shot, .all-built-toggle, .story-top, .video, .spectrum > div, .compare, .step, .faq-list, .offer-intro, .form-card, .final .wrap > *, .facts > div, .facts-band p, .pcompare, .bleed-text h2, .hl-head');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });

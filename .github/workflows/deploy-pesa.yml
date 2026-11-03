@@ -34,7 +34,11 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html joonised.html joonised-dl.php dist/
-          printf 'DirectoryIndex index.html\nRewriteEngine Off\n' > dist/.htaccess
+          # AVIF: kui brauser oskab ja kõrval on sama nimega .avif, serveeri .webp asemel see (HTML jääb samaks).
+          printf '%s\n' 'DirectoryIndex index.html' 'AddType image/avif .avif' '<IfModule mod_rewrite.c>' 'RewriteEngine On' \
+            'RewriteCond %{HTTP_ACCEPT} image/avif' 'RewriteCond %{REQUEST_FILENAME} ^(.+)\.webp$' 'RewriteCond %1.avif -f' \
+            'RewriteRule ^(.+)\.webp$ $1.avif [T=image/avif,E=avif:1,L]' '</IfModule>' \
+            '<IfModule mod_headers.c>' 'Header append Vary Accept env=avif' 'Header append Vary Accept env=REDIRECT_avif' '</IfModule>' > dist/.htaccess
           # Versioon failiviidetele, et brauserid ei kasutaks vana vahemälu.
           sed -i "s/__BUILD__/${GITHUB_SHA::8}/g" dist/index.html
           cp -r tube-assets tube-editor dist/
