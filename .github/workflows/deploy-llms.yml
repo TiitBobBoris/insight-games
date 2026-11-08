@@ -22,13 +22,14 @@ jobs:
           PROTO: ${{ secrets.ELKDATA_PROTOCOL }}
         run: |
           test -n "$HOST" || { echo "::error::ELKDATA_SFTP_* saladused puuduvad"; exit 1; }
-          ROOT=$(dirname "${DEST_ROOT%/}")
           sudo apt-get -qq update && sudo apt-get -qq install -y lftp
-          lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "
-            set sftp:auto-confirm yes; set ftp:ssl-allow yes; set net:max-retries 3;
-            get $ROOT/llms.txt -o llms.backup.txt;
-            put site/llms.txt -o $ROOT/llms.txt;
-            bye"
+          L="set sftp:auto-confirm yes; set ftp:ssl-allow yes; set net:max-retries 3;"
+          # Leia serveris olemasolev llms.txt (saidi juurkaust), otsi kuni 4 taset sügavuselt.
+          FOUND=$(lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "$L find -d 4 .; bye" 2>/dev/null | grep -E '(^|/)llms\.txt$' | grep -v '/pesa/' | head -1)
+          echo "Leitud: ${FOUND:-(puudub)}"
+          test -n "$FOUND" || { echo "::error::llms.txt serverist ei leitud"; exit 1; }
+          lftp -u "$USER","$PASS" "${PROTO:-sftp}://$HOST" -e "$L get $FOUND -o llms.backup.txt; put site/llms.txt -o $FOUND; bye"
+          echo "Varukoopia read: $(wc -l < llms.backup.txt)"
       - name: Kontrolli
         run: |
           sleep 5
