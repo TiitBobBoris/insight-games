@@ -451,9 +451,36 @@ button{border-radius:0}
 <style>.model{cursor:pointer}.model:hover{outline:2px solid #777}.model-more{display:block;margin-top:15px;font-size:14px;text-decoration:underline}.tube-dialog{border:0;background:#f1efe9;color:#171716;width:min(1000px,96vw);max-height:92dvh;padding:0}.tube-dialog::backdrop{background:#000b}.tube-head{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ccc;align-items:center}.tube-head b{font-size:28px;font-weight:400}.tube-close{font-size:30px;background:none;border:0;cursor:pointer}.tube-content{padding:24px;max-height:80dvh;overflow:auto}.tube-content img{width:100%;height:auto;max-height:400px;object-fit:cover}.tube-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}.tube-views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.tube-views figure{margin:0}.tube-views img{display:block;width:100%;height:auto;max-height:none;aspect-ratio:16/9;object-fit:cover;background:#d1cec6}.tube-views figcaption{font-size:12px;color:#706d66;margin-top:6px}.tube-tabs button{padding:13px 16px;border:1px solid #bbb;background:transparent;cursor:pointer}.tube-tabs button[aria-selected=true]{background:#171716;color:white}.tube-plan{padding:24px;background:white;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tube-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:20px}@media(max-width:650px){.tube-views{grid-template-columns:1fr}.tube-content{padding:12px}.tube-plan{padding:15px}}</style><style>.tube-plan-img{margin:0;background:#fff;padding:clamp(10px,2vw,24px)}.tube-plan-img a{display:block;cursor:zoom-in}.tube-plan-img img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;aspect-ratio:auto}.tube-plan-img figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;margin-top:12px;font-size:13px;color:#706d66}.tube-plan-img figcaption span:first-child{color:#171716;font-weight:700}.model-more{background:none;border:0;padding:0;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:inherit;margin-top:15px;display:inline-block}</style><style>.all-built-toggle{text-align:center;margin-top:34px}.all-built{margin-top:50px;display:grid;gap:56px}.all-built[hidden]{display:none}.built-project h3{font-size:clamp(26px,2.6vw,38px);margin:0 0 18px;font-weight:400}.built-meta{margin:-10px 0 18px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.6}.built-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.built-grid img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#d1cec6;cursor:zoom-in}.built-project:not(.open) .built-grid img:nth-child(n+3){display:none}body.te-on .built-project .built-grid img{display:block!important}.built-project.open .built-grid img{cursor:zoom-out}.built-more{margin-top:14px;background:none;border:0;padding:0;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;color:inherit}.form-call{display:block;font-size:.55em;margin-top:8px;opacity:.75}.form-call a{color:inherit}@media(max-width:850px){.built-grid{grid-template-columns:1fr}}</style>
 <style>.tube-tabs button{display:inline-flex;flex-direction:column;align-items:center;gap:8px;padding:10px 10px 12px}.tab-thumb{display:block;width:150px;max-width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border:1px solid #ddd}.tube-tabs button[aria-selected=true] .tab-thumb{border-color:#fff}@media(max-width:650px){.tube-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.tube-tabs button{padding:6px 4px 8px;font-size:13px}.tab-thumb{width:100%}}</style>
 <link rel="stylesheet" href="./tube-assets/premium.css?v=__BUILD__">
-<!-- Meta Pixel (Sportsport.ee pixel): lehevaade, maja avamine ja pakkumise päring (Lead, event_id sama mis päringu real) -->
-<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1329363515978097');fbq('init','1709845930268711');fbq('track','PageView');</script>
-<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1329363515978097&ev=PageView&noscript=1"></noscript>
+<!-- Meta Pixel ainult küpsiste nõusolekuga (sama CookieYes'i küpsis "cookieyes-consent" mis sportsport.ee pealehel).
+     fbq kutsed (PageView, ViewContent, Lead) jäävad järjekorda; fbevents.js laetakse alles siis, kui reklaamiküpsised on lubatud. -->
+<script>
+!function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
+fbq('init','1329363515978097');fbq('init','1709845930268711');fbq('track','PageView');
+window.pesaConsent=(function(){
+  var NAME='cookieyes-consent';
+  function read(){var m=document.cookie.match(/(?:^|; )cookieyes-consent=([^;]*)/);if(!m)return null;var o={};decodeURIComponent(m[1]).split(',').forEach(function(kv){var i=kv.indexOf(':');if(i>0)o[kv.slice(0,i)]=kv.slice(i+1)});return o}
+  var loaded=false;
+  function load(){if(loaded)return;loaded=true;var t=document.createElement('script');t.async=true;t.src='https://connect.facebook.net/en_US/fbevents.js';document.head.appendChild(t)}
+  function id(){var a='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',r='';var b=new Uint8Array(32);(window.crypto||{}).getRandomValues?crypto.getRandomValues(b):b.forEach(function(_,i){b[i]=Math.random()*256});for(var i=0;i<32;i++)r+=a[b[i]%62];return btoa(r).replace(/=+$/,'')}
+  function save(yes){var v=yes?'yes':'no';var c=read();var val=['consentid:'+(c&&c.consentid||id()),'consent:'+v,'action:yes','necessary:yes','functional:'+v,'analytics:'+v,'performance:'+v,'advertisement:'+v].join(',');
+    document.cookie=NAME+'='+val+'; path=/; max-age='+(365*864e2)+'; SameSite=Strict'+(location.protocol==='https:'?'; Secure':'');apply()}
+  function ad(){var c=read();return !!(c&&c.advertisement==='yes')}
+  function decided(){var c=read();return !!(c&&c.action==='yes')}
+  function apply(){if(ad())load()}
+  apply();
+  return {save:save,ad:ad,decided:decided};
+})();
+</script>
+<style>
+.pesa-cookie{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;max-width:560px;margin:0 auto;background:var(--white,#fff);color:var(--ink,#171716);border:1px solid var(--line,#c9c5bc);border-radius:14px;box-shadow:0 10px 40px #0003;padding:16px 18px;font-size:14px;line-height:1.5}
+.pesa-cookie[hidden]{display:none}
+.pesa-cookie p{margin:0 0 12px}
+.pesa-cookie-btns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.pesa-cookie-btns .btn{padding:10px 16px;font-size:14px;min-height:44px;cursor:pointer}
+.pesa-cookie-btns .btn.ghost{background:transparent;color:var(--ink,#171716);border:1px solid var(--line,#c9c5bc)}
+body.cookie-open .sticky-cta{transform:translateY(140%);opacity:0;pointer-events:none}
+.cookie-settings-link{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
+</style>
 </head>
 <body>
 
@@ -741,6 +768,10 @@ button{border-radius:0}
   </div>
 </section>
 
+<div class="pesa-cookie" id="pesaCookie" role="dialog" aria-live="polite" aria-label="Küpsiste nõusolek" hidden>
+  <p>Kasutame küpsiseid lehe kasutamise mõõtmiseks ja reklaamide sihtimiseks (Meta). Vajalikud küpsised töötavad alati. Valikut saad muuta lehe allosas.</p>
+  <div class="pesa-cookie-btns"><button type="button" class="btn ghost" data-cookie="no">Keeldu</button><button type="button" class="btn" data-cookie="yes">Nõustu kõigega</button></div>
+</div>
 <a data-tube-id="sticky-cta" class="btn sticky-cta" href="#offer">Küsi pakkumist · 24 h →</a>
 
 <section class="section final">
@@ -755,7 +786,7 @@ button{border-radius:0}
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <div><strong data-tube-id="footer-company"><a href="https://www.sportsport.ee/">Projektbüroo Sport OÜ</a></strong><br><span data-tube-id="footer-tagline">Pesa majad – arhitekti loodud kodud</span></div>
-    <div><a data-tube-id="footer-phone" href="tel:+37255601425">+372 5560 1425</a><br><a data-tube-id="footer-email" href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a><br><nav aria-label="Asukoht veebilehel"><a data-tube-id="footer-site" href="https://www.sportsport.ee/">Avaleht</a> <span aria-hidden="true">›</span> <a href="https://www.sportsport.ee/teenused/">Teenused</a> <span aria-hidden="true">›</span> <span aria-current="page">Pesa maja</span></nav></div>
+    <div><a data-tube-id="footer-phone" href="tel:+37255601425">+372 5560 1425</a><br><a data-tube-id="footer-email" href="mailto:tiit@sportsport.ee">tiit@sportsport.ee</a><br><nav aria-label="Asukoht veebilehel"><a data-tube-id="footer-site" href="https://www.sportsport.ee/">Avaleht</a> <span aria-hidden="true">›</span> <a href="https://www.sportsport.ee/teenused/">Teenused</a> <span aria-hidden="true">›</span> <span aria-current="page">Pesa maja</span></nav><button type="button" class="cookie-settings-link" data-cookie-settings>Küpsiste seaded</button></div>
   </div>
 </footer>
 <script src="./tube-assets/premium.js?v=__BUILD__"></script>
@@ -822,12 +853,18 @@ function regionFields(s){
 const UTM_KEYS=['utm_source','utm_medium','utm_campaign','utm_content','fbclid','gclid'];
 (function(){try{const q=new URLSearchParams(location.search);if(UTM_KEYS.some(k=>q.get(k))){const o={};UTM_KEYS.forEach(k=>{if(q.get(k))o[k]=q.get(k).slice(0,k.endsWith('clid')?500:200)});sessionStorage.setItem('pesa_utm',JSON.stringify(o))}}catch(_){}})();
 function utm(){try{return JSON.parse(sessionStorage.getItem('pesa_utm')||'{}')}catch(_){return{}}}
+function adFields(){
+  if(!(window.pesaConsent&&pesaConsent.ad()))return {ad_consent:false};
+  const ck=n=>{const m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null};
+  const fbclid=utm().fbclid;
+  return {ad_consent:true,fbp:ck('_fbp'),fbc:ck('_fbc')||(fbclid?'fb.1.'+Date.now()+'.'+fbclid:null),client_user_agent:navigator.userAgent.slice(0,400)};
+}
 function offerFields(data){
   const s=k=>String(data.get(k)||'').trim();
   return {name:s('name'),email:s('email'),phone:s('phone')||null,plot_status:s('plotStatus'),
     plot:s('plotStatus')==='Alles otsin krunti'?'':s('plot'),planning:s('planning'),model:s('model'),size:s('size'),
     notes:s('notes'),page_url:(location.origin+location.pathname).slice(0,500),
-    ...regionFields(s),...utm(),event_id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random())};
+    ...regionFields(s),...utm(),...adFields(),event_id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random())};
 }
 function offerMailto(r){
   const body='Pesa maja pakkumise päring\n\n'+
@@ -880,6 +917,15 @@ if(new URLSearchParams(location.search).get('edit')==='1'){const v='__BUILD__';c
 <script>
 (function(){var a=document.getElementById('allBuilt'),b=document.getElementById('allBuiltBtn');if(!a||!b)return;var key=function(src){return (src||'').split('/').pop()};document.querySelectorAll('.proof .shot img').forEach(function(im){im.closest('.shot').addEventListener('click',function(){if(document.body.classList.contains('te-on'))return;var f=key(im.getAttribute('src')),p=null;a.querySelectorAll('.built-project').forEach(function(x){if(!p&&[].some.call(x.querySelectorAll('img'),function(g){return key(g.getAttribute('src'))===f}))p=x});if(!p){var pre=f.replace(/-\d+\.webp$/,'');a.querySelectorAll('.built-project').forEach(function(x){if(!p&&[].some.call(x.querySelectorAll('img'),function(g){return key(g.getAttribute('src')).indexOf(pre+'-')===0}))p=x})}if(a.hidden){a.hidden=false;b.setAttribute('aria-expanded',true);b.textContent='Peida fotod ↑'}if(p){if(!p.classList.contains('open')){var m=p.querySelector('.built-more');if(m)m.click()}p.scrollIntoView({behavior:'smooth',block:'start'})}else a.scrollIntoView({behavior:'smooth',block:'start'})})})})();
 (function(){document.querySelectorAll('.built-project').forEach(function(p){var b=p.querySelector('.built-more');if(!b)return;var n=p.querySelectorAll('.built-grid img').length;function t(){var o=p.classList.toggle('open');b.setAttribute('aria-expanded',o);b.textContent=o?'Sulge ✕':'Näita kõiki '+n+' fotot ↓';if(!o)p.scrollIntoView({behavior:'smooth',block:'start'})}b.addEventListener('click',t);p.querySelector('.built-grid').addEventListener('click',function(e){if(e.target.tagName==='IMG'&&!document.body.classList.contains('te-on'))t()})})})();
+</script>
+<script>
+(function(){var b=document.getElementById('pesaCookie');if(!b)return;
+  function show(){b.hidden=false;document.body.classList.add('cookie-open')}
+  function hide(){b.hidden=true;document.body.classList.remove('cookie-open')}
+  b.addEventListener('click',function(e){var v=e.target.getAttribute&&e.target.getAttribute('data-cookie');if(!v)return;pesaConsent.save(v==='yes');hide()});
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-cookie-settings]')){e.preventDefault();show()}});
+  if(!pesaConsent.decided())show();
+})();
 </script>
 </body>
 </html>

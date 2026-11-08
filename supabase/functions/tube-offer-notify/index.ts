@@ -14,6 +14,9 @@
 //   drawings_checkout_url, client_from / admin_from (saatjad; Resendis on kinnitatud send.sportsport.ee).
 // Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (vaikimisi tiit@sportsport.ee),
 //   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri; vaikimisi Tiit Sild <tiit@sportsport.ee>).
+// Meta Conversions API (valikuline): META_CAPI_TOKEN, META_PIXEL_ID (vaikimisi 1709845930268711), META_TEST_EVENT_CODE.
+//   Lead saadetakse serverist ainult siis, kui külastaja lubas reklaamiküpsised (ad_consent). event_id on sama
+//   mis brauseri Pixeli Lead-sündmusel, nii et Meta arvestab selle üks kord.
 import { createClient } from 'npm:@supabase/supabase-js@2.49.10';
 import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
 import fontkit from 'npm:@pdf-lib/fontkit@1.1.1';
@@ -41,6 +44,7 @@ type Row = {
   model: string | null; size: string | null; notes: string | null; page_url: string | null;
   region_code: string | null; region_name: string | null; status: string; token: string;
   utm_source: string | null; utm_campaign: string | null;
+  event_id?: string | null; ad_consent?: boolean; fbp?: string | null; fbc?: string | null; client_user_agent?: string | null; capi_sent_at?: string | null;
 };
 type Price = { size: string; base_price: number; region_surcharge: number; drawings_price: number | null };
 type Quote = { tier: 'surcharge' | 'standard' | 'unknown'; model: string | null; lines: { size: string; standard: number; surcharge: number; drawings?: number | null }[]; valid_until: string };
@@ -471,6 +475,46 @@ function adminText(r: Row, q: Quote | null, state: string, approveUrl?: string) 
   ].join('\n');
 }
 
+async function sha256(v: string) {
+  const d = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)));
+  return Array.from(d, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+// Telefon E.164 numbriteks ilma +-ta (Eesti numbrile lisatakse 372).
+function normPhone(p: string | null) {
+  let d = (p || '').replace(/\D/g, '');
+  if (!d) return '';
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.length <= 8) d = '372' + d;
+  return d;
+}
+async function sendCapiLead(r: Row) {
+  const token = Deno.env.get('META_CAPI_TOKEN');
+  if (!token) return 'META_CAPI_TOKEN puudub';
+  const pixel = Deno.env.get('META_PIXEL_ID') || '1709845930268711';
+  const ud: Record<string, unknown> = {};
+  if (r.email) ud.em = [await sha256(r.email.trim().toLowerCase())];
+  const ph = normPhone(r.phone); if (ph) ud.ph = [await sha256(ph)];
+  const fn = firstName(r.name || '').toLowerCase(); if (fn) ud.fn = [await sha256(fn)];
+  ud.country = [await sha256('ee')];
+  ud.external_id = [await sha256(r.id)];
+  if (r.fbp) ud.fbp = r.fbp;
+  if (r.fbc) ud.fbc = r.fbc;
+  if (r.client_user_agent) ud.client_user_agent = r.client_user_agent;
+  const body: Record<string, unknown> = {
+    data: [{
+      event_name: 'Lead', event_time: Math.floor(new Date(r.created_at).getTime() / 1000), event_id: r.event_id,
+      action_source: 'website', event_source_url: r.page_url || `${SITE}/`, user_data: ud,
+      custom_data: { content_name: [r.model, r.size].filter(Boolean).join(' '), content_category: 'Pesa maja' },
+    }],
+  };
+  const test = Deno.env.get('META_TEST_EVENT_CODE'); if (test) body.test_event_code = test;
+  const res = await fetch(`https://graph.facebook.com/v21.0/${pixel}/events?access_token=${encodeURIComponent(token)}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  if (!res.ok) return `CAPI ${res.status}: ${(await res.text()).slice(0, 300)}`;
+  return null;
+}
+
 async function resend(key: string, body: Record<string, unknown>) {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
@@ -613,6 +657,13 @@ Deno.serve(async (req) => {
 
   let sent = 0;
   for (const r of (claimed || []) as Row[]) {
+    // Meta CAPI Lead (ainult nõusolekuga); viga ei takista pakkumist.
+    if (r.ad_consent && r.event_id && !r.capi_sent_at) {
+      try {
+        const err = await sendCapiLead(r);
+        await sb.from('tube_offer_requests').update(err ? { capi_error: err } : { capi_sent_at: new Date().toISOString(), capi_error: null }).eq('id', r.id);
+      } catch (e) { await sb.from('tube_offer_requests').update({ capi_error: String((e as Error).message).slice(0, 300) }).eq('id', r.id); }
+    }
     try {
       const q = buildQuote(r, tierOf(r, regions), (prices || []) as Price[], validDays);
       const reasons = reviewReasons(r, q);
