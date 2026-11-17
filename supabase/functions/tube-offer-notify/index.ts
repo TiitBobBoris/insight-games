@@ -12,8 +12,10 @@
 // Lülitid tabelis pesa_settings: auto_send (on/off), booking_url, offer_valid_days, followup_days,
 //   offer_delay_hours (nt 2-4: pakkumine läheb juhusliku viivitusega), offer_quiet_hours (nt 21-8: öösel ei saada),
 //   drawings_checkout_url, client_from / admin_from (saatjad; Resendis on kinnitatud send.sportsport.ee).
-// Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (vaikimisi tiit@sportsport.ee),
-//   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri; vaikimisi Tiit Sild <tiit@sportsport.ee>).
+//   contact_email: Tiidu kontakt-e-post (teavituste saaja, vastuse aadress, kirja ja PDF-i kontaktid).
+//   E-posti aadress on seadistuses, mitte koodis.
+// Secret'id: RESEND_API_KEY (kohustuslik), TUBE_OFFER_TO (valikuline; vaikimisi contact_email),
+//   TUBE_OFFER_FROM (Tiidu teavitus), PESA_CLIENT_FROM (kliendikiri).
 // Meta Conversions API (valikuline): META_CAPI_TOKEN, META_PIXEL_ID (vaikimisi 1709845930268711), META_TEST_EVENT_CODE.
 //   Lead saadetakse serverist ainult siis, kui külastaja lubas reklaamiküpsised (ad_consent). event_id on sama
 //   mis brauseri Pixeli Lead-sündmusel, nii et Meta arvestab selle üks kord.
@@ -24,6 +26,8 @@ import fontkit from 'npm:@pdf-lib/fontkit@1.1.1';
 const SITE = 'https://www.sportsport.ee/pesa';
 const FN_URL = 'https://xlhtavzsanlikmxrddrb.supabase.co/functions/v1/tube-offer-notify';
 const LOGO = `${SITE}/tube-assets/email/projektbyroo-sport-logo.png`;
+// Kontakt-e-post tuleb seadistusest (pesa_settings.contact_email või TUBE_OFFER_TO); täidetakse iga päringu alguses.
+let CONTACT = '';
 const SLUG: Record<string, string> = { '89,7 m²': '89-7', '109,7 m²': '109-7', '123,4 m²': '123-4' };
 const ROOMS: Record<string, string> = { '89,7 m²': '2 magamistuba', '109,7 m²': '3 magamistuba', '123,4 m²': '4 magamistuba' };
 
@@ -93,7 +97,8 @@ function buildQuote(r: Row, tier: Quote['tier'], prices: Price[], validDays: num
 
 function reviewReasons(r: Row, q: Quote): string[] {
   const out: string[] = [];
-  if (r.plot_status === 'Krunt on olemas' && q.tier === 'unknown') out.push('krundi asukohta ei õnnestunud määrata');
+  // Kui krundi asukohta ei õnnestu määrata, ei peata: pakkumine läheb tavahinnaga (väljaspool Tallinnat, Tartut,
+  // Pärnut ja Viimsit) ning kirjas on märkus linnade lisatasu kohta (vt surchargeNote). Tiidu otsus 17.11.2026.
   if (r.plot_status === 'Krunt on olemas' && r.planning === 'Ei ole') out.push('detailplaneeringut ega projekteerimistingimusi pole – võib vajada projekteerimistingimuste taotlust');
   if (/korrus|kelder|teine maja|kaks maja|2 maja|abihoone|garaa|laienda|suurem|saun.*eraldi|kortermaja|paarismaja/i.test(r.notes || ''))
     out.push('erisoovides on suurem muudatus');
@@ -115,6 +120,21 @@ function sendTime(delay: string, quiet: string) {
     t.setTime(t.getTime() + Math.random() * 60 * 60e3);
   }
   return t;
+}
+
+// Ülevaatust vajav pakkumine: kui Tiit ei sekku, läheb see automaatselt välja 20–24 h pärast päringut
+// (Tiidul jääb vähemalt 20 h reageerimiseks). Valitakse juhuslik aeg selles aknas, mis ei jää vaiksesse aega
+// (nt 21-8). Kui kogu aken on vaikne aeg, saadetakse viimasel mittevaiksel hetkel enne seda (alla 24 h).
+function reviewDeadline(created: string, quiet: string) {
+  const [qFrom, qTo] = (quiet || '21-8').split('-').map(Number);
+  const isQuiet = (h: number) => (qFrom > qTo ? h >= qFrom || h < qTo : h >= qFrom && h < qTo);
+  const c = new Date(created).getTime();
+  const slots: number[] = [];
+  for (let m = 20 * 60; m <= 23 * 60 + 45; m += 15) { const t = c + m * 60e3; if (!isQuiet(tallinnHour(new Date(t)))) slots.push(t); }
+  let at: number;
+  if (slots.length) at = slots[Math.floor(Math.random() * slots.length)] + Math.random() * 14 * 60e3;
+  else { at = c + 20 * 36e5; while (isQuiet(tallinnHour(new Date(at)))) at -= 15 * 60e3; }
+  return new Date(Math.max(at, Date.now() + 60 * 60e3)); // vähemalt tund Tiidule reageerimiseks
 }
 
 // Hind: piirkonna järgi; kui piirkond pole teada, väiksem hind (lisatasu on märkusena all).
@@ -175,7 +195,7 @@ function offerHtml(r: Row, q: Quote, booking: string) {
       <p style="font-size:17px;font-weight:600;margin:0 0 6px">Järgmine samm</p>
       <p style="font-size:16px;line-height:1.55;margin:0">Vasta sellele kirjale „Sobib" või helista <a href="tel:+37255601425" style="color:#06c">+372 5560 1425</a> – saadame lepingu ja alustame.<br>${meet}</p>
     </div>
-    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>volitatud arhitekt, tase 8 · Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a> · <a href="mailto:tiit@sportsport.ee" style="color:#1d1d1f">tiit@sportsport.ee</a></p>
+    <p style="font-size:16px;line-height:1.55;margin:0 0 28px">Parimate soovidega<br><strong>Tiit Sild</strong><br>volitatud arhitekt, tase 8 · Projektbüroo Sport OÜ<br><a href="tel:+37255601425" style="color:#1d1d1f">+372 5560 1425</a> · <a href="mailto:${esc(CONTACT)}" style="color:#1d1d1f">${esc(CONTACT)}</a></p>
   </div>
   <div style="padding:18px 32px 28px;border-top:1px solid #e8e8ed;font-size:12px;line-height:1.5;color:#86868b">
     Said selle kirja, sest saatsid päringu lehel ${SITE.replace('https://', '')}. Pakkumine on lisatud ka PDF-ina.
@@ -264,7 +284,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   const footer = () => {
     const yy = y; y = 34;
     hr(L, R, rule, 0.5); y = 22;
-    t('Projektbüroo Sport OÜ  ·  +372 5560 1425  ·  tiit@sportsport.ee  ·  sportsport.ee/pesa', L, 7.5, f, mute);
+    t(`Projektbüroo Sport OÜ  ·  +372 5560 1425  ·  ${CONTACT}  ·  sportsport.ee/pesa`, L, 7.5, f, mute);
     tr(`Pakkumine ${offerNo}`, R, 7.5, f, mute);
     y = yy;
   };
@@ -328,7 +348,7 @@ async function offerPdfInner(r: Row, q: Quote) {
   if (note) { y -= 18; for (const d of wrap(note, R - L, 8)) { t(d, L, 8, f, mute); y -= 10.5; } }
 
   drawLogo(L, 80, 96);
-  y = 54; tr('tiit@sportsport.ee  ·  +372 5560 1425', R, 8, f, mute);
+  y = 54; tr(`${CONTACT}  ·  +372 5560 1425`, R, 8, f, mute);
   y = 42; tr('www.sportsport.ee/pesa', R, 8, f, mute);
 
   // ---------- 2. leht: hinna sisu ----------
@@ -526,12 +546,13 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const key = Deno.env.get('RESEND_API_KEY');
-  const TIIT = Deno.env.get('TUBE_OFFER_TO') || 'tiit@sportsport.ee';
 
   const { data: st } = await sb.from('pesa_settings').select('key,value');
   const set = Object.fromEntries((st || []).map((x) => [x.key, x.value]));
+  CONTACT = set.contact_email || Deno.env.get('TUBE_OFFER_TO') || '';
+  const TIIT = Deno.env.get('TUBE_OFFER_TO') || CONTACT;
   const ADMIN_FROM = set.admin_from || Deno.env.get('TUBE_OFFER_FROM') || 'Pesa majad <onboarding@resend.dev>';
-  const CLIENT_FROM = set.client_from || Deno.env.get('PESA_CLIENT_FROM') || 'Tiit Sild | Pesa majad <tiit@send.sportsport.ee>';
+  const CLIENT_FROM = set.client_from || Deno.env.get('PESA_CLIENT_FROM') || ADMIN_FROM;
   try { ITEMS = set.offer_items ? JSON.parse(set.offer_items) : DEFAULT_ITEMS; } catch (_) { ITEMS = DEFAULT_ITEMS; }
   const { data: sg } = await sb.from('pesa_secrets').select('value').eq('key', 'signature_png').maybeSingle();
   SIG_B64 = sg?.value || '';
@@ -561,7 +582,7 @@ Deno.serve(async (req) => {
       if (!/^[0-9a-f-]{36}$/i.test(t)) return page('Link ei kehti', 'Seda linki ei leitud.', 400);
       await sb.from('tube_offer_requests').update({ unsubscribed_at: new Date().toISOString(), status: 'unsubscribed' })
         .eq('token', t).not('status', 'in', '(ordered,drawings_bought)');
-      return page('Oled loobunud', 'Me ei saada sulle enam Pesa majade kirju. Kui soovid siiski pakkumist arutada, kirjuta tiit@sportsport.ee.');
+      return page('Oled loobunud', `Me ei saada sulle enam Pesa majade kirju. Kui soovid siiski pakkumist arutada, kirjuta ${CONTACT}.`);
     }
     // Pakkumise PDF-i eelvaade (sama allkiri mis kinnituslingil).
     if (a === 'pdf') {
@@ -670,7 +691,13 @@ Deno.serve(async (req) => {
       await sb.from('tube_offer_requests').update({ region_tier: q.tier, price_quote: q }).eq('id', r.id);
       const approveUrl = `${FN_URL}?a=approve&id=${r.id}&s=${await sign(r.id)}`;
       let state: string, subj: string;
-      if (reasons.length) {
+      if (reasons.length && autoSend) {
+        // Vajab ülevaatust, aga ei jää ootama: kui Tiit ei sekku, läheb pakkumine välja enne 24 h möödumist.
+        const at = reviewDeadline(r.created_at, set.offer_quiet_hours);
+        await sb.from('tube_offer_requests').update({ status: 'scheduled', send_after: at.toISOString(), review_reason: reasons.join('; ') }).eq('id', r.id);
+        state = `VAATA ÜLE: ${reasons.join('; ')}.\nKui sa ei sekku, läheb pakkumine kliendile automaatselt ${tallinnTime(at)}.\nSAADA KOHE: ${approveUrl}\nPEATA (vastad kliendile ise): ${FN_URL}?a=hold&id=${r.id}&s=${await sign(r.id)}`;
+        subj = `Vaata üle – läheb ${tallinnTime(at)}`;
+      } else if (reasons.length) {
         await sb.from('tube_offer_requests').update({ status: 'needs_review', review_reason: reasons.join('; ') }).eq('id', r.id);
         state = `PAKKUMINE OOTAB SINU KINNITUST\nPõhjus: ${reasons.join('; ')}.`; subj = 'Kinnita pakkumine';
       } else if (autoSend) {
